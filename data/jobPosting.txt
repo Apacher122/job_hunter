@@ -1,0 +1,49 @@
+Company: Butter Payments
+Position: Software Engineer, Data
+
+About the job
+Butter is building the payments stack for the modern subscription economy. We're creating an inclusive remote-first culture that enables our employees to contribute from anywhere in the world. Come join our team to help modernize subscription payments!
+Summary
+In this role you’ll use your unique combination of data engineering and backend software development expertise to solve business problems. As part of the Engineering team, you’ll build data heavy applications that directly provide value to our customers, internal and external.
+Who We’re Looking For
+We’re looking for someone who understands data engineering and can combine that knowledge with software engineering experience to build systems where producing and managing data is the first-class concern.
+What You’ll Do
+- Build backend applications that interact with a variety of disparate APIs and data sources.
+- Develop and grow client facing APIs that are flexible but standardize the data passed to them in a clean and consistent way.
+- Orchestrate workflows using technologies such as AWS Step Functions and Temporal.
+- Collaborate with data engineering, machine learning, and analytics teams to ensure that the data our applications are producing scales to meet needs across the company.
+- Build data models into our applications that transpose the messy data of the outside world into clean data our applications can operate on.
+- Develop and operate software in production.
+What You Have
+- 5+ years of professional experience between data engineering and software engineering roles
+- You’ve worked with Python and SQL in a previous role
+- You’ve worked with cloud based systems such as AWS, Google Cloud, or Azure
+- You have experience writing and operating software in production
+- Strong analytical, problem solving, communication, and debugging skills
+- Can respond iteratively and rapidly to changes in business requirements
+Nice To Have
+- BS/MS in Computer Science or equivalent
+- You have API design experience
+- Experience building systems with a State Machine architecture 
+- Bonus points for Temporal or AWS Step Functions experience
+Philosophies
+- Data outlives code
+- Technology is strategic for the business
+- Simplicity over complexity
+- Embrace hard conversations
+Our Technology Stack
+Cloud: AWS
+Programming Language: Python
+Container Orchestration: Kubernetes (EKS)
+CI/CD: Github Actions
+IaC: Terraform
+Database: CockroachDB, Snowflake, DynamoDB
+Queue: Kafka
+Logging & Monitoring: DataDog
+About Butter
+Modern subscription companies accidentally lose up to 4% of their total customer base each year due to churn caused by legitimate payments failing (passive churn). These payments fail either because they are falsely detected as fraud or because of archaic systems in an aging payment ecosystem.
+Butter uses patented machine learning and artificial intelligence to deeply understand the real time state for any given payment and then optimizes for success. Butter offers a free assessment and trial to validate a customer’s found revenue opportunity, integrates with existing payment processors, and charges an ongoing success fee tied to revenue recovered.
+Butter typically recovers up to $1M or more of found revenue for our customers and gives 1% back to causes that support our mission of enabling anyone anywhere to have access to the things they deserve and need.
+Butter is well funded by leading investors and offers a competitive benefits package including unlimited PTO, 401k, and comprehensive health insurance. The salary range for this position is $112,000 - $234,800.
+We are focused on building a diverse and inclusive workforce. If you’re excited about this role, but do not meet 100% of the qualifications listed above, we encourage you to apply.
+Butter Payments is an Equal Opportunity Employer and considers applicants for employment without regard to race, color, religion, sex, orientation, national origin, age, disability, genetics or any other basis forbidden under federal, state, or local law. Butter considers all qualified applicants in accordance with the San Francisco Fair Chance Ordinance.
