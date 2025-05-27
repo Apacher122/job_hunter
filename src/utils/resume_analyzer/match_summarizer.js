@@ -55,25 +55,24 @@ export const getMatchSummary = async () => {
  */
 export const generateMatchSummary = ({ match_summary: { metrics, overall_match_summary }, company_name: companyName }) => {
     let content = '';
-    const formattedMetrics = metrics
-        .map(({ scoreTitle, score, scoreJustification, isCompatible, probabilityOfSuccess, probabilityOfSuccessEquation, probabilityOfSuccessJustification }) => `
-            ## Title: ${scoreTitle}
-            ### Score: ${score}
-            * Justification: ${scoreJustification}
-            * Compatible: ${isCompatible ? 'Yes' : 'No'}
-            * Probability of Success: ${probabilityOfSuccess}
-            * Probability of Success Equation: ${probabilityOfSuccessEquation || 'N/A'}
-            * Probability of Success Justification: ${probabilityOfSuccessJustification || 'N/A'}
-        `)
-        .join('\n');
+    if (metrics) {
+        content += `# Match Summary for ${companyName}\n\n`;
+        content += `## Match Metrics:\n`;
+        metrics.forEach(metric => {
+            content += `### ${metric.scoreTitle}\n`;
+            content += `- Score: ${metric.score}\n`;
+            content += `- Justification: ${metric.scoreJustification}\n`;
+            content += `- Compatible: ${metric.isCompatible ? 'Yes' : 'No'}\n`;
+            content += `- Probability of Success: ${metric.probabilityOfSuccess}\n`;
+            content += `- Probability of Success Equation: ${metric.probabilityOfSuccessEquation || 'N/A'}\n`;
+            content += `- Probability of Success Justification: ${metric.probabilityOfSuccessJustification || 'N/A'}\n\n`;
+        });
 
-    const formattedSummary = `
-            # Overall Summary: ${overall_match_summary.summary.join('\n')}
-            # Suggestions: ${overall_match_summary.suggestions.join('\n')}
-        `;
+        content += `## Overall Match Summary:\n`;
+        content += `- Summary:\n\t- ${overall_match_summary.summary.join('\n\t- ')}\n`;
+        content += `- Suggestions:\n\t- ${overall_match_summary.suggestions.join('\n\t- ')}\n`;
+    }
 
-    content += `# Company: ${companyName}\n\n# Match Metrics:\n${formattedMetrics}\n${formattedSummary}`;
     return content;
 };
-
-// 
+ 
