@@ -1,19 +1,28 @@
 import fs from "fs/promises";
 import Handlebars from "handlebars";
-import config from "../config/config.js";
-import { messageOpenAI } from "../services/openai-services.js";
-import { ResumeSectionNotFoundError } from "../errors/resume-builder-errors.js";
-import { logger, generateChangeReport } from "./index.js";
+import config from "../../config/user_info.js";
+import paths from "../../config/paths.js";
+import { messageOpenAI } from "../../services/openai_services.js";
+import { ResumeSectionNotFoundError } from "../../errors/resume_builder_errors.js";
+import { logger, generateChangeReport } from "../index.js";
 import { formatLatexSection } from "../helpers/formatter.js";
 
 // Load the basic information of the user into resume.tex
 export const loadBasicInfo = async () => {
     const resumeTemplate = await fs.readFile(
-        config.latex_files.resume_template,
+        paths.latex_files.resume_template,
         "utf8"
     );
     const resumeInfo = Handlebars.compile(resumeTemplate)(config.user_info);
-    await fs.writeFile(config.latex_files.resume, resumeInfo);
+    await fs.writeFile(paths.latex_files.resume, resumeInfo);
+
+    const educationTemplate = await fs.readFile(
+        paths.latex_files.education_template,
+        "utf8"
+    );
+
+    const educationInfo = Handlebars.compile(educationTemplate)(config.education_info);
+    await fs.writeFile(paths.latex_files.education, educationInfo);
 };
 
 // Load the content of a resume section from OpenAI and update the LaTeX file
@@ -58,74 +67,6 @@ export const loadSections = async (section, prompt, schema, filePath) => {
         throw error;
     }
 };
-
-// Format new LaTeX content from the zod object returned by openai
-// const formatSectionText = (sectionType) => (sectionData) => {
-//     let cvItems;
-//     switch (sectionType) {
-//         case "experiences":
-//             cvItems = sectionData.description
-//                 .map(
-//                     ({ text }) =>
-//                         `    \\item {${text.replace(/[%#&]/g, "\\$&")}}`
-//                 )
-//                 .join("\n");
-//             return `
-//         \\cventry
-//           {${sectionData.company}} % Organization
-//           {${sectionData.position}} % Job title
-//           {} % Location
-//           {${sectionData.start} - ${sectionData.end}} % Date(s)
-//           {
-//             \\begin{cvitems} % Description(s) of tasks/responsibilities
-//         ${cvItems}
-//             \\end{cvitems}
-//           }`;
-//         case "skills":
-//             const skillList = sectionData.skill
-//                 .map(({ item }) =>
-//                     item.replace(
-//                         /[%#&]/g,
-//                         (match) =>
-//                             ({
-//                                 "%": "\\%",
-//                                 "#": "\\#",
-//                                 "&": "\\&",
-//                             }[match])
-//                     )
-//                 ) // Escape special characters for LaTeX
-//                 .join(", ");
-
-//             return `
-//           \\cvskill
-//             {${titleFormat(sectionData.category)}} % Category
-//             {${skillList}} % Skills
-//           `;
-//         case "projects":
-//             cvItems = sectionData.description
-//                 .map(
-//                     ({ text }) =>
-//                         `    \\item {${text
-//                             .replace(/%/g, "\\%")
-//                             .replace(/#/g, "\\#")}}` // Escape '%' for LaTeX
-//                 )
-//                 .join("\n");
-
-//             return `
-//           \\cventry
-//             {${sectionData.role}} % Role
-//             {${sectionData.name}} % Event
-//             {} % Location
-//             {${sectionData.status}} % Date(s)
-//             {
-//               \\begin{cvitems} % Description(s)
-//           ${cvItems}
-//               \\end{cvitems}
-//             }`;
-//         default:
-//             throw new Error(`Invalid section type: ${sectionType}`);
-//     }
-// };
 
 // Replace the content of a LaTeX section with new content
 const replaceSectionContent = (texContent, newContent) => {

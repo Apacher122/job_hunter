@@ -1,9 +1,9 @@
 import { appendFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import paths from '../../config/paths.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const changeReportPath = path.join(__dirname, `..`, `output/change-summary.md`);
+const changeReportPath = paths.paths.change_report;
 
 export const generateChangeReport = (response) => {
     let content = '';

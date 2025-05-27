@@ -9,6 +9,7 @@ fs.truncate(logFilePath, 0, () => {
   console.log('Log file cleared');
 });
 
+// Simple winton logger
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const logConfig = {
     level: {

@@ -1,3 +1,3 @@
-export { loadBasicInfo, loadSections,  } from "./latex-utils.js";
+export { loadBasicInfo, loadSections,  } from "./latex_to_pdf/latex_utils.js";
 export { logger } from "./logger.js";
-export { generateChangeReport } from "./change-report.js";
+export { generateChangeReport } from "./resume_analyzer/change_report.js";
