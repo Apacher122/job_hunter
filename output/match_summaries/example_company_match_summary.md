@@ -1,8 +1,8 @@
 # Company: Example Company
 
-# Match Metrics:
+## Match Metrics:
 
-## Title: Company Culture Fit
+### Title: Company Culture Fit
 - Score: 75
 - Justification: You align with the company's values of collaboration and innovation, but may need to emphasize your commitment to data ethics more clearly.
 - Compatible: Yes
