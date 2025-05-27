@@ -1,6 +1,5 @@
 import { OpenAI } from 'openai';
 import { zodResponseFormat } from 'openai/helpers/zod';
-import { experienceResponse, skillsResponse } from '../models/resume-items.js';
 import { logger } from '../utils/index.js';
 
 const apiKey = process.env.OPENAI_API_KEY;
@@ -12,6 +11,8 @@ const openai = new OpenAI({
     apiKey: apiKey,
 });
 
+
+// Sends prompt to OpenAI API. Receives a zod object.
 export const messageOpenAI = async(prompt, zodFormat) => {
     try {
         const completion = await openai.beta.chat.completions.parse({
