@@ -58,10 +58,10 @@
 
 ## Overall Summary:
 - Summary:
-    * Good alignment with company culture focused on innovation and collaboration.
-* Strong technical skills, particularly in software development and cloud technologies.
-* Experience in relevant fields, though some preferred qualifications are lacking.
+    - Good alignment with company culture focused on innovation and collaboration.
+    - Strong technical skills, particularly in software development and cloud technologies.
+    - Experience in relevant fields, though some preferred qualifications are lacking.
 - Suggestions:
-    * Highlight any experience with data ethics and privacy regulations in your application.
-* Consider gaining experience in the preferred technologies such as Kubernetes and data virtualization tools before the interview.
+    - Highlight any experience with data ethics and privacy regulations in your application.
+    - Consider gaining experience in the preferred technologies such as Kubernetes and data virtualization tools before the interview.
         
