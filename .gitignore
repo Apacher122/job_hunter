@@ -6,7 +6,6 @@ node_modules/
 # Build and output directories
 dist/
 build/
-output/
 html/
 
 # Temporary files
