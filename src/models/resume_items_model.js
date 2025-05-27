@@ -48,3 +48,16 @@ export const projectsResponse = z.object({
         })
     ),
 });
+
+export const resumeItems = z.object({
+    experiences: experienceResponse.shape.experiences,
+    skills: skillsResponse.shape.skills,
+    projects: projectsResponse.shape.projects,
+});
+
+export const resumeItemsResponse = z.union([
+    experienceResponse,
+    skillsResponse,
+    projectsResponse,
+]);
+// This union allows the response to be one of the three types, which is useful for handling different sections of a resume.
