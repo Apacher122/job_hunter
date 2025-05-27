@@ -1,5 +1,6 @@
-import { compile_resume } from './utils/resume-compiler.js';
+import { compile_resume } from './utils/resume_compiler.js';
 
+// Entrance
 const main = async () => {
   try {
     console.log("Attempting to compile resume");
