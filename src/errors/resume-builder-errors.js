@@ -22,12 +22,14 @@ class ResumeBuilderError extends Error {
     }
 }
 
+// Throws if LaTeX file cannot be read.
 export class LaTeXFileAccessError extends ResumeBuilderError {
     constructor(message = "Error accessing LaTeX file", details = {}) {
         super(message);
     }
 }
 
+// Throws if Resume section could not be found in the current resume format.
 export class ResumeSectionNotFoundError extends ResumeBuilderError {
     constructor(message = "Resume section not found", details = {}) {
         super(message);
