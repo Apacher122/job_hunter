@@ -27,6 +27,3 @@ Thumbs.db
 *.log
 *.out
 *.toc
-
-# Environment files
-.env
