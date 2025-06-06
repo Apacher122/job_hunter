@@ -1,12 +1,39 @@
 {
+  "name": "resume-builder",
+  "version": "1.0.0",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "ts-node src/server.ts",
+    "build": "tsc",
+    "start": "npx ts-node src/server.ts"
+  },
   "dependencies": {
+    "@google-cloud/local-auth": "^2.1.0",
+    "app-root-path": "^3.1.0",
+    "dotenv": "^16.5.0",
+    "electron": "^36.4.0",
+    "express": "^5.1.0",
+    "fs": "^0.0.1-security",
     "fs-extra": "^11.2.0",
+    "googleapis": "^105.0.0",
     "handlebars": "^4.7.8",
+    "install": "^0.13.0",
     "latex.js": "^0.12.6",
     "node-latex": "^3.1.0",
+    "open": "^10.1.0",
     "openai": "^4.71.1",
     "pdf-lib": "^1.17.1",
+    "pdf-parse": "^1.1.1",
+    "pdfjs-dist": "^5.3.31",
     "winston": "^3.17.0",
     "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.2",
+    "eslint": "^9.28.0",
+    "eslint-config-google": "^0.14.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
   }
 }

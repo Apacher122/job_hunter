@@ -1,5 +1,5 @@
 # Use an official Node.js runtime as a parent image
-FROM node:18
+FROM node:latest
 
 # Set the working directory
 WORKDIR /usr/src/
@@ -15,6 +15,10 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
+# Install ts-node and typescript
+RUN npm install -g ts-node typescript
+RUN npm install -g tsx
+
 # Copy the rest of the application code
 COPY . .
 
@@ -22,4 +26,4 @@ COPY . .
 EXPOSE 3000
 
 # Define the command to run the app
-CMD ["node", "app.js"]
+CMD ["npx", "tsx", "server.ts"]
