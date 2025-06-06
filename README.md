@@ -59,7 +59,7 @@ I'm using OpenAI's GPT-4o model because I have credits. That's literally the onl
 
 4. Navigate to `/root/electron/` and run:  
 
-    ```bash npx electron .\main.js```
+    ```npx electron .\main.js```
 
 5. Under `/root/output/`, you will see a couple things:
     - `/cover_letters/` : your cover letter drafts are here
