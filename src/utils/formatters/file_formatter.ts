@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { PDFDocument } from 'pdf-lib';
+import pdf from 'pdf-parse';
 
 export const formatPDF = async(filePath: string): Promise<void> => {
     // Read the input PDF file into a buffer

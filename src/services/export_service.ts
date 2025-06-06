@@ -2,7 +2,7 @@ import { spawn } from 'child_process';
 import { exists, existsSync } from 'fs';
 import fs from 'fs';
 import { logger } from '../utils/logger';
-import { formatPDF } from '../utils/formatters/pdf_formatter';
+import { formatPDF } from '../utils/formatters/file_formatter';
 import { validatePath } from '../utils/validations';
 import paths from '../constants/paths';
 import { infoStore } from '../data/info_store';

@@ -32,64 +32,6 @@ export const loadUserInfoToLatex = async () => {
     await fs.promises.writeFile(paths.latex_files.education, educationInfo);
 };
 
-// // Load the content of a resume section from OpenAI and update the LaTeX file
-// export const loadSections = async (
-//     section: string,
-//     prompt: string,
-//     schema: any,
-//     filePath: string
-// ) => {
-//     const latexEnv = sectionToLatexEnvMap[section];
-//     if (!latexEnv) {
-//         logger.error(`No LaTeX environment found for section: ${section}`);
-//         throw new Error(`No LaTeX environment found for section: ${section}`);
-//     }
-
-//     const response = await messageOpenAI(prompt, schema);
-
-//     // Validate the response using the provided Zod schema
-//     const parsedResponse = schema.safeParse(response);
-//     if (!parsedResponse.success) {
-//         logger.error(
-//             `Invalid response format for ${section}: ${JSON.stringify(
-//                 parsedResponse.error.errors
-//             )}`
-//         );
-//         throw new Error(`Invalid response format for ${section}`);
-//     }
-
-//     const jsonFilePath = paths.paths.section_json(section);
-//     await fs.writeFile(jsonFilePath, JSON.stringify(parsedResponse.data, null, 2));
-//     logger.info(`Saved ${section} data to ${jsonFilePath}`);
-
-//     const newContent = parsedResponse.data[section].map(
-//         formatLatexSection(section)
-//     );
-
-//     let latexContent;
-//     try {
-//         latexContent = await fs.readFile(filePath, "utf8");
-//     } catch (error) {
-//         logger.error(`Error reading from ${filePath}: ${error.message}`);
-//         throw error;
-//     }
-
-//     try {
-//         const updatedContent = replaceSectionContent(latexContent, newContent, latexEnv);
-//         await fs.writeFile(filePath, updatedContent, "utf-8");
-//         generateChangeReport(response);
-//     } catch (error) {
-//         if (error instanceof ResumeSectionNotFoundError) {
-//             logger.error(
-//                 `Error replacing ${section}: ${error.message}\n\tCheck LaTeX syntax in ${filePath}`
-//             );
-//         } else {
-//             logger.error(`Error writing to ${filePath}: ${error.message}`);
-//         }
-//         throw error;
-//     }
-// };
-
 // Replace the content of a LaTeX section with new content
 export const replaceSectionContent = (
     texContent: string,

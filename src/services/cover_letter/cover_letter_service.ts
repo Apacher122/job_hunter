@@ -11,6 +11,8 @@ import { combineJSONData } from "../../utils/data/json_helpers.js";
 import { replaceSectionContent, formatLatexSection } from "../latex/latex_service.js";
 import { exportLatex } from "../export_service.js";
 import { ZodType } from "zod";
+import { getWritingExamples } from "../../utils/formatters/text_formatter.js";
+
 
 
 export const compileCoverLetter = async (): Promise<void> => {
@@ -21,7 +23,7 @@ export const compileCoverLetter = async (): Promise<void> => {
 
     // Export to PDF
     try {
-        await generateCoverLetterContent();
+        await generateCoverLetterDraft();
         let jobContent = infoStore.jobPosting;
         await exportLatex({
         jobNameSuffix: 'cover_letter',
@@ -39,18 +41,17 @@ export const compileCoverLetter = async (): Promise<void> => {
     }
 }
 
-const generateCoverLetterContent = async () => {
+const generateCoverLetterDraft = async () => {
     try {
     const jobPostingContent = infoStore.jobPosting;
     const sections = ['experiences', 'skills', 'projects'];
     const resumeData = await combineJSONData(sections);
     const aboutMe = await fs.promises.readFile(paths.paths.about_me, 'utf-8');
-    const example1 = await fs.promises.readFile(paths.paths.writing_examples('example1'), 'utf-8');
-    const example2 = await fs.promises.readFile(paths.paths.writing_examples('example2'), 'utf-8');
-    const example3 = await fs.promises.readFile(paths.paths.writing_examples('example3'), 'utf-8');
-    const example4 = await fs.promises.readFile(paths.paths.writing_examples('example4'), 'utf-8');
-    const example5 = await fs.promises.readFile(paths.paths.writing_examples('example5'), 'utf-8');
-    const example6 = await fs.promises.readFile(paths.paths.writing_examples('example6'), 'utf-8');
+
+    const writingExamples = await getWritingExamples();
+    if (!writingExamples) {
+        throw new Error('Writing examples not found.');
+    }
 
     const prompt = prompts.cover_letter(
         resumeData,
@@ -58,12 +59,7 @@ const generateCoverLetterContent = async () => {
         aboutMe,
         jobPostingContent.rawCompanyName,
         jobPostingContent.position,
-        example1,
-        example2,
-        example3,
-        example4,
-        example5,
-        example6
+        writingExamples
     )
 
     // Create topmost info

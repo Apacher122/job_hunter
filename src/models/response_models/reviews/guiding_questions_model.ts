@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-export const guidingAnswersResponse = z.object({
-    guiding_answers: z.array(
+export const GuidingQuestionsSchema = z.object({
+    guiding_questions: z.array(
         z.object({
             question: z.string(),
             answer: z.string(),

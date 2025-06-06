@@ -290,7 +290,7 @@ export const prompts = {
     `,
 
 
-    cover_letter: (resumeData, jobPostingContent, aboutMe, companyName, position, example1, example2, example3, example4, example5, example6) =>`
+    cover_letter: (resumeData, jobPostingContent, aboutMe, companyName, position, examples) =>`
     You are a professional career advisor and writing assistant.
 
     I will provide you with the following information:
@@ -300,7 +300,10 @@ export const prompts = {
     - A job description I am applying for.
     - Additional information about me.
     - Examples of my writing.
-    Using this information, you must write a cover letter that is optimized for the job description I am applying for.
+
+    Using this information:
+    - You must draft a cover letter that is optimized for the job description I am applying for.
+    - Provide suggestions and guiding questions to help me write the final cover letter.
     
     --- Company and Position ---
 
@@ -319,25 +322,7 @@ export const prompts = {
 
     ${aboutMe}
 
-    --- Writing Examples ---
-
-    - Example 1:
-        ${example1}
-
-    - Example 2:
-        ${example2}
-    
-    - Example 3:
-        ${example3}
-
-    - Example 4:
-        ${example4}
-
-    - Example 5:
-        ${example5}
-
-    - Example 6:    
-        ${example6}
+    ${examples}
     
     --- Instructions ---
     - Produce a cover letter that is optimized for the job description I am applying for.
@@ -366,7 +351,7 @@ export const prompts = {
     - DO NOT LIE.
     `,
 
-    possible_questions: (resumeData, jobPostingContent, aboutMe, companyName, example1, example2, example3, example4, example5, example6) =>`
+    possible_questions: (resumeData, jobPostingContent, aboutMe, companyName, examples) =>`
     You are a professional career advisor and writing assistant.    
 
     I will provide you with the following information:
@@ -375,7 +360,12 @@ export const prompts = {
     - A job description I am applying for.
     - Additional information about me.
     - Examples of my writing.
-    Using this information, you must provide answers to some questions that may be asked either in the application or interview.
+
+    Using this information:
+    - You must draft answers to some questions that may be asked either in the application or interview.
+    - Provide suggestions and guiding questions to help me answer the questions.
+        - The suggestions may be about company culture, values, specific skills, experiences, or any other relevant information that can help me answer the questions effectively.
+    - The drafted answers should be concise, clear, and reflect my personality and writing style.
     
     --- Resume ---
 
@@ -389,25 +379,7 @@ export const prompts = {
 
     ${aboutMe}
 
-    --- Writing Examples ---
-
-    - Example 1:
-        ${example1}
-
-    - Example 2:
-        ${example2}
-    
-    - Example 3:
-        ${example3}
-
-    - Example 4:
-        ${example4}
-
-    - Example 5:
-        ${example5}    
-
-    - Example 6:    
-        ${example6}
+    ${examples}
         
     --- Instructions ---
     - Provide answers to the following questions:

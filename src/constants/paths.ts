@@ -24,6 +24,7 @@ export default {
         google_credentials: path.join(root, `config`, `gmail_api`, `credentials.json`), // Google credentials for Gmail API
         google_token: path.join(root, `config`, `gmail_api`, `token.json`), // Google credentials for Gmail API
         writing_examples: (file_name = '') =>path.join(root, `data`, `my_writing`, `${file_name}.txt`), // Writing examples for prompts
+        writing_examples_dir: path.join(root, `data`, `my_writing`), // Directory for writing examples
         about_me: path.join(root, `data`, `aboutMe.txt`), // About me text file
         section_json: (title = '') => path.join(root, `output`, `json_resume`, `${title}.json`), // JSON resume output
         guiding_answers: (title = '') => path.join(root, `output`, `guiding_answers`, `${title}_guiding_answers.md`), // Guiding answers output
