@@ -50,18 +50,16 @@ I'm using OpenAI's GPT-4o model because I have credits. That's literally the onl
     - Add your current resume in a json format to `resume.json`.
     - Add some additional information about yourself to `aboutMe.txt`.
         - This can be a novel, autobiography, or even another resume.
-3. In your editor's terminal (or whatever terminal you're using) run the following:
+3. In your editor's terminal (or whatever terminal you're using) run the following in order:
 
-        ```
-        docker compose build
-        ```
-        ```
-        docker compose up
-        ```
+    ```bash
+    docker compose build
+    docker compose up
+    ```
 
 4. Navigate to `/root/electron/` and run:  
 
-        ```npx electron .\main.js```
+    ```bash npx electron .\main.js```
 
 5. Under `/root/output/`, you will see a couple things:
     - `/cover_letters/` : your cover letter drafts are here
