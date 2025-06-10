@@ -1,11 +1,11 @@
 import { spawn } from 'child_process';
 import { exists, existsSync } from 'fs';
 import fs from 'fs';
-import { logger } from '../utils/logger';
-import { formatPDF } from '../utils/formatters/file_formatter';
-import { validatePath } from '../utils/validations';
-import paths from '../constants/paths';
-import { infoStore } from '../data/info_store';
+import { logger } from '../shared/utils/logger';
+import { formatPDF } from '../shared/utils/formatters/file_formatter';
+import { validatePath } from '../shared/utils/validations';
+import paths from '../shared/constants/paths';
+import { infoStore } from '../shared/data/info_store';
 
 export const exportLatex = async({
   jobNameSuffix,
@@ -44,7 +44,6 @@ export const exportLatex = async({
     compiledPdfPath,
     movedPdfPath
   );
-  console.log(`Exported ${jobNameSuffix} for ${content.companyName} successfully.`);
 };
 
 const executeLatex = (
@@ -53,8 +52,6 @@ const executeLatex = (
   latexFilePath: string,
 ): Promise<void> => {
   return new Promise(( resolve, reject) => {
-    console.log(`Executing LaTeX for ${companyName} with suffix ${jobNameSuffix}`);
-
     const latex = spawn('xelatex', [
       `--interaction=nonstopmode`,
       `-output-directory=${paths.paths.output_dir}`,
@@ -71,7 +68,6 @@ const executeLatex = (
     });
 
     latex.on('close', async(code) => {
-      console.log("current working directory:", process.cwd());
       if (code === 0) {
         resolve();
       } else {
@@ -92,7 +88,6 @@ const moveCompiledPDF = async (
     }
 
     await fs.promises.rename(compiledPdfPath, movedPdfPath);
-    console.log(`Moved compiled PDF to ${movedPdfPath}`);
   } catch (error) {
     console.error(`Error moving compiled PDF: ${error}`);
     throw error;

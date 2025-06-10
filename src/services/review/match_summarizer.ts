@@ -1,11 +1,11 @@
 import fs, { appendFileSync} from "fs";
-import paths from "../../constants/paths";
-import { prompts } from "../../constants/prompts";
+import paths from "../../shared/constants/paths";
+import { prompts } from "../../shared/constants/prompts";
 import { matchSummaryResponse } from "../../models/response_models/reviews/match_summary_model";
-import { infoStore } from "../../data/info_store";
-import { messageOpenAI } from "../../apis/open_ai/openai_services";
-import { formatSuccessMetric, formatOverallMatchSummary } from "../../utils/formatters/summary_formatter.js";
-import { convertPDFToBase64 } from "../../utils/files/file_helpers.js";
+import { infoStore } from "../../shared/data/info_store";
+import { messageOpenAI } from "../../shared/apis/open_ai/openai_services";
+import { formatSuccessMetric, formatOverallMatchSummary } from "../../shared/utils/formatters/summary_formatter.js";
+import { convertPDFToBase64 } from "../../shared/utils/files/file_helpers.js";
 import { format } from "path";
 
 interface OpenAIResponse {
@@ -18,7 +18,7 @@ interface OpenAIResponse {
  * It processes the resume PDF, sends it to OpenAI along with the job posting,
  * and saves the generated match summary to a file.
  */
-export const getMatchSummary = async () => {
+export const getMatchSummary = async (): Promise<void> => {
     try {
         const jobPosting = infoStore.jobPosting;
         
@@ -38,9 +38,6 @@ export const getMatchSummary = async () => {
         const { content: summaryContent, projects_section_missing_entries: hasMissingProjects} = generateMatchSummary(openAIResponse);
 
         console.log(hasMissingProjects)
-        if (hasMissingProjects === true) {
-            return true
-        }
         
         // Define the path for the match summary file
         const summaryFilePath = paths.paths.match_summary_path(jobPosting.companyName);
@@ -52,7 +49,6 @@ export const getMatchSummary = async () => {
 
         // Append the generated summary content to the file
         appendFileSync(summaryFilePath, summaryContent);
-        return false;
 
     } catch (error) {
         // Log and rethrow any errors encountered

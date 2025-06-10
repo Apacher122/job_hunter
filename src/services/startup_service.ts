@@ -1,9 +1,8 @@
-import { getJobPostingContent } from "../utils/data/job_data_helpers.js";
+import { getJobPostingContent } from "../shared/utils/data/job_data_helpers.js";
 import { loadUserInfoToLatex } from "./latex/latex_service.js";
 
 export const initializeApp = async () => {
     try {
-        console.log("Loading job application content and user info...");
         // Load job posting content
         await getJobPostingContent();
         await loadUserInfoToLatex();

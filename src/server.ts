@@ -3,7 +3,9 @@ import express from 'express';
 import { compileCoverLetter } from './services/cover_letter/cover_letter_service.js';
 import { initializeApp } from './services/startup_service.js';
 import bodyParser from 'body-parser';
-import { insertRowToSheet } from './apis/google/sheets.js';
+import { insertRowToSheet } from './shared/apis/google/sheets.js';
+import { getJobPostFromCall } from './shared/utils/data/job_data_helpers.js';
+import resume_router from './routes/resume_routes';
 
 const app = express();
 app.use(bodyParser.json());
@@ -17,6 +19,8 @@ app.post('/reload', async (req, res) => {
   await initializeApp();
   res.status(200).json({ success: true, message: 'Reloading application...' });
 });
+
+app.use('/forms', resume_router);
 
 // API Endpoints
 app.post('/generate-resume', async (req, res) => {
@@ -52,12 +56,24 @@ app.post('/generate-cover-letter', async (req, res) => {
   }
 });
 
+app.post('/send-job-info', async (req, res) => {
+  try {
+    const text = req.body.text;
+    await getJobPostFromCall(text);
+    res.status(200).json({ success: true, message: 'Job info processed successfully' });
+  } catch (error) {
+    const e = error as Error;
+    console.error(`Error processing job info: ${e.message}`);
+    res.status(500).json({ success: false, message: `Error processing job info: ${e.message}` });
+  } finally {
+    console.log('New job info processed');
+  } 
+});
+
 const startServer = async () => {
   try {
     console.log('Starting server...');
     await initializeApp();
-    console.log('Application initialized successfully');
-
     app.listen(3000, '0.0.0.0', () => {
       console.log('Server is running on port 3000');
     });

@@ -1,17 +1,17 @@
 import fs from "fs";
-import { logger } from '../../utils/logger.js';
-import paths from '../../constants/paths.js';
-import { prompts } from '../../constants/prompts.js';
+import { logger } from '../../shared/utils/logger.js';
+import paths from '../../shared/constants/paths.js';
+import { prompts } from '../../shared/constants/prompts.js';
 import { CoverLetterSchema } from '../../models/response_models/cover_letter_models.js';
 import Handlebars from "handlebars";
-import { messageOpenAI } from "../../apis/open_ai/openai_services.js";
-import { ResumeSectionNotFoundError } from "../../errors/resume_builder_errors.js";
-import { infoStore } from "../../data/info_store.js";
-import { combineJSONData } from "../../utils/data/json_helpers.js";
+import { messageOpenAI } from "../../shared/apis/open_ai/openai_services.js";
+import { ResumeSectionNotFoundError } from "../../shared/errors/resume_builder_errors.js";
+import { infoStore } from "../../shared/data/info_store.js";
+import { combineJSONData } from "../../shared/utils/data/json_helpers.js";
 import { replaceSectionContent, formatLatexSection } from "../latex/latex_service.js";
 import { exportLatex } from "../export_service.js";
 import { ZodType } from "zod";
-import { getWritingExamples } from "../../utils/formatters/text_formatter.js";
+import { getWritingExamples } from "../../shared/utils/formatters/text_formatter.js";
 
 
 

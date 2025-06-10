@@ -1,11 +1,11 @@
 import fs from "fs";
 import Handlebars from "handlebars";
-import paths from "../../constants/paths.js";
-import { messageOpenAI } from "../../apis/open_ai/openai_services.js";
-import { ResumeSectionNotFoundError } from "../../errors/resume_builder_errors.js";
+import paths from "../../shared/constants/paths.js";
+import { messageOpenAI } from "../../shared/apis/open_ai/openai_services.js";
+import { ResumeSectionNotFoundError } from "../../shared/errors/resume_builder_errors.js";
 
-import { infoStore } from "../../data/info_store.js";
-import { formatTitle } from "../../utils/formatters/text_formatter.js";
+import { infoStore } from "../../shared/data/info_store.js";
+import { formatTitle } from "../../shared/utils/formatters/text_formatter.js";
 
 export const sectionToLatexEnvMap: Record<string, 'cvskills' | 'cventries' | 'cvletter'> = {
     projects: 'cventries',

@@ -1,10 +1,10 @@
 import { GuidingQuestionsSchema } from "../../models/response_models/reviews/guiding_questions_model.js"; 
-import { messageOpenAI } from "../../apis/open_ai/openai_services.js";
-import { prompts } from "../../constants/prompts.js";
-import { infoStore } from "../../data/info_store.js";
-import { combineJSONData } from "../../utils/data/json_helpers.js";
-import { getWritingExamples } from "../../utils/formatters/text_formatter.js";
-import paths from "../../constants/paths.js";
+import { messageOpenAI } from "../../shared/apis/open_ai/openai_services.js";
+import { prompts } from "../../shared/constants/prompts.js";
+import { infoStore } from "../../shared/data/info_store.js";
+import { combineJSONData } from "../../shared/utils/data/json_helpers.js";
+import { getWritingExamples } from "../../shared/utils/formatters/text_formatter.js";
+import paths from "../../shared/constants/paths.js";
 import fs from "fs";
 
 
@@ -18,6 +18,10 @@ export const getGuidingAnswers = async () => {
 
     const resumeData = await combineJSONData(['experiences', 'skills', 'projects']);
     const aboutMe = await fs.promises.readFile(paths.paths.about_me, 'utf-8');
+    let extra_questions = await fs.promises.readFile(paths.paths.possible_questions, 'utf-8');
+    if (!extra_questions) {
+        extra_questions = '';
+    }
     const examples = await getWritingExamples();
     if (!examples) {
         throw new Error('Writing examples not found.');
@@ -28,7 +32,8 @@ export const getGuidingAnswers = async () => {
         jobContent,
         aboutMe,
         jobContent.rawCompanyName,
-        examples
+        examples,
+        extra_questions
     );
     const response = await messageOpenAI(prompt, GuidingQuestionsSchema);
     const parsedResponse = GuidingQuestionsSchema.safeParse(response);
@@ -55,7 +60,7 @@ export const getGuidingAnswers = async () => {
 
 
 const generateMarkDownContent = (answers: any[]) => {
-    answers.map((item, i) => {
+   return answers.map((item, i) => {
         const suggestions = item.suggestions_and_guiding_questions
         .map((s: any) => `- ${s}`)
         .join("\n");
