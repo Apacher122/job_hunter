@@ -16,8 +16,7 @@ COPY package*.json ./
 RUN npm install
 
 # Install ts-node and typescript
-RUN npm install -g ts-node typescript
-RUN npm install -g tsx
+RUN npm install -g ts-node typescript tsx
 
 # Copy the rest of the application code
 COPY . .
