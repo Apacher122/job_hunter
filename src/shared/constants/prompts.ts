@@ -324,7 +324,7 @@ export const prompts = {
         examples: any,
     ) => dedent(`
     #TASK
-
+        
     - You are a professional career advisor and writing assistant.
     - I will provide you with the following information:
         1. Company and position I am applying for.
@@ -339,7 +339,7 @@ export const prompts = {
         2. Provide suggestions and guiding questions to help me write the final cover letter.
     
     ## GUIDELINES
-
+        
     - Produce a cover letter that is optimized for the job description I am applying for.
     - There will be three sections: About, Experience, and a "What I Bring" section.
         1. The "About" section should be a brief introduction about me and why I am applying for the job.
@@ -364,9 +364,9 @@ export const prompts = {
     - Do not use the same sentence structure over and over again.
     - Do not use the same words over and over again.
     - DO NOT LIE.
-
+        
     ## INPUTS
-
+        
     ### Company and Position
     
     Company: ${companyName}
@@ -385,18 +385,18 @@ export const prompts = {
     ${aboutMe}
     
     ### Examples of My Writing
-
+        
     ${examples}
     `),
-    
-    possible_questions: (
-        resumeData: any,
-        jobPostingContent: any,
-        aboutMe: any,
-        companyName: any,
-        examples: any,
-        extra_questions: any
-    ) =>dedent(`
+        
+        possible_questions: (
+            resumeData: any,
+            jobPostingContent: any,
+            aboutMe: any,
+            companyName: any,
+            examples: any,
+            extra_questions: any
+        ) =>dedent(`
     # TASK
     
     - I will provide you with the following information:
@@ -413,7 +413,7 @@ export const prompts = {
         3. The drafted answers should be concise, clear, and reflect my personality and writing style.
         
     ## INSTRUCTIONS
-
+            
     - Provide answers to the following questions:
         1. Why do you want to work for ${companyName}?
         2. What are your strengths and weaknesses?
@@ -434,7 +434,7 @@ export const prompts = {
         \`\`\`
     
     ## GUIDELINES
-
+            
     - You must use my resume as the primary source of information. Again, it is json sections of my resume.
     - Using the examples of my writing, try to emulate my writing style as closely as possible.
     - Use both my resume and the "Additional Information" text I provided to extract relevant information about my experience and skills.
@@ -450,7 +450,7 @@ export const prompts = {
     - Do not use the same phrases over and over again.
     - Do not use the same sentence structure over and over again.    
     - DO NOT LIE.
-
+            
     ## INPUTS
     
     ### Resume
@@ -466,7 +466,7 @@ export const prompts = {
     ${aboutMe}
     
     ### Examples of My Writing
-
+            
     ${examples}
     `),
     
@@ -474,43 +474,31 @@ export const prompts = {
         resumeData: any,
         jobPostingContent: any,
         mistakes: any,
+        lastResumeProduced?: any ,
     ) => dedent(`
-    # TASK
-
+    ## TASK
+                
     - I am applying for the position of ${jobPostingContent.position} at ${jobPostingContent.companyName}.
     - Your goal is to maximize ATS (Applicant Tracking System) compatibility, readability, and relevance while showcasing my strengths and helping me stand out to human reviewers.
     - You will be revising the following sections of my resume:
         1. **Technical Skills**
         2. **Experience**
         3. **Projects**
+    - I will also provide you with mistakes you have made in the past. You must avoid these mistakes.
             
     ---
-            
-    ## GUIDELINES FOR EACH SECTION
-            
-    ### EXPERIENCE SECTION
-            
-    #### Experiences: Formatting Rules
-            
-    1. Each position should have **at least 4 bullet points**.
-    2. Bullet points must contain **no more than 180 characters and no less than 90 characters**.
-    3. Bullet points must be written in **natural, human-like language**. Strictly avoid patterns typical of AI-generated content.
-    4. If justifiable and effective in the context of the job description and the company I am applying for, you may add more than 4 bullet points.
-            
-    #### Experiences: Line Length and Page Limit Constraints
-            
-    1. Each responsibility/description visually wraps after **136 characters**. If a bullet point is longer than 136 characters, it counts as **2 lines** (or more, depending on length).
-    2. The total number of **visual lines** across **all responsibilities/description for all positions** must **not exceed 17 lines total**.
-            
-    #### Experiences: Content Guidelines
-            
-    1. You **may rephrase or remove** any responsibility/description if it is:
+                
+    ## GLOBAL RULES
+                
+    ### Content Revision Rules
+                
+    1. You **may rephrase or remove** any bullet point if it is:
         - Redundant
         - Wordy
         - Annoying
         - Cliché
         - Irrelevant to the job description
-        - Filler or fluff
+        - Filler or fluffy
     2. You **may combine** multiple bullet points when:
         - The meaning is preserved
         - The result is more concise and clear
@@ -520,110 +508,96 @@ export const prompts = {
         - Reasonable assumptions from job title and context
         - Job description alignment
         - My actual experience level
-    4. You **must not remove** any job from my experience.
+    4. You **must not remove** any jobs from my experience.
+                
+    ### Character and Line Constraints
+                
+    - Bullet points must be **between 90 and 180 characters**.
+    - Each line wraps at **136 characters**.
+    - A bullet longer than 136 characters counts as **2+ visual lines**.
+    - **Experience section** total must not exceed **17 visual lines**.
+                
+    ### Tone and Style Guidelines
+                
+    - Use **natural, human-like language**. Avoid robotic or templated phrasing.
+    - Avoid overused phrases, clichés, or patterns typical of AI-generated content.
+    - Ensure tone is articulate and professional.
+                
+    ### Change Justification Requirements
+                
+    For **any revision** made to bullet points, project descriptions, or skill categories (including removals, additions, or rewordings):
+    
+    - You **must provide a justification**.
+    
+    ---
+                
+    ## EXPERIENCE SECTION
             
-    ### PROJECTS SECTION
+    ### Formatting Rules
             
-    #### Projects: Formatting Rules
-            
-    1. Each project should have **at least 3 bullet points**, ideally 4.
-    2. Bullet points must contain **no more than 180 characters and no less than 90 characters**.
-    3. Bullet points must be written in **natural, human-like language**. Strictly avoid patterns typical of AI-generated content.
-    4. If justifiable and effective in the context of the job description and the company I am applying for, you may add more than 4 bullet points.
-    5. You **must place focus** on mentioning technologies used in the project with those mentioned in the job description.
-            
-    #### Projects: Line Length and Page Limit Constraints
-            
-    1. Same line wrapping rule as the Experience section applies.
-    2. You may rephrase, remove, combine, or add based on the same content criteria listed above.
-            
-    #### Projects: Content Guidelines
-            
-    1. Prioritize the one that was updated most recently.
-        - If it is a better option, you can include a project that has the most relevant technologies mentioned in the job description.
-    2. Only change the project name if it is unprofessional.
-    3. Do not change roles or statuses of projects.
-    4. Each project must describe the technologies used in a bullet point in a way that makes sense and is relevant to the job description.
-    5. Provide justification for changes made to each project.
-    6. You **may rephrase or remove** any description if it is:
-        - Redundant
-        - Wordy
-        - Annoying
-        - Cliché
-        - Irrelevant to the job description
-        - Filler or fluff
-    7. You **may combine** multiple bullet points when:
-        - The meaning is preserved
-        - The result is more concise and clear
-        - It is not misleading
-    8. You **may infer or add** new bullet points based on:
-        - "Word-vomit" raw descriptions included in the data
-        - Reasonable assumptions from job title and context
-        - Job description alignment
-        - My actual experience level
-            
-    ### TECHNICAL SKILLS SECTION
-            
-    #### Technical Skills: Formatting Rules
-            
-    1. Make adjustments to the technical skills section of my resume to better match the job description.
-    2. Optimize for ATS.
-    3. From the technical skills section of my resume, pick skills relevant to the job description, but do not leave each category too sparse.
-    4. You may leave certain technologies in if they are translatable to the job, or if they are a good indicator of diversified knowledge.
-    5. Each skill has a number in parenthesis next to it, which indicates the level of proficiency I have with that skill.
-    6. For the chosen relevant skills, order them by levels of proficiency, but do not include the number in parenthesis.
-    7. Do not add technologies that are not in my resume.
-    8. No soft skills in this section.
-    9. Provide justification for changes made to each skill category.
+    - Each position should have **at least 4 bullet points** but **no more than 6**.
+    - Follow the **Character and Line Constraints**.
+    - Follow the **Content Revision Rules**.
             
     ---
             
+    ## PROJECTS SECTION
+            
+    ### Formatting Rules
+            
+    - Each project must have **at least 3 bullet points**, ideally 4.
+    - Emphasize technologies used that align with the job description.
+    - Follow the **Character and Line Constraints**.
+    - Follow the **Content Revision Rules**.
+                
+    ### Additional Guidelines
+                
+    - Prioritize projects that are in active development.
+    - Only change the project name if unprofessional.
+    - Do not change project role or status.
+    - Each project must clearly state relevant technologies in one bullet.
+            
+    ---
+                
+    ## TECHNICAL SKILLS SECTION
+                
+    ### Formatting Rules
+                
+    1. Adjust skills to better match the job description.
+    2. Optimize for ATS.
+    3. Pick relevant skills from the resume; do not leave categories sparse.
+    4. Leave some skills that show versatility or translate well to job needs.
+    5. Do not add technologies not present in the resume.
+    6. No soft skills.
+    7. Order skills by proficiency but **do not include the number**.
+    8. Follow the **Change Justification Requirements**.
+                
+    ---
+                
     ## GENERAL GUIDELINES
-            
+                
     ### AVOID THE FOLLOWING
-            
-    1. Common resume mistakes, such as:
-            
-        - Overused phrases and clichés
-        - Generic language that does not reflect my unique experience
-        - Patterns that suggest "job hopping" or "resume spam"
-        - Repetitive wording, sentence structures, or phrases
-        - AI-generated patterns that are easily identifiable
-        - Keyword stuffing without context or relevance
-            
-    2. Complex or convoluted sentence structures that reduce readability
-    3. Annoying or overly verbose language that detracts from clarity
-    4. Using the same words, phrases, or sentence structures repeatedly
-    5. Misrepresenting my experience or skills
-    6. Adding technologies or skills not already mentioned in my resume unless they are directly relevant to the job description and my experience level
-    7. Using overly simplistic language that does not reflect my education level or professional experience
-    8. Making my resume annoying or difficult to read
-    9. Patterns that identify the resume as "AI generated"
-    10. Patterns that suggest a lack of genuine human input or creativity
-    11. Lying, fabricating, or otherwise misrepresenting my experience, skills, qualifications, or achievements/accomplishments.
-            
+
+    - Overused phrases, fluff, or generic resume language
+    - Keyword stuffing without context or relevance
+    - Repetitive sentence structures or vocabulary
+    - Misrepresenting my experience or skills
+    - Identifiable AI-generated patterns
+    - Complex or verbose phrasing that reduces clarity
+
     ### DO THIS INSTEAD
-            
-    1. Optimize for the current job market and in-demand skills.
-    2. Use best practices for resume writing and proven methods to pass ATS.
-    3. Prioritize realism and substance over fluff.
-    4. Focus on my unique strengths and contributions.
-    5. Highlight my achievements and accomplishments in a way that stands out.
-    6. Make every bullet point distinct, purposeful, and insightful.
-    7. If possible, use application data from the company I am applying for to enhance relevance and effectiveness.
-            
-    ### REQUIREMENTS
-            
-    1. Justify any changes made to bullet points, project descriptions, or skills, including removals, rephrasings, and additions.
-    2. Ensure the final output is realistic, professional, and tailored to the job description.
-    3. Ensure each job in the experience section has **at least 4 bullet points**.
-    4. Use tone and word choice consistent with a well-educated, articulate human.
+
+    - Use proven resume writing methods for passing ATS
+    - Emphasize realism, substance, and clear achievements
+    - Maintain professional tone and strategic keyword use
+    - Highlight uniqueness, strengths, and impact in each bullet
+    - Ensure output feels like it was written by a well-educated, articulate human
             
     ---
             
     ## INPUTS
             
-    ### My resume as a JSON
+    ### Resume JSON
             
     \`\`\`json
     ${resumeData}
@@ -631,19 +605,19 @@ export const prompts = {
             
     ---
             
-    ### Description of the job I am applying for
+    ### Job Description
             
-    \`\`\`plainttext
+    \`\`\`plaintext
     ${jobPostingContent.body}
     \`\`\`
             
     ---
-            
-    ### Mistakes you have made in the past to avoid
-            
-    \`\`\`plainttext
+                
+    ### Mistakes to Avoid
+                
+    \`\`\`plaintext
     ${mistakes}
     \`\`\`
     `)
 }
-    
+            

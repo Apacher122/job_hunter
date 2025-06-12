@@ -6,8 +6,6 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-      - ./output:/usr/src/app/src/output
-      - ./logs:/usr/src/app/src/logs
     working_dir: /usr/src/app/src
     env_file:
       - ./config/.env

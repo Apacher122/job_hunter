@@ -1,11 +1,17 @@
 # Node modules
 node_modules/
 
-# Log files
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # Build and output directories
 dist/
 build/
+output/
 html/
 
 # Temporary files
@@ -21,15 +27,48 @@ Thumbs.db
 .idea/
 *.swp
 
-# Compiled LaTeX files
+## dotenv environment files
+.env
+
+# LaTeX temp files
 *.aux
 *.log
 *.out
 *.toc
-
-# Environment files
-.env
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.blg
 
 # Authorization files
 credentials.json
 token.json
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# PDF and generated docs
+*.pdf
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# VS Code settings
+.vscode/
+
+# Docker
+docker-compose.override.yml
+
+# Generated Latex files
+resume.tex
+cv.tex
+coverletter.tex
+education.tex

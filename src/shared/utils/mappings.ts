@@ -5,8 +5,8 @@ import paths from "../constants/paths";
 
 
 export const filePathsMap = (companyName: string) => ({
-  resume: paths.paths.moved_resume(companyName),
-  cover_letter: paths.paths.moved_cover_letter(companyName),
+  resume: paths.paths.movedResume(companyName),
+  cover_letter: paths.paths.movedCoverLetter(companyName),
 });
 
 export const generatorsMap = {

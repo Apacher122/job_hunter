@@ -1,12 +1,9 @@
-import winston from "winston";
-import path from "path";
-import { fileURLToPath } from 'url';
 import fs from 'fs';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+import paths from "../constants/paths.js";
+import winston from "winston";
 
 // Clear info log file before starting
-const infoLogPath = path.resolve(__dirname, "../logs/info.log");
+const infoLogPath = paths.paths.infoLogFile;
 fs.truncate(infoLogPath, 0, () => {
   console.log('Info log file cleared');
 });
@@ -16,7 +13,7 @@ const logConfig = {
     level: "info",
     transports: [
         new winston.transports.File({ 
-            filename: path.resolve(__dirname, "../logs/error.log"),
+            filename: paths.paths.errorLogFile,
             level: "error",
             format: winston.format.combine(
                 winston.format.errors({ stack: true }),
