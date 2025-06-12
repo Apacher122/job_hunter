@@ -2,7 +2,7 @@
 
 This is a personal tool I'm developing for myself to help me get through unemployment purgatory, but feel free to look around the repo.
 
-**As of 6/12, this is only the backend. The front-end is being developed separately**
+**As of 6/12, this is only the backend. Frontend interfaces are being developed separately so I can access this tool from my iPhone or macbook when I'm away from home.**
 
 ## For the curious
 
@@ -47,8 +47,8 @@ I'm using OpenAI's GPT-4o model because I have credits. That's literally the onl
 2. In `/root/data/`
     - Add position, title, url, and description of a job you're applying for to `jobPosting.txt`
     - Add any corrections you need Open AI to be aware of if it made mistakes to `corrections.txt`
-    - Add one or more examples of your OWN ORIGINAL writing to `/my_data/writing_examples/`
-        - **NOTE:** I'm currently working on having PDFs and word docs be used, but for now only .txt files work.
+    - Add one or more examples of your OWN ORIGINAL writing to `/my_writing/writing_examples/`
+        - **NOTE:** It should be able to read in text, .docx,. or pdfs.
     - Add your current resume in a json format to `resume.json`.
     - Add some additional information about yourself to `aboutMe.txt`.
         - This can be a novel, autobiography, or even another resume.
@@ -59,17 +59,13 @@ I'm using OpenAI's GPT-4o model because I have credits. That's literally the onl
     docker compose up
     ```
 
-4. Navigate to `/root/electron/` and run:  
-
-    ```npx electron .\main.js```
-
-5. Under `/root/output/`, you will see a couple things:
-    - `/cover_letters/` : your cover letter drafts are here
-    - `/guiding_answers/` : some help with info about the job your applying to.
-    - `/match_summaries/` : this directory will contain information about how well you stack up to a company you're applying to
-    - `/resumes/` : this directory has all your resumes for each company you've applied for
-    - `/change-summary.md` : shows you what changes were made to the current resume.
-    - Several LaTeX log files
+4. When the server receives an API call, it creates the following files/folders under `/root/output/`:
+    - `/cover_letters/` : Contains all generated cover letter drafts, each tailored to a specific job application.
+    - `/guiding_answers/` : Stores extracted or generated guiding insights to help you craft personalized applications (e.g., relevant keywords, company context, etc.).
+    - `/match_summaries/` : Contains summaries analyzing how well your current resume matches a job posting, often used to guide resume revisions.
+    - `/resumes/` : Holds all revised resumes, typically one per company or job application.
+    - `/change-summary.md` : A human-readable markdown report summarizing all modifications made to your resume for a given job.
+    - `*.log, *.aux, etc. (LaTeX build artifacts)`: Used internally by the LaTeX compiler for formatting your final documents—usually safe to ignore or delete after generation.
 
 ## Additional Info
 
