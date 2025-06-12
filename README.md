@@ -1,6 +1,7 @@
 # Looking for a job? Me too buddy
 
 This is a personal tool I'm developing for myself to help me get through unemployment purgatory, but feel free to look around the repo.
+
 **As of 6/12, this is only the backend. The front-end is being developed separately**
 
 ## For the curious
