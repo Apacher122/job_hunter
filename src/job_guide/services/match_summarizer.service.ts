@@ -2,7 +2,9 @@ import { countTokens, messageOpenAI } from "../../shared/libs/open_ai/openai.js"
 import { formatOverallMatchSummary, formatSuccessMetric } from '../../shared/utils/formatters/summary.formatter.js';
 
 import { appendFileSync } from 'fs';
+import { combineJSONData } from "../../shared/utils/documents/json/json.helpers.js";
 import { convertPDFToBase64 } from "../../shared/utils/documents/pdf/pdf.helpers.js";
+import { extractTextFromFile } from "../../shared/utils/documents/file.helpers.js";
 import fs from 'fs';
 import { infoStore } from '../../shared/data/info.store.js';
 import { matchSummaryResponse } from '../models/match_summary.models.js';
@@ -23,13 +25,30 @@ export const getMatchSummary = async (): Promise<void> => {
     try {
         const jobPosting = infoStore.jobPosting;
         
-        // Encode the resume PDF in Base64
-        console.log("Encoding resume PDF for OpenAI...");
-        const pdfContentBase64 = await convertPDFToBase64(paths.paths.movedResume(jobPosting.companyName));
+        // Get latest resume as a JSON
+        const education = {
+            school: infoStore.education_info.school,
+            degree: infoStore.education_info.degree,
+            start_end: infoStore.education_info.start_end,
+            location: infoStore.education_info.location,
+            coursework: infoStore.education_info.coursework
+        }
+
+        fs.writeFileSync(
+            paths.paths.sectionJson('education'),
+            JSON.stringify(education, null, 2)
+        );
+
+        const resumeJson = await combineJSONData([
+            'education',
+            'experiences',
+            'skills',
+            'projects'
+        ]);
         
         // Create a prompt for OpenAI with the encoded resume and job posting content
         console.log("Getting match summary...");
-        const openAIPrompt = prompts.match_summary(pdfContentBase64, jobPosting.body);
+        const openAIPrompt = prompts.match_summary(resumeJson, jobPosting.body);
 
         // Send the prompt to OpenAI and get the response
         const openAIResponse = await messageOpenAI(openAIPrompt, matchSummaryResponse);

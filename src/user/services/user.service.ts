@@ -1,6 +1,7 @@
 import { promises as fsPromises } from 'fs';
 import { info } from 'console';
 import { infoStore } from '../../shared/data/info.store';
+import { insertJobInfo } from '../../database/queries/job.queries';
 import { parseJSONData } from '../../shared/utils/documents/json/json.helpers';
 import paths from '../../shared/constants/paths';
 import { sanitizeText } from '../../shared/utils/formatters/string.formatter';
@@ -26,6 +27,9 @@ export const getJobPostFromCall = async (jobContent: string): Promise<void> => {
             infoStore.jobPosting.companyName = infoStore.jobPosting.rawCompanyName.replace(/\s+/g, '_').toLowerCase();
             infoStore.jobPosting.companyName = sanitizeText(infoStore.jobPosting.companyName);
         }
+
+        const jobId = await insertJobInfo();
+        infoStore.jobPosting.id = jobId;
     } catch (error) {
         const e = error as Error;
         console.error(`Error processing job posting content: ${e.message}`);

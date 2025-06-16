@@ -1,12 +1,12 @@
 import { exists, existsSync } from 'fs';
 
-import { forceSinglePagePDF } from '../utils/documents/pdf/pdf.helpers'; // Import the formatPDF function from the pdf.helpers module'../utils/validations';
+import { forceSinglePagePDF } from '../../shared/utils/documents/pdf/pdf.helpers'; // Import the formatPDF function from the pdf.helpers module'../utils/validations';
 import fs from 'fs';
-import { infoStore } from '../data/info.store';
-import { logger } from '../utils/logger';
-import paths from '../constants/paths';
+import { infoStore } from '../../shared/data/info.store';
+import { logger } from '../../shared/utils/logger';
+import paths from '../../shared/constants/paths';
 import { spawn } from 'child_process';
-import { validatePath } from '../utils/documents/file.helpers'
+import { validatePath } from '../../shared/utils/documents/file.helpers'
 
 export const exportLatex = async({
   jobNameSuffix,

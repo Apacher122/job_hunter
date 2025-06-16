@@ -1,4 +1,4 @@
-import { downloadDocument } from '../../shared/controllers/document.controller';
+import { downloadDocument } from '../../documents/controllers/document.controller';
 import express from 'express';
 
 const router = express.Router();

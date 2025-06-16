@@ -1,8 +1,12 @@
-import { OpenAI } from 'openai';
+import { zodResponseFormat, zodTextFormat } from 'openai/helpers/zod';
+
+import OpenAI from 'openai';
+import { ParsedResponse } from 'openai/resources/responses/responses';
+import { ZodType } from 'zod';
 import dotenv from 'dotenv';
 import { encoding_for_model } from "@dqbd/tiktoken";
 import { logger } from '../../utils/logger';
-import { zodResponseFormat } from 'openai/helpers/zod';
+
 dotenv.config();
 
 const apiKey = process.env.OPENAI_API_KEY;
@@ -56,3 +60,30 @@ export const countTokens = (text: string): number => {
     const tokens = enc.encode(text);
     return tokens.length;
 };
+
+export const getOpenAIResponse = async <T> (
+    instructions: string,
+    prompt: string,
+    zodFormat: ZodType
+): Promise<any> => {
+    try {
+        const response = await openai.responses.parse({
+            model: "gpt-4o-mini-2024-07-18",
+            input: [
+                { role: "system", content: instructions },
+                { role: "user", content: prompt }
+            ],
+            text: {
+                format: zodTextFormat(zodFormat, "response")
+            }
+        });
+        
+        if (response.output_parsed) {
+            return response.output_parsed;
+        }
+        throw new Error('OpenAI did not return a valid response');
+    }   catch (err) {
+        console.error(`OpenAI API call error: ${(err as Error).message}. ${(err as Error).stack}`);
+        throw err; // Re-throw the error for further handling
+    }
+}

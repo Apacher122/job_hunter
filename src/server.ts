@@ -5,6 +5,7 @@ import { getJobPostingContent } from "./shared/utils/data/info.utils.js";
 import { insertRowToSheet } from './shared/libs/google/sheets.js';
 import jobGuideRoutes from './job_guide/routes/job_guide.routes.js';
 import { loadUserInfoToLatex } from "./shared/utils/documents/latex/latex.helpers.js"
+import pool from './database/index.js';
 import resumeRoutes from './resume/routes/resume.routes.js';
 import userRoutes from './user/routes/user.routes';
 
@@ -112,3 +113,30 @@ const startServer = async () => {
 startServer().catch(error => {
   console.error(`Error in server startup: ${error.message}`);
 });
+
+process.on('SIGINT', () => {
+  console.log('Received SIGINT. Shutting down gracefully...');
+  pool.end(() => {
+    console.log('Database connection pool closed.');
+    process.exit(0);
+  });
+}
+);
+process.on('SIGTERM', () => {
+  console.log('Received SIGTERM. Shutting down gracefully...');
+  pool.end(() => {
+    console.log('Database connection pool closed.');
+    process.exit(0);
+  });
+}
+);
+process.on('uncaughtException', (error) => {
+  console.error(`Uncaught Exception: ${error.message}`);
+  // Optionally, you can log the stack trace or perform other error handling here
+}
+);
+process.on('unhandledRejection', (reason, promise) => {
+  console.error(`Unhandled Rejection at: ${promise}, reason: ${reason}`);
+  // Optionally, you can log the stack trace or perform other error handling here
+}
+);

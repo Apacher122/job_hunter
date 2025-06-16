@@ -65,7 +65,7 @@ export async function truncateFileIfExists(filePath: string): Promise<void> {
 export async function deleteFilesByExtensions(dir: string, extensions: string[]): Promise<void> {
   const files = await fs.promises.readdir(dir);
   await Promise.all(
-    files.map(async (file) => {
+    files.map(async (file: any) => {
       if (extensions.includes(path.extname(file))) {
         await fs.promises.unlink(path.join(dir, file));
       }

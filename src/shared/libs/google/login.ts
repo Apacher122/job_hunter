@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { google } from 'googleapis';
-import paths from '../../constants/paths.js'; 
+import paths from '../../constants/paths.js';
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets',];

@@ -1,12 +1,14 @@
 import { Request, Response } from 'express';
-import { fileExists, sendFileBuffer } from '../utils/documents/file.helpers';
+import { fileExists, sendFileBuffer } from '../../shared/utils/documents/file.helpers';
 
 import { compileCoverLetter } from '../../cover_letter/services/cover_letter.service';
 import { compile_resume } from '../../resume/services/resume.service';
+import { getCompanyInfo } from '../../job_guide/services/company_info.service';
 import { getGuidingAnswers } from '../../job_guide/services/guiding_answers.service';
+import { getInterviewPrep } from '../../job_guide/services/interview_prep.service';
 import { getMatchSummary } from '../../job_guide/services/match_summarizer.service';
-import { infoStore as info } from '../data/info.store.js';
-import paths from '../constants/paths';
+import { infoStore as info } from '../../shared/data/info.store.js';
+import paths from '../../shared/constants/paths';
 
 const filePathFor = (companyName: string, suffix: 'resume' | 'cover-letter') =>
     suffix === 'resume'
@@ -21,7 +23,9 @@ type DocType =
 | 'resume'
 | 'cover-letter'
 | 'match-summary'
-| 'guiding-questions';
+| 'guiding-questions'
+| 'company-info'
+| 'interview-prep';
 
 // Map document types to paths and generators
 const docConfig: Record<
@@ -57,14 +61,30 @@ DocType,
         filename: company => `${company}_guiding_answers.md`,
         contentType: 'text/plain',
     },
+    'company-info': {
+        pathFn: paths.paths.companyInfo,
+        generate: getCompanyInfo,
+        filename: company => `${company}_company_info.md`,
+        contentType: 'text/plain',
+    },
+    'interview-prep': {
+        pathFn: paths.paths.interviewPrep,
+        generate: getInterviewPrep,
+        filename: company => `${company}_interview_prep.md`,
+        contentType: 'text/plain',
+    },
 };
+
+const isValidDocType = (type: string): type is DocType => type in docConfig;
 
 export const downloadDocument = async (req: Request, res: Response): Promise<void> => {
     const companyName = info.jobPosting?.companyName;
     const docType = req.query.docType as DocType;
     const getNew = req.query.getNew === 'true';
+
+    console.log(`Request to download document: ${docType} for company: ${companyName}, getNew: ${getNew}`);
     
-    if (!companyName || !docType || !docConfig[docType]) {
+    if (!companyName || !isValidDocType(docType)) {
         return void res.status(400).send('Invalid document request');
     }
     

@@ -1,5 +1,6 @@
 import { promises as fsPromises } from 'fs';
 import { infoStore } from '../../data/info.store.js';
+import { insertJobInfo } from '../../../database/queries/job.queries.js';
 import { parseJSONData } from '../documents/json/json.helpers.js';
 import paths from '../../constants/paths.js';
 import { sanitizeText } from '../formatters/string.formatter.js';
@@ -33,7 +34,10 @@ export const getJobPostingContent = async (isJson = false): Promise<string | und
             infoStore.jobPosting.companyName = infoStore.jobPosting.rawCompanyName.replace(/\s+/g, '_').toLowerCase();
             infoStore.jobPosting.companyName = sanitizeText(infoStore.jobPosting.companyName);
         }
-        // return {job: jobPostingContent, company: companyName, url: url, position: position, rawCompanyName: rawCompanyName};
+
+        // Add to db
+        const jobId = await insertJobInfo();
+        infoStore.jobPosting.id = jobId;
     } catch (error) {
         const e = error as Error;
         console.error(`Error reading job posting: ${e.message}`);

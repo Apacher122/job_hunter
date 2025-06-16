@@ -1,6 +1,8 @@
+import { appendJSONData } from '../../utils/documents/json/json.helpers.js';
 import { authorize } from './login.js'; // Adjust the import path as necessary
 import { google } from 'googleapis';
 import { infoStore } from '../../data/info.store.js';
+import paths from '../../constants/paths.js';
 
 export const insertRowToSheet = async () => {
     const auth = await authorize();
@@ -12,6 +14,10 @@ export const insertRowToSheet = async () => {
         console.error('Job posting content or company name not found.');
         return;
     }
+
+    const jobData = { "companyName": jobPostingContent.rawCompanyName, "position": jobPostingContent.position };
+    await appendJSONData(paths.paths.jobList, jobData); // Append job data to the existing JSON file
+   
 
     const entry = [
         {

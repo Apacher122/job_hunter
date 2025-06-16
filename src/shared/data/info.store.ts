@@ -1,4 +1,7 @@
+import { number } from "zod";
+
 interface JobPosting {
+    id: number;
     body: string;
     companyName: string;
     url: string;
@@ -35,6 +38,7 @@ const getEnvVar = (key: string): string | undefined => process.env[key];
 
 export const initializeInfoStore = () : InfoStore => ({
     jobPosting: {
+        id: 0,
         body: '',
         companyName: '',
         url: '',

@@ -6,6 +6,7 @@ import { insertRowToSheet } from '../../shared/libs/google/sheets';
 export const sendJobInfo = async (req: Request, res: Response): Promise<void> => {
     try {
         const jobPost = await getJobPostFromCall(req.body.text);
+        console.log('New job info received:', jobPost);
         res.status(200).json({ success: true, message: 'Job info processed successfully' });
     } catch (error) {
         const e = error as Error;

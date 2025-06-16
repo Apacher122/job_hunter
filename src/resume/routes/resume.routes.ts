@@ -1,9 +1,10 @@
-import { downloadDocument } from '../../shared/controllers/document.controller';
+import { downloadDocument } from '../../documents/controllers/document.controller';
 import express from 'express';
+import { getResumeChanges } from '../controllers/resume.controllers';
 
 const router = express.Router();
 
 router.get('/get-pdf', downloadDocument);
-router.get('/get-summary', downloadDocument);
+router.get('/get-change-summary', getResumeChanges);
 
 export default router;
