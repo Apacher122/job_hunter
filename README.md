@@ -6,7 +6,7 @@ This is a personal tool I'm developing for myself to help me get through unemplo
 
 ## For the curious
 
-### Things this doodad does
+### What this does
 
 - Enhances your existing resume without rewriting it from scratch by building on your own writing style and content.
 - Preserves your voice by using examples of your past writing and resume to maintain tone, phrasing, and intent.
@@ -18,7 +18,7 @@ This is a personal tool I'm developing for myself to help me get through unemplo
 - A very simple and skeletal UI built with electron.
 - Tracks job applications by logging them directly into Google Sheets, helping you stay organized throughout your job search.
 
-### Things this doodad doesn't do
+### What this doesn't
 
 - Does not fabricate experience. It only works with information you provide. It enhances, organizes, and clarifies, but never invents.
 - Does not generate a resume from scratch. You must have an existing resume and input to work from.
