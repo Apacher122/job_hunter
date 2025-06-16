@@ -6,6 +6,8 @@ This is a personal tool I'm developing for myself to help me get through unemplo
 
 ## For the curious
 
+[Swagger documentation](https://app.swaggerhub.com/apis-docs/apachemain/Job-Hunter/1.0.0)  
+
 ### What this does
 
 - Enhances your existing resume without rewriting it from scratch by building on your own writing style and content.
