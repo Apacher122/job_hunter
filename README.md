@@ -10,11 +10,12 @@ This is a personal tool I'm developing for myself to help me get through unemplo
 
 ### What this does
 
-- Enhances your existing resume without rewriting it from scratch by building on your own writing style and content.
-- Preserves your voice by using examples of your past writing and resume to maintain tone, phrasing, and intent.
+- Enhances your existing resume without rewriting it from scratch by building on your own writing style and content. It's essentially a proofreader that selects your most compelling bullet points for a job.
+- Preserves your voice by using examples of your past writing and resume to maintain tone, phrasing, and intent if it makes any sentence structure changes.
 - Incorporates additional experience details like bullet points, projects, and context you provide, turning raw notes into polished entries.
 - Includes personal “About Me” information that isn’t on your resume, so the AI can infer and personalize without inventing.
-- Generates a tailored cover letter draft that serves as a guided template, not a generic output.
+- A cover letter draft can be generated based on user-provided information, like old resumes, writing samples, and extended biographies (if you want).
+    - I'm currently reworking this so that it will be proofread and make suggestions to user-written cover letters as opposed to just spitting out drafts. 
 - Analyzes your resume and compares it to the job and company using a scoring system to highlight match quality and improvement opportunities.
 - Provides actionable feedback to help improve alignment with a job posting.
 - A very simple and skeletal UI built with electron.
