@@ -1,0 +1,16 @@
+# Context
+
+I am applying for the position of {{position}} at {{company}}.
+Help me with my resume.
+
+---
+
+# Information
+
+<user_resume>
+{{resume}}
+</user_resume>
+
+<job_description>
+{{jobPosting}}
+</job_description>

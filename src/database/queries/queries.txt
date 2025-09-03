@@ -1,0 +1,104 @@
+CREATE TABLE IF NOT EXISTS job_postings (
+    id SERIAL PRIMARY KEY,
+    body TEXT,
+    company_name VARCHAR(255),
+    url TEXT,
+    position VARCHAR(255),
+    raw_company_name VARCHAR(255),
+    UNIQUE (company_name, position)
+);
+
+CREATE TABLE IF NOT EXISTS job_info (
+    job_posting_id INT PRIMARY KEY REFERENCES job_postings(id) ON DELETE CASCADE,
+    company_description TEXT,
+    company_website VARCHAR(255),
+    company_industry VARCHAR(255),
+    company_size VARCHAR(255),
+    company_location VARCHAR(255),
+    company_culture TEXT,
+    company_values TEXT,
+    company_benefits TEXT,
+    position_review TEXT,
+    typical_salary_ask VARCHAR(255),
+    typical_salary_ask_reason TEXT,
+    advised_salary_ask VARCHAR(255),
+    advised_salary_ask_reason TEXT,
+    application_process TEXT,
+    expected_response_time VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS possible_interview_questions (
+    id SERIAL PRIMARY KEY,
+    job_posting_id INT REFERENCES job_postings(id) ON DELETE CASCADE,
+    is_behavioral_or_technical VARCHAR(50),
+    question TEXT NOT NULL,
+    question_source TEXT,
+    answer TEXT,
+    what_they_look_for TEXT,
+    what_to_study TEXT
+);
+
+CREATE TABLE IF NOT EXISTS additional_information (
+    id SERIAL PRIMARY KEY,
+    job_posting_id INT REFERENCES job_postings(id) ON DELETE CASCADE,
+    information_title VARCHAR(255),
+    text TEXT
+);
+
+CREATE TABLE IF NOT EXISTS resumes (
+    id SERIAL PRIMARY KEY,
+    job_posting_id INT UNIQUE REFERENCES job_postings(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS experiences (
+    id SERIAL PRIMARY KEY,
+    resume_id INT UNIQUEREFERENCES resumes(id) ON DELETE CASCADE,
+    position VARCHAR(255) NOT NULL,
+    company VARCHAR(255) NOT NULL,
+    start_date VARCHAR(50) NOT NULL,
+    end_date VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS experience_descriptions (
+    id SERIAL PRIMARY KEY,
+    experience_id INT REFERENCES experiences(id) ON DELETE CASCADE,
+    text TEXT NOT NULL,
+    justification_for_change TEXT NOT NULL,
+    is_new_suggestion BOOLEAN NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS skills (
+    id SERIAL PRIMARY KEY,
+    resume_id INT REFERENCES resumes(id) ON DELETE CASCADE,
+    category VARCHAR(255) NOT NULL,
+    justification_for_changes TEXT NOT NULL
+    UNIQUE (resume_id, category)
+);
+
+CREATE TABLE IF NOT EXISTS skill_items (
+    id SERIAL PRIMARY KEY,
+    skill_id INT REFERENCES skills(id) ON DELETE CASCADE,
+    item VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS projects (
+    id SERIAL PRIMARY KEY,
+    resume_id INT REFERENCES resumes(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,
+    role VARCHAR(255) NOT NULL,
+    status VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS project_descriptions (
+    id SERIAL PRIMARY KEY,
+    project_id INT REFERENCES projects(id) ON DELETE CASCADE,
+    text TEXT NOT NULL,
+    justification_for_change TEXT NOT NULL,
+    is_new_suggestion BOOLEAN NOT NULL
+);
+
+
+
+ALTER TABLE experiences
+ADD CONSTRAINT unique_company_position UNIQUE (company, position);

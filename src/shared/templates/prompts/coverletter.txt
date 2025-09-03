@@ -1,0 +1,33 @@
+# Context
+
+I am applying for the position of {{position}} at {{company}}.
+Help me with my cover letter.
+
+---
+
+# Information
+
+<company_and_position>
+* Company: {{company}}
+* Position: {{position}}
+</company_and_position>
+
+<position_description>
+{{jobPosting}}
+</position_description>
+
+<resume>
+{{resume}}
+</resume>
+
+<about_me>
+{{aboutMe}}
+</about_me>
+
+<writing_examples>
+{{examples}}
+</writing_examples>
+
+<considerations>
+{{considerations}}
+</considerations>

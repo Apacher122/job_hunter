@@ -1,0 +1,16 @@
+# Context
+
+I am applying for the position of {{jobPostingContent.position}} at {{jobPostingContent.companyName}}.
+How well do I match the job and company?
+
+---
+
+# Information
+
+<job_description>
+{{jobPostingContent.body}}
+</job_description>
+
+<resume>
+{{resumeData}}
+</resume>

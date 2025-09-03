@@ -41,9 +41,3 @@ export class ResumeSectionNotFoundError extends ResumeBuilderError {
     super(message, details);
   }
 }
-
-export class ZodFormatError extends ResumeBuilderError {
-  constructor(message = "Zod format error", details: Record<string, any> = {}) {
-    super(message, details);
-  }
-}

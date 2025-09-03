@@ -1,13 +1,13 @@
 import bodyParser from 'body-parser';
-import coverLetterRoutes from './cover_letter/routes/cover_letter.routes.js';
+import coverLetterRoutes from './features/cover_letter/routes/cover_letter.routes.js';
 import express from 'express';
 import { getJobPostingContent } from "./shared/utils/data/info.utils.js";
 import { insertRowToSheet } from './shared/libs/google/sheets.js';
-import jobGuideRoutes from './job_guide/routes/job_guide.routes.js';
+import jobGuideRoutes from './features/job_guide/routes/job_guide.routes.js';
 import { loadUserInfoToLatex } from "./shared/utils/documents/latex/latex.helpers.js"
 import pool from './database/index.js';
-import resumeRoutes from './resume/routes/resume.routes.js';
-import userRoutes from './user/routes/user.routes';
+import resumeRoutes from './features/resume/routes/resume.routes.js';
+import userRoutes from './features/user/routes/user.routes';
 
 const app = express();
 app.use(bodyParser.json());
@@ -27,20 +27,6 @@ app.post('/reload', async (req, res) => {
   res.status(200).json({ success: true, message: 'Reloading application...' });
 });
 
-// app.use('/forms', resume_router);
-
-// // API Endpoints
-// app.post('/generate-resume', async (req, res) => {
-//   try {
-//     await compile_resume();
-//     res.status(200).json({ success: true, message: 'Resume generated successfully' });
-//   } catch (error) {
-//     const e = error as Error;
-//     console.error(`Error generating resume: ${e.message}`);
-//     res.status(500).json({ success: false, message: `Error generating resume: ${e.message}` });
-//   }
-// });
-
 app.post('/add-to-sheet', async (req, res) => {
   try {
     await insertRowToSheet();
@@ -52,38 +38,11 @@ app.post('/add-to-sheet', async (req, res) => {
   }
 });
 
-// app.post('/generate-cover-letter', async (req, res) => {
-//   try {
-//     await compileCoverLetter();
-//     res.status(200).json({ success: true, message: 'Cover letter generated successfully' });
-//   } catch (error) {
-//     const e = error as Error;
-//     console.error(`Error generating cover letter: ${e.message}`);
-//     res.status(500).json({ success: false, message: `Error generating cover letter: ${e.message}` });
-//   }
-// });
-
-// app.post('/send-job-info', async (req, res) => {
-//   try {
-//     const text = req.body.text;
-//     await getJobPostFromCall(text);
-//     res.status(200).json({ success: true, message: 'Job info processed successfully' });
-//   } catch (error) {
-//     const e = error as Error;
-//     console.error(`Error processing job info: ${e.message}`);
-//     res.status(500).json({ success: false, message: `Error processing job info: ${e.message}` });
-//   } finally {
-//     console.log('New job info processed');
-//   } 
-// });
-
 const initializeApp = async () => {
     try {
-        // Load job posting content
         await getJobPostingContent();
         await loadUserInfoToLatex();
 
-        // Additional initialization tasks can be added here
         console.log("Job application content and user info loaded successfully.");
     } catch (error: unknown) {
         if (error instanceof Error) {
@@ -132,11 +91,9 @@ process.on('SIGTERM', () => {
 );
 process.on('uncaughtException', (error) => {
   console.error(`Uncaught Exception: ${error.message}`);
-  // Optionally, you can log the stack trace or perform other error handling here
 }
 );
 process.on('unhandledRejection', (reason, promise) => {
   console.error(`Unhandled Rejection at: ${promise}, reason: ${reason}`);
-  // Optionally, you can log the stack trace or perform other error handling here
 }
 );

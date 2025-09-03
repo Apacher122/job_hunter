@@ -16,13 +16,13 @@ export const parseJSONData = async (filePath: string) => {
 
 export const combineJSONData = async (sections: string[]) => {
     try{
-        const combinedData = {};
+        const combinedData: Record<string, any> = {};
 
         for (const section of sections) {
             const filePath = paths.paths.sectionJson(section);
             const data = await parseJSONData(filePath);
             const jsonData = JSON.parse(data);
-            Object.assign(combinedData, jsonData);
+            combinedData[section] = jsonData;
         }
         return combinedData;
     } catch (error) {
@@ -46,7 +46,6 @@ export const appendJSONData = async (filePath: string, data: any): Promise<void>
         await fsPromises.writeFile(filePath, JSON.stringify(jsonData, null, 2));
     } catch (error) {
         if ((error as any).code === 'ENOENT') {
-            // If file does not exist, create it with the new data
             await fsPromises.writeFile(filePath, JSON.stringify([data], null, 2));
         } else {
             const e = error as Error;

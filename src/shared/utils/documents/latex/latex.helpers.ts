@@ -4,6 +4,7 @@ import { formatTitle } from "../../formatters/string.formatter";
 import fs from "fs";
 import { infoStore } from "../../../data/info.store.js";
 import paths from "../../../constants/paths.js";
+import { text } from "express";
 
 export const sectionToLatexEnvMap: Record<string, 'cvskills' | 'cventries' | 'cvletter'> = {
     projects: 'cventries',
@@ -12,7 +13,6 @@ export const sectionToLatexEnvMap: Record<string, 'cvskills' | 'cventries' | 'cv
     'cover letter': 'cvletter',
 }
 
-// Load the basic information of the user into resume.tex
 export const loadUserInfoToLatex = async () => {
     const resumeTemplate = await fs.promises.readFile(
         paths.latex.resume.resumeTemplate,
@@ -30,7 +30,6 @@ export const loadUserInfoToLatex = async () => {
     await fs.promises.writeFile(paths.latex.resume.education, educationInfo);
 };
 
-// Replace the content of a LaTeX section with new content
 export const replaceSectionContent = (
     texContent: string,
     newContent: string[],
@@ -68,7 +67,6 @@ export const replaceSectionContent = (
     );
 };
 
-// Fill and format LaTeX content with new content received from OpenAI
 export const formatLatexSection = (sectionType: string) => (sectionData: any) => {
     let cvItems;
     switch (sectionType) {
@@ -133,14 +131,23 @@ export const formatLatexSection = (sectionType: string) => (sectionData: any) =>
             }`;
         case "cover_letter":
                 let about = sectionData.about
+                    .replace(/[\u00A0\u2000-\u200D\u202F\u205F\u3000]/g, ' ')
+                    .replace(/[\u2018\u2019\u201A\u201B]/g, "'")
+                    .replace(/[\u2013\u2014\u2015]/g, "-")
                     .replace(/%/g, '\\%')
                     .replace(/#/g, '\\#')
                     .replace(/&/g, '\\&');
                 let experience = sectionData.experience
+                    .replace(/[\u00A0\u2000-\u200D\u202F\u205F\u3000]/g, ' ')
+                    .replace(/[\u2018\u2019\u201A\u201B]/g, "'")
+                    .replace(/[\u2013\u2014\u2015]/g, "-")
                     .replace(/%/g, '\\%')
                     .replace(/#/g, '\\#')
                     .replace(/&/g, '\\&');
                 let whatIBring = sectionData.whatIBring
+                    .replace(/[\u00A0\u2000-\u200D\u202F\u205F\u3000]/g, ' ')
+                    .replace(/[\u2018\u2019\u201A\u201B]/g, "'")
+                    .replace(/[\u2013\u2014\u2015]/g, "-")
                     .replace(/%/g, '\\%')
                     .replace(/#/g, '\\#')
                     .replace(/&/g, '\\&');
@@ -161,3 +168,16 @@ export const formatLatexSection = (sectionType: string) => (sectionData: any) =>
             throw new Error(`Invalid section type: ${sectionType}`);
     }
 };
+
+export const formatTextForLatex = (text: string) => {
+    return text
+        .replace(
+            /[\u00A0\u2000-\u200D\u202F\u205F\u3000]/g, ' ')
+        .replace(
+            /[\u2018\u2019\u201A\u201B]/g, 
+            "'")
+        .replace(/[\u2013\u2014\u2015]/g, "-")
+        .replace(/%/g, '\\%')
+        .replace(/#/g, '\\#')
+        .replace(/&/g, '\\&');
+}

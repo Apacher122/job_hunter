@@ -7,10 +7,6 @@ import path from 'path';
 import paths from '../../constants/paths.js';
 import pdf from 'pdf-parse';
 
-///////////////////////
-// File Reading Logic //
-///////////////////////
-
 type Reader = (filePath: string) => Promise<string>;
 
 const txtReader: Reader = (filePath) => fs.promises.readFile(filePath, 'utf-8');
@@ -40,10 +36,6 @@ export const extractTextFromFile = async (filePath: string): Promise<string> => 
   return reader(filePath);
 };
 
-//////////////////////////
-// File System Utilities //
-//////////////////////////
-
 export const fileExists = async (filePath: string): Promise<boolean> => {
   try {
     await fs.promises.access(filePath);
@@ -65,7 +57,7 @@ export async function truncateFileIfExists(filePath: string): Promise<void> {
 export async function deleteFilesByExtensions(dir: string, extensions: string[]): Promise<void> {
   const files = await fs.promises.readdir(dir);
   await Promise.all(
-    files.map(async (file: any) => {
+    files.map(async (file) => {
       if (extensions.includes(path.extname(file))) {
         await fs.promises.unlink(path.join(dir, file));
       }
@@ -79,10 +71,6 @@ export const validatePath = (filePath: string): string => {
   }
   throw new Error('Invalid file path');
 };
-
-//////////////////////
-// Cleanup Function  //
-//////////////////////
 
 export const cleanup = async (): Promise<void> => {
   if (fs.existsSync(paths.paths.changeReport)) {
@@ -100,10 +88,6 @@ export const cleanup = async (): Promise<void> => {
   });
   logger.info('Temporary LaTeX files purged');
 };
-
-/////////////////////////
-// Express Response Util //
-/////////////////////////
 
 export async function sendFileBuffer(
   res: Response,

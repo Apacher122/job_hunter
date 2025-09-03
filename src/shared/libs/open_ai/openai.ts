@@ -1,7 +1,6 @@
 import { zodResponseFormat, zodTextFormat } from 'openai/helpers/zod';
 
 import OpenAI from 'openai';
-import { ParsedResponse } from 'openai/resources/responses/responses';
 import { ZodType } from 'zod';
 import dotenv from 'dotenv';
 import { encoding_for_model } from "@dqbd/tiktoken";
@@ -61,10 +60,10 @@ export const countTokens = (text: string): number => {
     return tokens.length;
 };
 
-export const getOpenAIResponse = async <T> (
-    instructions: string,
-    prompt: string,
-    zodFormat: ZodType
+export const getOpenAIResponse = async (
+    instructions: any,
+    prompt: any,
+    zodFormat: any
 ): Promise<any> => {
     try {
         const response = await openai.responses.parse({
@@ -78,12 +77,18 @@ export const getOpenAIResponse = async <T> (
             }
         });
         
-        if (response.output_parsed) {
-            return response.output_parsed;
+        try {
+            const responseData = response.output_parsed;
+            if (responseData) {
+                return responseData;
+            }
+        } catch (parseError) {
+            console.error(`Error parsing OpenAI response}`);
         }
         throw new Error('OpenAI did not return a valid response');
-    }   catch (err) {
-        console.error(`OpenAI API call error: ${(err as Error).message}. ${(err as Error).stack}`);
-        throw err; // Re-throw the error for further handling
+    }   catch (error) {
+        const e = error as Error;
+        console.error(`OpenAI API call error: ${e.message}. ${e.stack   }`);
+        throw e; // Re-throw the error for further handling
     }
 }

@@ -52,11 +52,6 @@ export const getWritingExamples = async (): Promise<string> => {
             \`\`\`\n\n
         `);
     });
-
-    // throw error if no examples found
-    if (examples.length === 0) {
-        throw new Error('No writing examples found.');
-    }
     return output;
 }
 

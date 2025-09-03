@@ -1,13 +1,19 @@
 # Use an official Node.js runtime as a parent image
 FROM node:latest
 
-# Set the working directory
-WORKDIR /usr/src/
-
 # Install LaTeX
 RUN apt-get update && apt-get install -y \
-    texlive-full \
+    texlive-xetex \
+    texlive-fonts-recommended \
+    texlive-fonts-extra \
+    texlive-latex-extra \
+    texlive-lang-english \
+    fontconfig \
+    fonts-freefont-ttf \
     && rm -rf /var/lib/apt/lists/*
+
+# Set the working directory
+WORKDIR /usr/src/
 
 # Copy package.json and package-lock.json
 COPY package*.json ./

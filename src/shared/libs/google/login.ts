@@ -58,20 +58,5 @@ export const authorize = async() => {
   });
 
   const client = await auth.getClient();
-  // let client = await loadSavedCredentialsIfExist();
-  // if (client) {
-  //   console.log("Saved credentials found, using existing authorization...");
-  //   return client;
-  // }
-  // console.log("No saved credentials found, requesting new authorization...");
-  // client = await authenticate({
-  //   scopes: SCOPES,
-  //   keyfilePath: CREDENTIALS_PATH,
-  // });
-  // if (client.credentials) {
-  //   console.log ("Saving new credentials to token.json...");
-  //   await saveCredentials(client);
-  // }
-  // console.log("Google credentials loaded successfully.");
   return client;
 }

@@ -40,9 +40,7 @@ export const initializeCompanyInfo = (): CompanyInfoType => ({
         advised_salary_ask_reason: "",
         application_process: "",
         expected_response_time: "",
-        behavioral_questions: [],
-        technical_questions: [],
-        coding_questions: [],
+        possible_interview_questions: [],
         additional_information: []
     }
 });

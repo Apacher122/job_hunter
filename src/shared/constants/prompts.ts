@@ -135,10 +135,11 @@ export const prompts = {
     ---
     
     **Formatting Rules**
-    1. Each position should have **at least 3 bullet points**.
-    2. Bullet points must contain **no more than 180 characters and no less than 90 characters**.
-    3. Bullet points must be written in **natural, human-like language**. Strictly avoid patterns typical of AI-generated content.
-    4. If justifiable and effective in the context of the job description and the company I am applying for, you may add more than 4 bullet points.
+    1. Place projects in order according to relevance to the job description and the company I am applying for, but prioritize most recent projects.
+    2. Each project should have **at least 3 bullet points**.
+    3. Bullet points must contain **no more than 180 characters and no less than 90 characters**.
+    4. Bullet points must be written in **natural, human-like language**. Strictly avoid patterns typical of AI-generated content.
+    5. If justifiable and effective in the context of the job description and the company I am applying for, you may add more than 4 bullet points.
     
     --- 
     
@@ -772,7 +773,8 @@ You are a professional career advisor and resume writing assistant that helps ma
 ## PROJECTS SECTION
 
 ### Formatting Rules
-        
+
+* Order projects top to bottom by most relevant to the job description and the company I am applying for, but most recent projects must always come first.
 * Each project must have **at least 3 bullet points**, ideally 4.
 * Emphasize technologies used that align with the job description.
 * Follow the **Character and Line Constraints**.
@@ -826,6 +828,7 @@ ${mistakes ? mistakes : "None provided."}
 `,
 
 CoverLetter: (
+    corrections?: any,
 ) => `
 # ROLE
 
@@ -877,6 +880,12 @@ Describe the user's unique qualities and how they align with the company's missi
 - Avoid exaggeration, fluff, or dishonesty.
 - Do not use em dashes, en dashes, or hyphenated line breaks.
 - Follow ATS-friendly best practices.
+
+## HERE IS A LIST OF MISTAKES (IF ANY) YOU HAVE MADE IN THE PAST TO AVOID
+
+<past_mistakes>
+${corrections ? corrections : "None provided."}
+</past_mistakes>
 `,
 
 MatchSummary: (
@@ -1022,11 +1031,12 @@ Provide the following about ${companyName}:
 ## 2. POSITION INSIGHTS - ${position}
 
 Based on both the job description and online research, provide:
-- Typical salary range for the \${position} role, and why.
-- Recommended (advised) salary ask for this role, and why.
-- Full application process specific to \${companyName} (if available).
+1. Typical salary range for the ${position} role, and why.
+  - You must extract salary range from the job description. If the job description does not contain salary information, use reliable online sources to find the salary range. 
+2. Recommended (advised) salary ask for this role, and why.
+3. Full application process specific to ${companyName} (if available).
   - Use real-world sources to outline what steps the company typically follows during applications.
-- Expected response time after applying.
+4. Expected response time after applying.
 
 ## 3. INTERVIEW PREP - SPECIFIC TO ${companyName}
 
@@ -1067,55 +1077,6 @@ Include any other useful insights about ${companyName} or the ${position} role:
 - Technologies, tools, or platforms mentioned in the job description that the user may work with.
 - If applicable, list expectations or project types for this role.
 `,
-
-InterviewQuestions: (
-    companyName: string,
-    position: string,
-) => `
-# IDENTITY
-
-You are a professional career advisor and researcher. Your goal is to help the user prepare for the interview process in a highly specific and effective way.
-
-
-# INPUT
-
-The user will provide you with will be provided with:  
-1. The company name and position title.
-2. A job description for the position at ${companyName}.
-3. The user's resume, split into three JSON sections.
-    - Some items contain a "justification_for_change" field. Ignore that field.
-
-# OUTPUT
-
-Using the job description and reliable online sources, do the following:
-* Provide detailed insights about each technology in the tech stack for the ${position} position at ${companyName}.
-* Provide insightful details of the job requirements for the ${position} position at ${companyName}.
-* Provide detailed insights about the product or products the the user will be working on in the ${position} position at ${companyName}.
-* Provide detailed insights about the team the user will be working with in the ${position} position at ${companyName}.
-    - This should include team structure, working style, and goals.
-* Provide at least 7 real-world behavioral interview questions that have been asked by ${companyName} for the ${position} position or similar positions.
-    - These **must be sourced** from public forums like Glassdoor, Blind, or similar.
-    - For each question:
-        - Provide a **source link** or **citation**.
-        - Provide a **customized, detailed answer** using the user's resume.
-        - Do not give short or generic answers.
-        - Tailor every answer based on the user's real experiences and roles.
-* Provide at least 7 real-world technical interview questions that have been asked by ${companyName} for the ${position} position or similar roles.
-    - These **must be sourced** from public forums like Glassdoor, Blind, or similar.
-    - For each question:
-        - Provide a **source link** or **citation**.
-        - Provide a **customized, detailed answer** using the user's resume.
-        - Do not give short or generic answers.
-        - Tailor every answer based on the user's real experiences and roles.
-* Provide at least 7 real-world coding questions that have been asked by ${companyName} for the ${position} position or similar roles.
-    - These **must be sourced** from public forums like Glassdoor, Blind, or similar.
-    - For each question:
-        - Provide a **source link** or **citation**.
-        - Provide a **customized, detailed answer** using the user's resume.
-        - Do not give short or generic answers.
-        - Tailor every answer based on the user's real experiences and roles.
-* Provide any additional information that would be helpful for the user to know about ${companyName} or the ${position} position.
-`
 };
 
 export const UserPrompts = {
@@ -1126,7 +1087,7 @@ Resume: (
 # Context
 
 I am applying for the position of ${jobPostingContent.position} at ${jobPostingContent.companyName}.
-Help me with my resume.
+Help me update my resume to better fit the job.
 
 ---
 
@@ -1246,35 +1207,6 @@ CompanyInfo: (
 
 I am applying for the position of ${position} at ${companyName}.
 Help me understand the company and prepare for the interview process.
-
----
-
-# Information
-
-<company_and_position>
-* Company: ${companyName}
-* Position: ${position}
-</company_and_position>
-
-<job_description>
-${jobPostingContent.body}
-</job_description>
-
-<resume>
-${resumeData}
-</resume>
-`,
-
-InterviewQuestions: (
-    resumeData: any,
-    jobPostingContent: any,
-    companyName: any,
-    position: any,
-) => `
-# Context
-
-I am applying for the position of ${position} at ${companyName}.
-Help me prepare for the interview process.
 
 ---
 

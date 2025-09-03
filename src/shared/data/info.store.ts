@@ -1,5 +1,3 @@
-import { number } from "zod";
-
 interface JobPosting {
     id: number;
     body: string;
@@ -25,7 +23,10 @@ interface EducationInfo {
     degree?: string;
     start_end?: string;
     location?: string;
-    coursework?: string;        
+    coursework?: string;
+    undergraduate_coursework?: string;
+    graduate_coursework?: string;
+    education_summary?: string;        
 }
 
 export interface InfoStore {
@@ -35,6 +36,7 @@ export interface InfoStore {
 }
 
 const getEnvVar = (key: string): string | undefined => process.env[key];
+
 
 export const initializeInfoStore = () : InfoStore => ({
     jobPosting: {
@@ -60,7 +62,10 @@ export const initializeInfoStore = () : InfoStore => ({
         degree: getEnvVar('DEGREE'), // Your degree
         start_end: getEnvVar('START_END'), // Your field of study
         location: getEnvVar('SCHOOL_LOCATION'), // Your graduation year
-        coursework: getEnvVar('COURSEWORK'), // Relevant courseworkK, // Relevant coursework
+        coursework: getEnvVar('COURSEWORK'),
+        undergraduate_coursework: getEnvVar('UNDERGRADUATE_COURSEWORK'),
+        graduate_coursework: getEnvVar('GRADUATE_COURSEWORK'),
+        education_summary: getEnvVar('EDUCATION_SUMMARY'),
     },
 });
 

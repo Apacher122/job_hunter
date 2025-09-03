@@ -1,4 +1,4 @@
-import { CompanyInfoType } from "../../../job_guide/models/company_info.models"
+import { CompanyInfoType } from "../../../features/job_guide/models/company_info.models"
 import dedent from "ts-dedent"
 import { format } from 'path';
 
@@ -64,9 +64,7 @@ ${formatInterviewQuestions(info.job_info.technical_questions || [])}
 
 ### Coding Questions
 
-\`\`\`text
 ${formatInterviewQuestions(info.job_info.coding_questions || [])}
-\`\`\`
 
 ### Additional Information
 
