@@ -15,7 +15,7 @@ This is a personal tool I'm developing for myself to help me get through unemplo
 - Incorporates additional experience details like bullet points, projects, and context you provide, turning raw notes into polished entries.
 - Includes personal “About Me” information that isn’t on your resume, so the AI can infer and personalize without inventing.
 - A cover letter draft can be generated based on user-provided information, like old resumes, writing samples, and extended biographies (if you want).
-    - I'm currently reworking this so that it will be proofread and make suggestions to user-written cover letters as opposed to just spitting out drafts. 
+    - I'm currently reworking this so that it will only proofread and make suggestions to user-written cover letters as opposed to just spitting out drafts. 
 - Analyzes your resume and compares it to the job and company using a scoring system to highlight match quality and improvement opportunities.
 - Provides actionable feedback to help improve alignment with a job posting.
 - A very simple and skeletal UI built with electron.
