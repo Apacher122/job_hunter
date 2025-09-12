@@ -2,7 +2,6 @@ import { CoverLetterSchema } from '../models/cover_letter.models.js';
 import Handlebars from 'handlebars';
 import { ResumeSectionNotFoundError } from '../../../shared/errors/resume_builder.errors.js';
 import { ZodType } from 'zod';
-import { combineJSONData } from '../../../shared/utils/documents/json/json.helpers.js';
 import { exportLatex } from '../../documents/services/export.service.js';
 import { formatLatexSection } from '../../../shared/utils/formatters/resume.formatter.js'
 import fs from 'fs';
@@ -13,25 +12,27 @@ import { loadTemplate } from '../../../shared/utils/templates/template.loader.js
 import { logger } from '../../../shared/utils/logger.js';
 import paths from '../../../shared/constants/paths.js';
 import { replaceSectionContent } from '../../../shared/utils/documents/latex/latex.helpers.js';
+import { getJobPost } from '../../../database/queries/job.queries.js';
+import { JobPosting } from '../../../shared/data/info.store.js';
 
-export const compileCoverLetter = async (): Promise<void> => {
-    if (!infoStore.jobPosting || !infoStore.jobPosting.companyName) {
+export const compileCoverLetter = async (id: number): Promise<void> => {
+    const jobPost = await getJobPost(id);
+    if (!jobPost || !jobPost.companyName) {
         console.error('Job posting content or company name is not available in infoStore.');
         return;
     }
+    let jobContent = jobPost;
 
     try {
-        await generateCoverLetterDraft();
-        let jobContent = infoStore.jobPosting;
+        await generateCoverLetterDraft(jobContent);
         await exportLatex({
-        jobNameSuffix: 'cover_letter',
-        latexFilePath: paths.latex.coverLetter.letter,
-        targetDirectory: paths.paths.dir,
-        compiledPdfPath: paths.paths.compiledCoverLetter(jobContent.companyName),
-        movedPdfPath: paths.paths.movedCoverLetter(jobContent.companyName)
+            jobNameSuffix: 'cover_letter',
+            latexFilePath: paths.latex.coverLetter.letter,
+            targetDirectory: paths.paths.dir,
+            compiledPdfPath: paths.paths.compiledCoverLetter(jobContent.companyName, jobContent.id),
+            movedPdfPath: paths.paths.movedCoverLetter(jobContent.companyName, jobContent.id),
+            jobPost
         });
-
-        console.log('Cover letter exported successfully.');
     } catch (error) {
     const e = error as Error;
     console.error(`Error exporting cover letter to PDF: ${ e.message} See logs for more information`);
@@ -39,59 +40,60 @@ export const compileCoverLetter = async (): Promise<void> => {
     }
 }
 
-const generateCoverLetterDraft = async () => {
+const generateCoverLetterDraft = async (content: JobPosting) => {
     try {
-    const jobPostingContent = infoStore.jobPosting;
-    const sections = ['experiences', 'skills', 'projects'];
-    const resumeData = await combineJSONData(sections);
-    const aboutMe = await fs.promises.readFile(paths.paths.aboutMe, 'utf-8');
-    const coverLetterCorrections = await fs.promises.readFile(paths.paths.coverLetterCorrections, 'utf-8');
-    const considerations = await fs.promises.readFile(paths.paths.considerations, 'utf-8');
-    const writingExamples = await getWritingExamples();
-    if (!writingExamples) {
-        throw new Error('Writing examples not found.');
-    }
-
-    const instructions = await loadTemplate(
-        'instructions',
-        'coverletter',
-        {
-            corrections: coverLetterCorrections
+        const resumeData = await fs.promises.readFile(paths.paths.jsonResume(content.companyName, content.id));
+        const coverLetterData = await fs.promises.readFile(paths.paths.currentCoverLetter, 'utf-8');
+        const aboutMe = await fs.promises.readFile(paths.paths.aboutMe, 'utf-8');
+        const corrections = await fs.promises.readFile(paths.paths.corrections, 'utf-8');
+        const considerations = await fs.promises.readFile(paths.paths.considerations, 'utf-8');
+        
+        const writingExamples = await getWritingExamples();
+        if (!writingExamples) {
+            throw new Error('Writing examples not found.');
         }
-    );
 
-    const prompt = await loadTemplate(
-        'prompts',
-        'coverletter',
-        {
-            resume: JSON.stringify(resumeData),
-            jobPosting: jobPostingContent.body,
-            company: jobPostingContent.rawCompanyName,
-            position: jobPostingContent.position,
-            aboutMe: aboutMe,
-            examples: writingExamples,
-            considerations: considerations
-        })
+        const instructions = await loadTemplate(
+            'instructions',
+            'coverletter',
+            {
+                corrections: corrections
+            }
+        );
 
-    // Create topmost info
-    const coverLetterTemplate = await fs.promises.readFile(
-        paths.latex.coverLetter.template,
-        "utf8"
-    );
+        const prompt = await loadTemplate(
+            'prompts',
+            'coverletter',
+            {
+                resume: JSON.stringify(resumeData),
+                jobPosting: content.body,
+                company: content.rawCompanyName,
+                position: content.position,
+                aboutMe: aboutMe,
+                currentCoverLetter: coverLetterData,
+                examples: writingExamples,
+                considerations: considerations
+            })
 
-    const extraData = {
-        company: jobPostingContent.rawCompanyName,
-        position: jobPostingContent.position,
-    }
+        // Create topmost info
+        const coverLetterTemplate = await fs.promises.readFile(
+            paths.latex.coverLetter.template,
+            "utf8"
+        );
 
-    const coverLetterInfo = Handlebars.compile(coverLetterTemplate)({
-        ...infoStore.user_info,
-        ...extraData
-    });
-    await fs.promises.writeFile(paths.latex.coverLetter.letter, coverLetterInfo);
+        const extraData = {
+            company: content.rawCompanyName,
+            position: content.position,
+        }
 
-    await loadCoverLetterContent(instructions, prompt, CoverLetterSchema);
-    logger.info("Cover letter generated successfully");
+        const coverLetterInfo = Handlebars.compile(coverLetterTemplate)({
+            ...infoStore.user_info,
+            ...extraData
+        });
+        await fs.promises.writeFile(paths.latex.coverLetter.letter, coverLetterInfo);
+
+        await loadCoverLetterContent(instructions, prompt, CoverLetterSchema);
+        logger.info("Cover letter generated successfully");
     } catch (error) {
         const e = error as Error;
         logger.error(`Error generating cover letter content: ${e.message}`);
