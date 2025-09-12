@@ -1,4 +1,4 @@
-import { CompanyInfoType } from '../../job_guide/models/company_info.models';
+import { CompanyInfoType } from '../../features/job_guide/models/company_info.models';
 import pool from '../index.js';
 
 export async function upsertCompanyInfo(

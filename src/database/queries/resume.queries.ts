@@ -1,5 +1,3 @@
-import { Experience } from '../../resume/models/resume.models.js';
-import { QueryResult } from 'pg';
 import { ResumeItemsType } from '../../resume/models/resume.models.js';
 import pool from '../index.js';
 
