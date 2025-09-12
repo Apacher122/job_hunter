@@ -6,7 +6,7 @@ import { compile_resume } from '../../resume/services/resume.service';
 import { getCompanyInfo } from '../../job_guide/services/company_info.service';
 import { getGuidingAnswers } from '../../job_guide/services/guiding_answers.service';
 import { getMatchSummary } from '../../job_guide/services/match_summarizer.service';
-import { infoStore as info } from '../../../shared/data/info.store.js';
+import { getJobPost } from '../../../database/queries/job.queries';
 import paths from '../../../shared/constants/paths';
 
 const filePathFor = (companyName: string, suffix: 'resume' | 'cover-letter') =>
@@ -24,43 +24,44 @@ type DocType =
 | 'guiding-questions'
 | 'company-info';
 
-const docConfig: Record<
-DocType,
-{
-    pathFn: (company: string) => string;
-    generate: () => Promise<void>;
-    filename: (company: string) => string;
-    contentType: 'application/pdf' | 'text/plain';
+type ContentType = 'application/pdf' | 'text/plain';
+
+interface DocConfig {
+    pathFn: (company: string, id: number) => string;
+    generate: (company: string, id: number) => Promise<void>;
+    filename: (company: string, id: number) => string;
+    contentType: ContentType;
 }
-> = {
+
+const docConfig: Record<DocType, DocConfig> = {
     resume: {
         pathFn: paths.paths.movedResume,
-        generate: compile_resume,
-        filename: company => `${company}_resume.pdf`,
+        generate: async (_company, id) => compile_resume(id),
+        filename: (company, id) => `${company}_resume_${id}.pdf`,
         contentType: 'application/pdf' as const,
     },
     'cover-letter': {
         pathFn: paths.paths.movedCoverLetter,
-        generate: compileCoverLetter,
-        filename: company => `${company}_cover_letter.pdf`,
+        generate: async (_company, id) => compileCoverLetter(id),
+        filename: (company, id) => `${company}_cover_letter_${id}.pdf`,
         contentType: 'application/pdf',
     },
     'match-summary': {
         pathFn: paths.paths.matchSummary,
-        generate: getMatchSummary,
-        filename: company => `${company}_match_summary.md`,
+        generate: async (_company, id) => getMatchSummary(id),
+        filename: (company, id) => `${company}_match_summary_${id}.md`,
         contentType: 'text/plain' as const,
     },
     'guiding-questions': {
         pathFn: paths.paths.guidingAnswers,
         generate: getGuidingAnswers,
-        filename: company => `${company}_guiding_answers.md`,
+        filename: (company, id) => `${company}_guiding_answers_${id}.md`,
         contentType: 'text/plain',
     },
     'company-info': {
         pathFn: paths.paths.companyInfo,
-        generate: getCompanyInfo,
-        filename: company => `${company}_company_info.md`,
+        generate: async (_company, id) => getCompanyInfo(id),
+        filename: (company, id) => `${company}_company_info_${id}.md`,
         contentType: 'text/plain',
     },
 };
@@ -68,24 +69,40 @@ DocType,
 const isValidDocType = (type: string): type is DocType => type in docConfig;
 
 export const downloadDocument = async (req: Request, res: Response): Promise<void> => {
-    const companyName = info.jobPosting?.companyName;
     const docType = req.query.docType as DocType;
     const getNew = req.query.getNew === 'true';
-    
-    if (!companyName || !isValidDocType(docType)) {
+    const id = Number(req.query.id);
+
+    if (!isValidDocType(docType)) {
+        return void res.status(400).send('Invalid doocument type');
+    }
+
+    if (Number.isNaN(id)) {
+        return void res.status(400).send('Invalid document ID');
+    }
+
+    if (!id && (docType == 'resume' || docType == 'cover-letter')) {
         return void res.status(400).send('Invalid document request');
     }
-    
-    const { pathFn, generate, filename, contentType } = docConfig[docType];
-    const filePath = pathFn(companyName);
-    
+
     try {
-        if (!(await fileExists(filePath)) || getNew) {
-            await generate();
+        const jobPost = await getJobPost(id);
+        const companyName = jobPost?.companyName;
+
+        if (!companyName) {
+            return void res.status(404).send('Company not found');
         }
-        await sendFileBuffer(res, filePath, filename(companyName), contentType);
+        
+        const { pathFn, generate, filename, contentType } = docConfig[docType];
+        const filePath = pathFn(companyName, Number(id));
+    
+        if (!(await fileExists(filePath)) || getNew) {
+            await generate(companyName, id);
+        }
+        await sendFileBuffer(res, filePath, filename(companyName, id), contentType);
+        console.log(`Sent ${docType} for ${filename(companyName,id)}`);
     } catch (error) {
         console.error(`Error handling ${docType}:`, error);
-        res.status(500).send(`Looks like there isn't a Resume or Cover Letter for ${companyName} yet.`);
+        res.status(500).send(`Failed to generate ${docType}`);
     }
 };
