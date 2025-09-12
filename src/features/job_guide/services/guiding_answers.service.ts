@@ -1,5 +1,4 @@
 import { GuidingQuestionsSchema } from '../models/guiding_questions.models.js';
-import { combineJSONData } from '../../../shared/utils/documents/json/json.helpers.js';
 import fs from 'fs';
 import { getOpenAIResponse } from "../../../shared/libs/open_ai/openai.js";
 import { getWritingExamples } from "../../../shared/utils/formatters/string.formatter.js";
@@ -9,11 +8,13 @@ import paths from '../../../shared/constants/paths.js';
 
 export const getGuidingAnswers = async () => {
     const jobContent = infoStore.jobPosting;
+    console.log(jobContent.id);
+    console.log(jobContent.companyName);
     if (!jobContent || !jobContent.body) {
         throw new Error('Job posting content is not available in infoStore.');
     }
 
-    const resumeData = await combineJSONData(['experiences', 'skills', 'projects']);
+    const resumeData = await fs.promises.readFile(paths.paths.jsonResume(jobContent.companyName, jobContent.id));
     const aboutMe = await fs.promises.readFile(paths.paths.aboutMe, 'utf-8');
     const considerations = await fs.promises.readFile(paths.paths.considerations, 'utf-8');
     let extra_questions = await fs.promises.readFile(paths.paths.possibleQuestions, 'utf-8');
@@ -60,7 +61,7 @@ export const getGuidingAnswers = async () => {
 
     const markdown = generateMarkDownContent(answers);
 
-    const filePath = paths.paths.guidingAnswers(jobContent.companyName);
+    const filePath = paths.paths.guidingAnswers(jobContent.companyName, jobContent.id);
 
     try {
         await fs.promises.writeFile(filePath, markdown, 'utf-8');

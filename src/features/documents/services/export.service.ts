@@ -1,7 +1,7 @@
 import { existsSync } from 'fs';
 import { forceSinglePagePDF } from '../../../shared/utils/documents/pdf/pdf.helpers'; // Import the formatPDF function from the pdf.helpers module'../utils/validations';
 import fs from 'fs';
-import { infoStore } from '../../../shared/data/info.store';
+import { JobPosting } from '../../../shared/data/info.store';
 import { logger } from '../../../shared/utils/logger';
 import paths from '../../../shared/constants/paths';
 import { spawn } from 'child_process';
@@ -12,15 +12,17 @@ export const exportLatex = async({
   latexFilePath,
   targetDirectory,
   compiledPdfPath,
-  movedPdfPath
+  movedPdfPath,
+  jobPost,
 }: {
   jobNameSuffix: string;
   latexFilePath: string;
   targetDirectory: string;
   compiledPdfPath: string;
   movedPdfPath: string;
+  jobPost: JobPosting;
 }) => {
-  const content = infoStore.jobPosting;
+  const content = jobPost
   if (!content || !content.companyName) {
     throw new Error('Job posting content or company name is not available in infoStore.');
   }
@@ -30,11 +32,12 @@ export const exportLatex = async({
   await executeLatex(
     content.companyName,
     jobNameSuffix,
-    latexFilePath
+    latexFilePath,
+    content.id,
   );
 
   if (jobNameSuffix === 'resume') {
-    const path = paths.paths.compiledResume(content.companyName);
+    const path = paths.paths.compiledResume(content.companyName, content.id);
     await forceSinglePagePDF(path);
   }
 
@@ -49,12 +52,13 @@ const executeLatex = (
   companyName: string,
   jobNameSuffix: string,
   latexFilePath: string,
+  id: number,
 ): Promise<void> => {
   return new Promise(( resolve, reject) => {
     const latex = spawn('xelatex', [
       `--interaction=nonstopmode`,
       `-output-directory=${paths.paths.dir}`,
-      `--jobname=${companyName}_${jobNameSuffix}`,
+      `--jobname=${companyName}_${jobNameSuffix}_${id}`,
       latexFilePath
     ]);
 

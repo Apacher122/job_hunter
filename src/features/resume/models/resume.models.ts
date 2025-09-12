@@ -65,3 +65,4 @@ export const resumeItemsResponse = z.union([
     SkillSchema,
     ProjectSchema,
 ]);
+// This union allows the response to be one of the three types, which is useful for handling different sections of a resume.

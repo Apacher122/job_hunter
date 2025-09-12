@@ -1,106 +1,50 @@
-import { Request, Response } from 'express';
-
-import fs from 'fs';
-import { logger } from '../logger.js';
-import mammoth from 'mammoth';
-import path from 'path';
+import { promises as fsPromises } from 'fs';
+import { infoStore } from '../../data/info.store.js';
+import { insertJobInfo } from '../../../database/queries/job.queries.js';
+import { parseJSONData } from '../documents/json/json.helpers.js';
 import paths from '../../constants/paths.js';
-import pdf from 'pdf-parse';
+import { sanitizeText } from '../formatters/string.formatter.js';
 
-type Reader = (filePath: string) => Promise<string>;
-
-const txtReader: Reader = (filePath) => fs.promises.readFile(filePath, 'utf-8');
-
-const docxReader: Reader = async (filePath) => {
-  const buffer = await fs.promises.readFile(filePath);
-  const result = await mammoth.extractRawText({ buffer });
-  return result.value;
+export const getDateToday = (): string => {
+    const today = new Date();
+    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return today.toLocaleDateString('en-US', options);
 };
 
-const pdfReader: Reader = async (filePath) => {
-  const dataBuffer = await fs.promises.readFile(filePath);
-  const data = await pdf(dataBuffer);
-  return data.text;
-};
+export const getJobPostingContent = async (isJson = false): Promise<void> => {
+    infoStore.jobPosting;
 
-const readers: Record<string, Reader> = {
-  '.txt': txtReader,
-  '.docx': docxReader,
-  '.pdf': pdfReader,
-};
+    // if (isJson == true) {
+    //     return parseJSONData(paths.paths.jobData);
+    // }
 
-export const extractTextFromFile = async (filePath: string): Promise<string> => {
-  const ext = path.extname(filePath).toLowerCase();
-  const reader = readers[ext];
-  if (!reader) throw new Error(`Unsupported file type: ${ext}`);
-  return reader(filePath);
-};
+    try {
+        infoStore.jobPosting.body = await fsPromises.readFile(paths.paths.jobData, 'utf-8');
+        const temp = infoStore.jobPosting.body.match(/Company:\s*(.+)/);
+        infoStore.jobPosting.rawCompanyName = temp ? temp[1] : '';
 
-export const fileExists = async (filePath: string): Promise<boolean> => {
-  try {
-    await fs.promises.access(filePath);
-    return true;
-  } catch {
-    return false;
-  }
-};
+        const urlMatch = infoStore.jobPosting.body.match(/URL:\s*(.+)/);
+        const positionMatch = infoStore.jobPosting.body.match(/Position:\s*(.+)/);
+        const applicantMatch = infoStore.jobPosting.body.match(/Applicants:\s*(.+)/);
+        const detailsMatch = infoStore.jobPosting.body.match(/Details:\s*(.+)/)
 
-export async function truncateFileIfExists(filePath: string): Promise<void> {
-  try {
-    await fs.promises.access(filePath);
-    await fs.promises.truncate(filePath, 0);
-  } catch {
-    // file does not exist - no action needed
-  }
-}
+        infoStore.jobPosting.url = urlMatch ? urlMatch[1].trim() : '';
+        infoStore.jobPosting.position = positionMatch ? positionMatch[1].trim() : '';
+        infoStore.jobPosting.applicantCount = applicantMatch ? applicantMatch[1].trim() : '';
+        infoStore.jobPosting.jobDetails = detailsMatch ? detailsMatch[1].trim() : '';
 
-export async function deleteFilesByExtensions(dir: string, extensions: string[]): Promise<void> {
-  const files = await fs.promises.readdir(dir);
-  await Promise.all(
-    files.map(async (file) => {
-      if (extensions.includes(path.extname(file))) {
-        await fs.promises.unlink(path.join(dir, file));
-      }
-    })
-  );
-}
+        // Format the company name: replace spaces with underscores and convert to lowercase
+        if (infoStore.jobPosting.rawCompanyName) {
+            infoStore.jobPosting.companyName = infoStore.jobPosting.rawCompanyName.replace(/\s+/g, '_').toLowerCase();
+            infoStore.jobPosting.companyName = sanitizeText(infoStore.jobPosting.companyName);
+        }
 
-export const validatePath = (filePath: string): string => {
-  if (path.isAbsolute(filePath) && !filePath.includes('..')) {
-    return filePath;
-  }
-  throw new Error('Invalid file path');
-};
-
-export const cleanup = async (): Promise<void> => {
-  if (fs.existsSync(paths.paths.changeReport)) {
-    fs.truncateSync(paths.paths.changeReport, 0);
-  }
-
-  const extensions = ['.aux', '.log', '.out', `.pdf`];
-  const files = fs.readdirSync(paths.paths.dir);
-
-  files.forEach(file => {
-    const filePath = path.join(paths.paths.dir, file);
-    if (fs.existsSync(filePath) && extensions.includes(path.extname(file))) {
-      fs.unlinkSync(filePath);
+        // Add to db
+        const jobId = await insertJobInfo(infoStore.jobPosting);
+        infoStore.jobPosting.id = jobId;
+    } catch (error) {
+        const e = error as Error;
+        console.error(`Error reading job posting: ${e.message}`);
+        throw error;
     }
-  });
-  logger.info('Temporary LaTeX files purged');
-};
-
-export async function sendFileBuffer(
-  res: Response,
-  filePath: string,
-  fileName: string,
-  mimeType: 'application/pdf' | 'text/plain'
-): Promise<void> {
-  try {
-    const fileBuffer = await fs.promises.readFile(filePath);
-    res.setHeader('Content-Type', mimeType);
-    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
-    res.send(fileBuffer);
-  } catch {
-    res.status(500).send('Error reading file');
-  }
 }

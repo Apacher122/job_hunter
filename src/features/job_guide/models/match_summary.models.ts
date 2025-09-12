@@ -3,6 +3,8 @@ import { z } from 'zod';
 export const matchSummaryResponse = z.object({
     company_name: z.string(),
     match_summary: z.object({
+        should_apply: z.enum(['Strong Yes', 'Yes', 'No', 'Strong No', 'Maybe']),
+        should_apply_reasoning: z.string(),
         metrics: z.array ( 
             z.object({
                 scoreTitle: z.string(),

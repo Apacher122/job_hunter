@@ -1,10 +1,28 @@
-interface JobPosting {
+export interface JobPosting {
     id: number;
     body: string;
     companyName: string;
+    rawCompanyName: string;
+    applicantCount: string;
+    jobDetails: string;
     url: string;
     position: string;
-    rawCompanyName: string;
+    positionSummary: string;
+    yearsOfExp: string;
+    educationLvl: string;
+    requirements: string;
+    niceToHaves: string;
+    toolsAndTech: string;
+    progLanguages: string;
+    frmwrksAndLibs: string;
+    databases: string;
+    cloudPlatforms: string;
+    industryKeywords: string;
+    softSkills: string;
+    certifications: string;
+    companyCulture: string;
+    companyValues: string;
+    salary: string;
 }
 
 interface UserInfo {
@@ -37,15 +55,32 @@ export interface InfoStore {
 
 const getEnvVar = (key: string): string | undefined => process.env[key];
 
-
 export const initializeInfoStore = () : InfoStore => ({
     jobPosting: {
         id: 0,
         body: '',
         companyName: '',
+        rawCompanyName: '',
         url: '',
         position: '',
-        rawCompanyName: '',
+        positionSummary: '',
+        requirements: '',
+        niceToHaves: '',
+        salary: '',
+        yearsOfExp: '',
+        educationLvl: '',
+        toolsAndTech: '',
+        frmwrksAndLibs: '',
+        progLanguages: '',
+        databases: '',
+        cloudPlatforms: '',
+        industryKeywords: '',
+        softSkills: '',
+        certifications: '',
+        companyCulture: '',
+        companyValues: '',
+        applicantCount: '',
+        jobDetails: '',
     },
     user_info: {
         first_name: getEnvVar('FIRST_NAME'), // I hope you know this

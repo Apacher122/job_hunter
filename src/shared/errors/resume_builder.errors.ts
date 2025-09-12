@@ -28,16 +28,23 @@ export class ResumeBuilderError extends Error {
   }
 }
 
-// LaTeX file access error
 export class LaTeXFileAccessError extends ResumeBuilderError {
-  constructor(message = "Error accessing LaTeX file", details: Record<string, any> = {}) {
+  constructor(
+    message = "Error accessing LaTeX file",
+    details: Record<string, any> = {},
+  ) {
     super(message, details);
   }
 }
 
-// Resume section not found error
 export class ResumeSectionNotFoundError extends ResumeBuilderError {
   constructor(message = "Resume section not found", details: Record<string, any> = {}) {
     super(message, details);
+  }
+}
+
+export class RateLimitError extends ResumeBuilderError {
+  constructor(message = "Rate limit exceeded", details: Record<string, any> = {}) {
+    super(message,details);
   }
 }

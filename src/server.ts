@@ -1,7 +1,6 @@
 import bodyParser from 'body-parser';
 import coverLetterRoutes from './features/cover_letter/routes/cover_letter.routes.js';
 import express from 'express';
-import { getJobPostingContent } from "./shared/utils/data/info.utils.js";
 import { insertRowToSheet } from './shared/libs/google/sheets.js';
 import jobGuideRoutes from './features/job_guide/routes/job_guide.routes.js';
 import { loadUserInfoToLatex } from "./shared/utils/documents/latex/latex.helpers.js"
@@ -40,7 +39,6 @@ app.post('/add-to-sheet', async (req, res) => {
 
 const initializeApp = async () => {
     try {
-        await getJobPostingContent();
         await loadUserInfoToLatex();
 
         console.log("Job application content and user info loaded successfully.");

@@ -11,12 +11,12 @@ export const getDateToday = (): string => {
     return today.toLocaleDateString('en-US', options);
 };
 
-export const getJobPostingContent = async (isJson = false): Promise<string | undefined> => {
+export const getJobPostingContent = async (isJson = false): Promise<void> => {
     infoStore.jobPosting;
 
-    if (isJson == true) {
-        return parseJSONData(paths.paths.jobData);
-    }
+    // if (isJson == true) {
+    //     return parseJSONData(paths.paths.jobData);
+    // }
 
     try {
         infoStore.jobPosting.body = await fsPromises.readFile(paths.paths.jobData, 'utf-8');
@@ -25,9 +25,13 @@ export const getJobPostingContent = async (isJson = false): Promise<string | und
 
         const urlMatch = infoStore.jobPosting.body.match(/URL:\s*(.+)/);
         const positionMatch = infoStore.jobPosting.body.match(/Position:\s*(.+)/);
+        const applicantMatch = infoStore.jobPosting.body.match(/Applicants:\s*(.+)/);
+        const detailsMatch = infoStore.jobPosting.body.match(/Details:\s*(.+)/)
 
         infoStore.jobPosting.url = urlMatch ? urlMatch[1].trim() : '';
         infoStore.jobPosting.position = positionMatch ? positionMatch[1].trim() : '';
+        infoStore.jobPosting.applicantCount = applicantMatch ? applicantMatch[1].trim() : '';
+        infoStore.jobPosting.jobDetails = detailsMatch ? detailsMatch[1].trim() : '';
 
         // Format the company name: replace spaces with underscores and convert to lowercase
         if (infoStore.jobPosting.rawCompanyName) {
@@ -36,7 +40,7 @@ export const getJobPostingContent = async (isJson = false): Promise<string | und
         }
 
         // Add to db
-        const jobId = await insertJobInfo();
+        const jobId = await insertJobInfo(infoStore.jobPosting);
         infoStore.jobPosting.id = jobId;
     } catch (error) {
         const e = error as Error;
