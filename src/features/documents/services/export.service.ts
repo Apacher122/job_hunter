@@ -1,5 +1,5 @@
 import { existsSync } from 'fs';
-import { forceSinglePagePDF } from '../../../shared/utils/documents/pdf/pdf.helpers'; // Import the formatPDF function from the pdf.helpers module'../utils/validations';
+import { forceSinglePagePDF } from '../../../shared/utils/documents/pdf/pdf.helpers';
 import fs from 'fs';
 import { JobPosting } from '../../../shared/data/info.store';
 import { logger } from '../../../shared/utils/logger';

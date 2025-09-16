@@ -2,17 +2,17 @@ import { CompanyInfoType } from '../../features/job_guide/models/company_info.mo
 import pool from '../index.js';
 
 export async function upsertCompanyInfo(
-    job_posting_id: number,
-    companyInfo: CompanyInfoType
+  job_posting_id: number,
+  companyInfo: CompanyInfoType
 ): Promise<any> {
-    const client = await pool.connect();
+  const client = await pool.connect();
 
-    try {
-        await client.query('BEGIN');
+  try {
+    await client.query('BEGIN');
 
-        // upsert company info
-        const jobInfo = companyInfo.job_info;
-        await client.query(`
+    const jobInfo = companyInfo.job_info;
+    await client.query(
+      `
             INSERT INTO job_info (
                 job_posting_id,
                 company_description,
@@ -51,30 +51,35 @@ export async function upsertCompanyInfo(
                 advised_salary_ask_reason = EXCLUDED.advised_salary_ask_reason,
                 application_process = EXCLUDED.application_process,
                 expected_response_time = EXCLUDED.expected_response_time
-        `, [
-            job_posting_id,
-            companyInfo.company_description,
-            companyInfo.company_website,
-            companyInfo.company_industry,
-            companyInfo.company_size,
-            companyInfo.company_location,
-            companyInfo.company_culture,
-            companyInfo.company_values,
-            companyInfo.company_benefits,
-            jobInfo.position_review,
-            jobInfo.typical_salary_ask,
-            jobInfo.typical_salary_ask_reason,
-            jobInfo.advised_salary_ask,
-            jobInfo.advised_salary_ask_reason,
-            jobInfo.application_process,
-            jobInfo.expected_response_time
-        ]);
+        `,
+      [
+        job_posting_id,
+        companyInfo.company_description,
+        companyInfo.company_website,
+        companyInfo.company_industry,
+        companyInfo.company_size,
+        companyInfo.company_location,
+        companyInfo.company_culture,
+        companyInfo.company_values,
+        companyInfo.company_benefits,
+        jobInfo.position_review,
+        jobInfo.typical_salary_ask,
+        jobInfo.typical_salary_ask_reason,
+        jobInfo.advised_salary_ask,
+        jobInfo.advised_salary_ask_reason,
+        jobInfo.application_process,
+        jobInfo.expected_response_time,
+      ]
+    );
 
-         // Delete old possible_interview_questions for this job_posting_id
-        await client.query(`DELETE FROM possible_interview_questions WHERE job_posting_id = $1`, [job_posting_id]);
+    await client.query(
+      `DELETE FROM possible_interview_questions WHERE job_posting_id = $1`,
+      [job_posting_id]
+    );
 
-        for (const q of jobInfo.behavioral_questions) {
-            await client.query(`
+    for (const q of jobInfo.behavioral_questions) {
+      await client.query(
+        `
                 INSERT INTO possible_interview_questions (
                     job_posting_id,
                     is_behavioral_or_technical,
@@ -87,19 +92,22 @@ export async function upsertCompanyInfo(
                 VALUES (
                     $1, $2, $3, $4, $5, $6, $7
                 )
-            `, [
-                job_posting_id,
-                "behavioral",
-                q.question,
-                q.question_source,
-                q.answer,
-                q.what_they_look_for,
-                q.what_to_study
-            ]);
-        }
+            `,
+        [
+          job_posting_id,
+          'behavioral',
+          q.question,
+          q.question_source,
+          q.answer,
+          q.what_they_look_for,
+          q.what_to_study,
+        ]
+      );
+    }
 
-        for (const q of jobInfo.technical_questions) {
-            await client.query(`
+    for (const q of jobInfo.technical_questions) {
+      await client.query(
+        `
                 INSERT INTO possible_interview_questions (
                     job_posting_id,
                     is_behavioral_or_technical,
@@ -112,19 +120,22 @@ export async function upsertCompanyInfo(
                 VALUES (
                     $1, $2, $3, $4, $5, $6, $7
                 )
-            `, [
-                job_posting_id,
-                "technical",
-                q.question,
-                q.question_source,
-                q.answer,
-                q.what_they_look_for,
-                q.what_to_study
-            ]);
-        } 
+            `,
+        [
+          job_posting_id,
+          'technical',
+          q.question,
+          q.question_source,
+          q.answer,
+          q.what_they_look_for,
+          q.what_to_study,
+        ]
+      );
+    }
 
-        for (const q of jobInfo.coding_questions) {
-            await client.query(`
+    for (const q of jobInfo.coding_questions) {
+      await client.query(
+        `
                 INSERT INTO possible_interview_questions (
                     job_posting_id,
                     is_behavioral_or_technical,
@@ -137,21 +148,22 @@ export async function upsertCompanyInfo(
                 VALUES (
                     $1, $2, $3, $4, $5, $6, $7
                 )
-            `, [
-                job_posting_id,
-                "coding",
-                q.question,
-                q.question_source,
-                q.answer,
-                q.what_they_look_for,
-                q.what_to_study
-            ]);
-        }
+            `,
+        [
+          job_posting_id,
+          'coding',
+          q.question,
+          q.question_source,
+          q.answer,
+          q.what_they_look_for,
+          q.what_to_study,
+        ]
+      );
+    }
 
-         // Delete old additional_information for this job_posting_id
-
-        for (const info of jobInfo.additional_information) {
-            await client.query(`
+    for (const info of jobInfo.additional_information) {
+      await client.query(
+        `
                 INSERT INTO additional_information (
                     job_posting_id,
                     information_title,
@@ -160,20 +172,18 @@ export async function upsertCompanyInfo(
                 VALUES (
                     $1, $2, $3
                 )
-            `, [
-                job_posting_id,
-                info.information_title,
-                info.text
-            ]);
-        }
-
-        await client.query('COMMIT');
-        return { success: true };
-    } catch (error) {
-        await client.query('ROLLBACK');
-        console.error('Error upserting company info:', error);
-        throw error;
-    } finally {
-        client.release();
+            `,
+        [job_posting_id, info.information_title, info.text]
+      );
     }
+
+    await client.query('COMMIT');
+    return { success: true };
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error upserting company info:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
 }

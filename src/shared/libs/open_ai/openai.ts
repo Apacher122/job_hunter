@@ -1,21 +1,23 @@
-import { zodResponseFormat, zodTextFormat } from 'openai/helpers/zod';
-
 import OpenAI from 'openai';
-import { ZodType } from 'zod';
 import dotenv from 'dotenv';
 import { encoding_for_model } from "@dqbd/tiktoken";
 import { logger } from '../../utils/logger';
-
+import { zodResponseFormat, zodTextFormat } from 'openai/helpers/zod';
 dotenv.config();
 
 const apiKey = process.env.OPENAI_API_KEY;
 if (!apiKey) {
   throw new Error('OpenAI API key is missing');
-}
+};
 
 const openai = new OpenAI({
     apiKey: apiKey,
 });
+
+const DAILY_TOKENS = {
+   "gpt-4o-mini-2024-07-18": 2500000,
+   "gpt-5-mini-2025-08-07": 2500000,
+};
 
 
 // Sends prompt to OpenAI API. Receives a zod object.
@@ -67,7 +69,7 @@ export const getOpenAIResponse = async (
 ): Promise<any> => {
     try {
         const response = await openai.responses.parse({
-            model: "gpt-4o-mini-2024-07-18",
+            model: process.env.OPENAI_API_MODEL ?? 'gpt-4o-mini-2024-07-18',
             input: [
                 { role: "system", content: instructions },
                 { role: "user", content: prompt }

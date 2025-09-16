@@ -1,4 +1,5 @@
 import { JobPosting } from "../data/info.store";
+import { AppliedJob } from "../types/types";
 
 export const jobPostingMapping: Record<
   keyof Pick<JobPosting,
@@ -36,3 +37,16 @@ export const jobPostingMapping: Record<
   companyValues: "company_values",
   salary: "salary_range",
 };
+
+export function mapAppliedJobToBackend(applied: AppliedJob, existing?: JobPosting) {
+  return {
+    ...existing,
+
+    user_applied: applied.userApplied,
+    applied_on: applied.appliedOn,
+    status: applied.status,
+    code_assessment_completed: applied.codeAssessmentCompleted,
+    interview_count: applied.interviewCount,
+    initial_application_update_date: applied.initialAppUpdateDate,
+  } as JobPosting;
+}

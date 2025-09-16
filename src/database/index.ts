@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import { cli } from 'winston/lib/winston/config';
 
 const pool = new Pool({
   user: process.env.DB_USER || 'postgres',
@@ -9,12 +10,13 @@ const pool = new Pool({
   // add other options as needed
 });
 
-pool.connect()
-  .then(client => {
+pool
+  .connect()
+  .then((client) => {
     console.log('Connected to the database successfully');
     client.release();
   })
-  .catch(error => {
+  .catch((error) => {
     console.error('Error connecting to the database:', error);
   });
 

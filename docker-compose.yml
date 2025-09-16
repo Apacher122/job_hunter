@@ -2,14 +2,23 @@ services:
   app:
     build: .
     ports:
-      - "3000:3000"
+      - '3000:3000'
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-      - ./output:/usr/src/app/src/output
-      - ./logs:/usr/src/app/src/logs
     working_dir: /usr/src/app/src
     env_file:
-      - ./config/.env
+      - ./.env
     environment:
       - NODE_ENV=development
+
+      # DB Configuration
+      - DATABASE_URL="postgresql://{username}:{password}@host.docker.internal:5432/ResumeBuilder"
+
+      # OpenAI setup
+      - OPENAI_API_KEY=
+      - OPENAI_API_MODEL=gpt-5-mini-2025-08-07
+
+      # Google sheets
+      - GOOGLE_SHEETS_ID=
+      - GOOGLE_SHEETS_NAME=

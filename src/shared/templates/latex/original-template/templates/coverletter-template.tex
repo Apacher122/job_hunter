@@ -18,7 +18,7 @@
 % CONFIGURATIONS
 %-------------------------------------------------------------------------------
 % A4 paper size by default, use 'letterpaper' for US letter
-\documentclass[10pt, a4paper]{/usr/src/app/src/latex/awesome-cv}
+\documentclass[10pt, a4paper]{/usr/src/app/src/shared/templates/latex/original-template/awesome-cv}
 
 % Configure page margins with geometry
 \geometry{left=1.4cm, top=.8cm, right=1.4cm, bottom=1.8cm, footskip=.5cm}
@@ -77,14 +77,14 @@
 %-------------------------------------------------------------------------------
 % The company being applied to
 \recipient
-  { {{~company~}} }
+  { {{{company}}} }
   {}
 % The date on the letter, default is the date of compilation
 \letterdate{\today}
 % The title of the letter
 \lettertitle{Position: {{position~}} }
 % How the letter is opened
-\letteropening{To the Team at {{company~}},}
+\letteropening{To the Team at {{{company}}},}
 % How the letter is closed
 \letterclosing{Best Regards,}
 % Any enclosures with the letter

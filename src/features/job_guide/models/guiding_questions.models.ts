@@ -9,3 +9,5 @@ export const GuidingQuestionsSchema = z.object({
         })
     )
 });
+
+export type GuidingQuestionsType = z.infer<typeof GuidingQuestionsSchema>

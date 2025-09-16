@@ -1,7 +1,6 @@
 import { promises as fsPromises } from 'fs';
 import paths from '../../../constants/paths.js';
 
-// Read in JSON data for current resume
 export const parseJSONData = async (filePath: string) => {
     try {
         const data = await fsPromises.readFile(filePath, 'utf-8');

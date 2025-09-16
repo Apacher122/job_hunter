@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
 
 # Set the working directory
 WORKDIR /usr/src/
+COPY prisma ./prisma/
 
 # Copy package.json and package-lock.json
 COPY package*.json ./
@@ -21,11 +22,14 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
-# Install ts-node and typescript
-RUN npm install -g ts-node typescript tsx
+RUN npm install zod
 
-# Copy the rest of the application code
+# Install ts-node and typescript
+RUN npm install -g ts-node typescript tsx prisma
+
 COPY . .
+
+RUN npx prisma generate
 
 # Expose the port the app runs on
 EXPOSE 3000

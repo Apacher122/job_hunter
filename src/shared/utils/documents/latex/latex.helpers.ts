@@ -13,6 +13,7 @@ export const sectionToLatexEnvMap: Record<string, 'cvskills' | 'cventries' | 'cv
     'cover letter': 'cvletter',
 }
 
+
 export const loadUserInfoToLatex = async () => {
     const resumeTemplate = await fs.promises.readFile(
         paths.latex.resume.resumeTemplate,

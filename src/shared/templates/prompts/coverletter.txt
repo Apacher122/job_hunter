@@ -24,9 +24,15 @@ Help me with my cover letter.
 {{aboutMe}}
 </about_me>
 
+<my_cover_letter>
+{{currentCoverLetter}}
+</my_cover_letter>
+
 <writing_examples>
 {{examples}}
 </writing_examples>
+
+## Consider the information below when drafting my coverletter.
 
 <considerations>
 {{considerations}}

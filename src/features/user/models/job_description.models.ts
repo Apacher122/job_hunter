@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const JobDescriptionSchema = z.object ({
     job_title: z.string(),

@@ -7,6 +7,9 @@ import { loadUserInfoToLatex } from "./shared/utils/documents/latex/latex.helper
 import pool from './database/index.js';
 import resumeRoutes from './features/resume/routes/resume.routes.js';
 import userRoutes from './features/user/routes/user.routes';
+import { syncDBtoSheets } from './shared/libs/google/sheets.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
@@ -26,21 +29,21 @@ app.post('/reload', async (req, res) => {
   res.status(200).json({ success: true, message: 'Reloading application...' });
 });
 
-app.post('/add-to-sheet', async (req, res) => {
-  try {
-    await insertRowToSheet();
-    res.status(200).json({ success: true, message: 'Resume added to sheet successfully' });
-  } catch (error) {
-    const e = error as Error;
-    console.error(`Error adding resume to sheet: ${e.message}`);
-    res.status(500).json({ success: false, message: `Error adding resume to sheet: ${e.message}` });
-  }
-});
+// app.post('/add-to-sheet', async (req, res) => {
+//   try {
+//     await insertRowToSheet();
+//     res.status(200).json({ success: true, message: 'Resume added to sheet successfully' });
+//   } catch (error) {
+//     const e = error as Error;
+//     console.error(`Error adding resume to sheet: ${e.message}`);
+//     res.status(500).json({ success: false, message: `Error adding resume to sheet: ${e.message}` });
+//   }
+// });
 
 const initializeApp = async () => {
     try {
         await loadUserInfoToLatex();
-
+        await syncDBtoSheets();
         console.log("Job application content and user info loaded successfully.");
     } catch (error: unknown) {
         if (error instanceof Error) {

@@ -1,16 +1,34 @@
-# Context
+<input>
+    <resume>
+        {{resume}}
+    </resume>
+</input>
 
-I am applying for the position of {{position}} at {{company}}.
-Help me with my resume.
+<task>
+    <user_request>
+        I am applying to the following job below.
+        Help me revise my resume.
+    </user_request>
 
----
+    <job>
+        <position> {{position}} </position>
+        <company_name> {{company}} </company_name>
+        <years_of_experience_required> {{years_of_experience_required}} </years_of_experience_required>
+        <education_level> {{education_level}} </education_level>
+        <skills_required> {{skills_required}} </skills_required>
+        <skills_nice_to_haves> {{skills_nice_to_haves}} </skills_nice_to_haves>
+        <frameworks_and_libraries> {{frameworks_and_libraries}} </frameworks_and_libraries>
+        <programming_languages> {{programming_languages}} </programming_languages>
+        <databases> {{databases}} </databases>
+        <cloud_platforms> {{cloud_platforms}} </cloud_platforms>
+        <industry_keywords> {{industry_keywords}} </industry_keywords>
+        <soft_skills> {{soft_skills}} </soft_skills>
+        <certifications> {{certifications}} </certifications>
+        <company_culture> {{company_culture}} </company_culture>
+        <company_values> {{company_values}} </company_values>
+        <salary_range> {{salary_range}} </salary_range>
+    </job>
+</task>
 
-# Information
 
-<user_resume>
-{{resume}}
-</user_resume>
 
-<job_description>
-{{jobPosting}}
-</job_description>
