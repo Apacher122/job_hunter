@@ -8,10 +8,6 @@ This is a personal tool I'm developing for myself to help me get through unemplo
 
 Long story short, it's an overglorified resume/coverletter proofreader that's also an application tracker and job match analyzer.
 
-[Swagger documentation](https://app.swaggerhub.com/apis-docs/apachemain/Job-Hunter/1.0.0)  
-
-Long story short, it's an overglorified resume/coverletter proofreader that's also an application tracker and job match analyzer.
-
 ### Key Features:
 #### Job Post Compilation
 
