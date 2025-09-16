@@ -6,33 +6,55 @@ This is a personal tool I'm developing for myself to help me get through unemplo
 
 ## For the curious
 
+Long story short, it's an overglorified resume/coverletter proofreader that's also an application tracker and job match analyzer.
+
 [Swagger documentation](https://app.swaggerhub.com/apis-docs/apachemain/Job-Hunter/1.0.0)  
 
-### What this does
+Long story short, it's an overglorified resume/coverletter proofreader that's also an application tracker and job match analyzer.
 
-- Enhances your existing resume without rewriting it from scratch by building on your own writing style and content. It's essentially a proofreader that selects your most compelling bullet points for a job.
-- Preserves your voice by using examples of your past writing and resume to maintain tone, phrasing, and intent if it makes any sentence structure changes.
-- Incorporates additional experience details like bullet points, projects, and context you provide, turning raw notes into polished entries.
-- Includes personal “About Me” information that isn’t on your resume, so the AI can infer and personalize without inventing.
-- A cover letter draft can be generated based on user-provided information, like old resumes, writing samples, and extended biographies (if you want).
-    - I'm currently reworking this so that it will only proofread and make suggestions to user-written cover letters as opposed to just spitting out drafts. 
-- Analyzes your resume and compares it to the job and company using a scoring system to highlight match quality and improvement opportunities.
-- Provides actionable feedback to help improve alignment with a job posting.
-- A very simple and skeletal UI built with electron.
-- Tracks job applications by logging them directly into Google Sheets, helping you stay organized throughout your job search.
+### Key Features:
+#### Job Post Compilation
 
-### What this doesn't
+- Automatically processes online job postings to extract and organize requirements, nice-to-haves, company values, salary ranges, and other relevant details.
 
-- Does not fabricate experience. It only works with information you provide. It enhances, organizes, and clarifies, but never invents.
-- Does not generate a resume from scratch. You must have an existing resume and input to work from.
-- Does not impersonate you. The writing style and content stay true to your voice and background.
-- Does not replace your judgment. The cover letter draft is meant to be a guide, not a final submission.
+#### Personalized Resume Optimization
 
-Long story short: Is not a shortcut to dishonest applications. It supports ethical job searching by helping you better represent your own qualifications.
+- Uses NLP to analyze past resumes, cover letters, autobiographies, and any personal documents a user provides.
+- Optimizes resumes to better showcase role alignment. It doesn't seek to create a perfect candidate. It just makes sure that only the relevant skills and experiences the user *actually* has are displayed.
+- To the best of its ability, it will also display any skills or experiences that are not a 1:1 match but translate well into the role.
+- Preserves the user's voice: Any edits or improvements maintains tone, phrasing, and intent, ensuring consistency with user's personal style.
+  - This is done through studying any examples of writing, like previous essays, provided by the user. It prevents giving OpenAI too much "freedom" to just smash keywords together in a pretty way. The main goal is not to just         create cookie-cutter resumes and coverletters, but just different versions and recompilations of existing details. In other words, it just saves time of having to repeatedly pick and choose what you             want to display on your resume for a particular role.
+
+#### Cover Letter Assistance
+
+- Drafts cover letters based on user-provided resumes, writing samples, and biographies to help guide the user in writing a strong and professional cover letter.
+    - Follows a strict guideline of preventing "keyword smashing" and dishonesty. It seeks to only guide the user while maintaining their authenticity.
+
+#### Job Match Analysis
+
+- Takes a look at your entire profile to compare how well you fit to the role you're applying for.
+- Provides and explains match scores for the following categories, also weighed by employer preferences:
+    1. Resume Keyword & Phrases
+    2. Experience Alignment
+    3. Education & Credentials
+    4. Skills & Competencies
+    5. Achievements & Quantifiable Results
+    6. Job-Specific Filters (i.e. Clearances/citizenship required)
+    7. Cultural & Organizational Fit
+- Shows a radar chart to display your overall fit.
+- Provides an overall match score.
+- Gives advice on whether or not you should apply.
+  - Takes into account job post age, applicant count, industry, company size, and other external factors when giving feedback,
+
+#### Job Application Tracking
+
+- Logs your job applications directly into Google Sheets.
+- Helps you stay organized by tracking application status, interview count, and key dates.
+- Also displays job applications and their status in the react ui.
 
 ## Some notes if you want to try this out
 
-If you want to use this tool, keep in mind that I designed it for my own personal use.
+If you want to use this tool, keep in mind that I designed it for my own personal use.  
 It will require an OpenAI API key, which does cost some money. Money that only a job can give you :/  
 I'm using OpenAI's GPT-4o model because I have credits. That's literally the only reason for it. Otherwise, feel free to fork and change up the LLM used.
 
@@ -44,16 +66,19 @@ I'm using OpenAI's GPT-4o model because I have credits. That's literally the onl
 
 ### **Setting it up**
 
-1. In `/root/config/`:
-    - Add a .env file (example provided of what info to put in there)
+1. In `/root/`:
+    - .env file (example provided of what info to put in there)
+    - Add OpenAI, Google Sheets, and postgresql environment variables to docker-compose.yml
     - Add credentials.json from Google Cloud under `/google_config/`
 2. In `/root/data/`
+    - Add  
     - Add position, title, url, and description of a job you're applying for to `jobPosting.txt`
-    - Add any corrections you need Open AI to be aware of if it made mistakes to `corrections.txt`
-    - Add one or more examples of your OWN ORIGINAL writing to `/my_writing/writing_examples/`
+    - Add any cover letter corrections you need Open AI to be aware of if it made mistakes to `/corrections/coverLetterCorrections.txt`
+    - Add any resume mistakes you need Open AI to be aware of if it made mistakes to `/corrections/mistakesMade.txt`
+    - Add one or more examples of your OWN ORIGINAL writing to `user_info/my_writing/`
         - **NOTE:** It should be able to read in text, .docx,. or pdfs.
-    - Add your current resume in a json format to `resume.json`.
-    - Add some additional information about yourself to `aboutMe.txt`.
+    - Add your current resume in a json format to `user_info/resume.json`.
+    - Add some additional information about yourself to `user_info/aboutMe.txt`.
         - This can be a novel, autobiography, or even another resume.
 3. In your editor's terminal (or whatever terminal you're using) run the following in order:
 
