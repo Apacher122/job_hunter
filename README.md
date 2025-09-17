@@ -6,16 +6,15 @@ This is a personal tool I'm developing for myself to help me get through unemplo
 
 ## For the curious
 
-Long story short, it's an overglorified resume/coverletter proofreader that's also an application tracker and job match analyzer.
+Long story short, it's an overglorified resume/coverletter proofreader that's also an application tracker and job match analyzer. The purpose of the job match analyzer is moreso to provide some extra insight on my alignment to a particular role.
 
-### Key Features:
+### Key Features
+
 #### Job Post Compilation
 
 - Automatically processes online job postings to extract and organize requirements, nice-to-haves, company values, salary ranges, and other relevant details.
 
 #### Personalized Resume Optimization
-
-![alt text](https://github.com/Apacher122/job_hunter/blob/main/previews/Screenshot%202025-09-16%20at%2018.23.16.png "Resume Sample")
 
 - Uses NLP to analyze past resumes, cover letters, autobiographies, and any personal documents a user provides.
 - Optimizes resumes to better showcase role alignment. It doesn't seek to create a perfect candidate. It just makes sure that only the relevant skills and experiences the user *actually* has are displayed.
@@ -25,14 +24,10 @@ Long story short, it's an overglorified resume/coverletter proofreader that's al
 
 #### Cover Letter Assistance
 
-![alt text](https://github.com/Apacher122/job_hunter/blob/main/previews/Screenshot%202025-09-16%20at%2018.24.08.png "Cover Letter Sample")
-
 - Drafts cover letters based on user-provided resumes, writing samples, and biographies to help guide the user in writing a strong and professional cover letter.
-    - Follows a strict guideline of preventing "keyword smashing" and dishonesty. It seeks to only guide the user while maintaining their authenticity.
+  - Follows a strict guideline of preventing "keyword smashing" and dishonesty. It seeks to only guide the user while maintaining their authenticity.
 
 #### Job Match Analysis
-
-![alt text](https://github.com/Apacher122/job_hunter/blob/main/previews/Screenshot%202025-09-16%20at%2018.22.58.png "Match Score Sample")
 
 - Takes a look at your entire profile to compare how well you fit to the role you're applying for.
 - Provides and explains match scores for the following categories, also weighed by employer preferences:
