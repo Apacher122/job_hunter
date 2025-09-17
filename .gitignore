@@ -69,7 +69,13 @@ Thumbs.db
 docker-compose.override.yml
 
 # Generated Latex files
+resume_temp/
 resume.tex
 cv.tex
 coverletter.tex
 education.tex
+experience.tex
+projects.tex
+skills.tex
+coverletter-template.tex
+resume-original.tex
