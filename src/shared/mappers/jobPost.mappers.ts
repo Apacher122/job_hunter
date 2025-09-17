@@ -40,8 +40,10 @@ export const jobPostingMapping: Record<
 
 export function mapAppliedJobToBackend(applied: AppliedJob, existing?: JobPosting) {
   return {
+    // Keep all existing JobPosting info
     ...existing,
 
+    // Override the fields coming from the frontend
     user_applied: applied.userApplied,
     applied_on: applied.appliedOn,
     status: applied.status,

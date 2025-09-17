@@ -1,4 +1,3 @@
-// Base error with extra details and optional stack trace capture
 export class ResumeBuilderError extends Error {
   timestamp: string;
   details: Record<string, any>;

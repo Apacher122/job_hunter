@@ -3,7 +3,6 @@ import path from 'path';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '../../..');
-// const latexFilesPath = `/usr/src/app/src/latex`;
 
 const resolveRoot = (...segments: string[]) => {
     return path.join(root, ...segments);
@@ -101,3 +100,4 @@ export default {
     latex: latexPaths,
     openaiPrompts: openai,
 }
+
