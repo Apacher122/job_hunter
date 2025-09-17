@@ -19,7 +19,6 @@ export const getGuidingAnswers = async (
   if (!jobContent || !jobContent.body) {
     throw new Error('Job posting content is not available in infoStore.');
   }
-
   const resumeData = await fs.promises.readFile(
     paths.paths.jsonResume(jobContent.companyName, jobContent.id)
   );
