@@ -1,21 +1,17 @@
-import { AppliedJob } from '../../shared/types/applied-job.types';
+import { AppliedJob } from '../../shared/types/types';
 import { JobPosting } from '../../shared/data/info.store.js';
 import pool from '../index.js';
 
 export async function insertJobInfo(jobPost: JobPosting): Promise<any> {
-  if (!jobPost || !jobPost.companyName) {
-    console.error(
-      'Job posting content or company name is not available in infoStore.'
-    );
-    return;
-  }
-  console.log(
-    `-----Applicant Count: ${jobPost.applicantCount}\n------Details: ${jobPost.jobDetails}`
-  );
+    if (!jobPost || !jobPost.companyName) {
+        console.error('Job posting content or company name is not available in infoStore.');
+        return;
+    }
+    console.log(`-----Applicant Count: ${jobPost.applicantCount}\n------Details: ${jobPost.jobDetails}`)
 
-  const client = await pool.connect();
+    const client = await pool.connect();
 
-  const query = `
+    const query = `
     INSERT INTO job_postings (
         body,
         companyName,
@@ -48,105 +44,105 @@ export async function insertJobInfo(jobPost: JobPosting): Promise<any> {
         rawCompanyName = EXCLUDED.rawCompanyName
     RETURNING id
     `;
-
-  try {
-    // const jobPost = infoStore.jobPosting;
-    // const { body, companyName, url, position, rawCompanyName } = infoStore.jobPosting;
-    const values = [
-      jobPost.body,
-      jobPost.companyName,
-      jobPost.rawCompanyName,
-      jobPost.applicantCount,
-      jobPost.jobDetails,
-      jobPost.url,
-      jobPost.position,
-      jobPost.positionSummary,
-      jobPost.yearsOfExp,
-      jobPost.educationLvl,
-      jobPost.requirements,
-      jobPost.niceToHaves,
-      jobPost.toolsAndTech,
-      jobPost.progLanguages,
-      jobPost.frmwrksAndLibs,
-      jobPost.databases,
-      jobPost.cloudPlatforms,
-      jobPost.industryKeywords,
-      jobPost.softSkills,
-      jobPost.certifications,
-      jobPost.companyCulture,
-      jobPost.companyValues,
-      jobPost.salary,
-    ];
-    await client.query('BEGIN');
-    const result = await client.query(query, values);
-    await client.query('COMMIT');
-    return Number(result.rows[0].id);
-  } catch (error) {
-    console.log('Error inserting job posting');
-    await client.query('ROLLBACK');
-    throw error;
-  } finally {
-    client.release();
-  }
-}
+    
+    try {
+        // const jobPost = infoStore.jobPosting;
+        // const { body, companyName, url, position, rawCompanyName } = infoStore.jobPosting;
+        const values = [
+            jobPost.body,
+            jobPost.companyName,
+            jobPost.rawCompanyName,
+            jobPost.applicantCount,
+            jobPost.jobDetails,
+            jobPost.url,
+            jobPost.position,
+            jobPost.positionSummary,
+            jobPost.yearsOfExp,
+            jobPost.educationLvl,
+            jobPost.requirements,
+            jobPost.niceToHaves,
+            jobPost.toolsAndTech,
+            jobPost.progLanguages,
+            jobPost.frmwrksAndLibs,
+            jobPost.databases,
+            jobPost.cloudPlatforms,
+            jobPost.industryKeywords,
+            jobPost.softSkills,
+            jobPost.certifications,
+            jobPost.companyCulture,
+            jobPost.companyValues,
+            jobPost.salary,
+        ]
+        await client.query('BEGIN');
+        const result = await client.query(query, values);
+        await client.query('COMMIT');
+        return Number(result.rows[0].id);
+    } catch (error) {
+        console.log("Error inserting job posting");
+        await client.query('ROLLBACK');
+        throw error;
+    } finally {
+        client.release();
+    }
+};
 
 export async function getApplicationList(): Promise<AppliedJob[]> {
-  const client = await pool.connect();
+    const client = await pool.connect();
 
-  const query = `
+    const query = `
         SELECT id, rawCompanyName, position
         FROM job_postings
         ORDER BY id desc
-    `;
-  try {
-    await client.query('BEGIN');
-    const res = await client.query(query);
-    await client.query('COMMIT');
-    return res.rows.map((row) => ({
-      id: row.id,
-      company: row.rawcompanyname,
-      position: row.position,
-    }));
-  } catch (error) {
-    await client.query('ROLLBACK');
-    throw error;
-  } finally {
-    client.release();
-  }
+    `
+    try {
+        await client.query('BEGIN');
+        const res = await client.query(query);
+        await client.query('COMMIT');
+        return res.rows.map(row => ({
+            id: row.id,
+            company: row.rawcompanyname,
+            position: row.position,
+            url: row.url,
+            applied: row.user_applied
+        }));
+    } catch (error) {
+        await client.query('ROLLBACK');
+        throw error;
+    } finally {
+        client.release();
+    }
 }
 
-export async function getJobInfo(
-  companyName: string,
-  position: string
-): Promise<any> {
-  const client = await pool.connect();
+export async function getJobInfo(companyName: string, position: string): Promise<any> {
+    const client = await pool.connect();
 
-  try {
-    await client.query('BEGIN');
+    try {
+        await client.query('BEGIN');
 
-    const query = `
+        const query = `
             SELECT * FROM job_info WHERE company_name = $1 AND position = $2
         `;
 
-    const values = [companyName, position];
-    const result = await client.query(query, values);
-    await client.query('COMMIT');
-    return result.rows[0];
-  } catch (error) {
-    await client.query('ROLLBACK');
-    throw error;
-  } finally {
-    client.release();
-  }
-}
+        const values = [companyName, position];
+        const result = await client.query(query, values);
+        await client.query('COMMIT');
+        return result.rows[0];
+    } catch (error) {
+        await client.query('ROLLBACK');
+        throw error;
+    } finally {
+        client.release();
+    }
+};
 
 export async function getJobPost(id: number): Promise<JobPosting> {
-  const client = await pool.connect();
+       const client = await pool.connect();
 
-  try {
-    await client.query('BEGIN');
+    try {
+        await client.query('BEGIN');
 
-    const query = `
+
+        const query = `
             SELECT
                 id,
                 body,
@@ -175,14 +171,14 @@ export async function getJobPost(id: number): Promise<JobPosting> {
             FROM job_postings WHERE id = $1
         `;
 
-    const values = [id];
-    const result = await client.query<JobPosting>(query, values);
-    await client.query('COMMIT');
-    return result.rows[0];
-  } catch (error) {
-    await client.query('ROLLBACK');
-    throw error;
-  } finally {
-    client.release();
-  }
+        const values = [id];
+        const result = await client.query<JobPosting>(query, values);
+        await client.query('COMMIT');
+        return result.rows[0];
+    } catch (error) {
+        await client.query('ROLLBACK');
+        throw error;
+    } finally {
+        client.release();
+    } 
 }

@@ -13,7 +13,7 @@ export const sectionToLatexEnvMap: Record<string, 'cvskills' | 'cventries' | 'cv
     'cover letter': 'cvletter',
 }
 
-
+// Load the basic information of the user into resume.tex
 export const loadUserInfoToLatex = async () => {
     const resumeTemplate = await fs.promises.readFile(
         paths.latex.resume.resumeTemplate,
@@ -31,6 +31,7 @@ export const loadUserInfoToLatex = async () => {
     await fs.promises.writeFile(paths.latex.resume.education, educationInfo);
 };
 
+// Replace the content of a LaTeX section with new content
 export const replaceSectionContent = (
     texContent: string,
     newContent: string[],
@@ -68,6 +69,7 @@ export const replaceSectionContent = (
     );
 };
 
+// Fill and format LaTeX content with new content received from OpenAI
 export const formatLatexSection = (sectionType: string) => (sectionData: any) => {
     let cvItems;
     switch (sectionType) {

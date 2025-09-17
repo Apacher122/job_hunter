@@ -7,6 +7,10 @@ import path from 'path';
 import paths from '../../constants/paths.js';
 import pdf from 'pdf-parse';
 
+///////////////////////
+// File Reading Logic //
+///////////////////////
+
 type Reader = (filePath: string) => Promise<string>;
 
 const txtReader: Reader = (filePath) => fs.promises.readFile(filePath, 'utf-8');
@@ -35,6 +39,10 @@ export const extractTextFromFile = async (filePath: string): Promise<string> => 
   if (!reader) throw new Error(`Unsupported file type: ${ext}`);
   return reader(filePath);
 };
+
+//////////////////////////
+// File System Utilities //
+//////////////////////////
 
 export const fileExists = async (filePath: string): Promise<boolean> => {
   try {
@@ -72,6 +80,10 @@ export const validatePath = (filePath: string): string => {
   throw new Error('Invalid file path');
 };
 
+//////////////////////
+// Cleanup Function  //
+//////////////////////
+
 export const cleanup = async (title: string, type: 'resume' | 'cover_letter', id: number): Promise<void> => {
   if (fs.existsSync(paths.paths.changeReport)) {
     fs.truncateSync(paths.paths.changeReport, 0);
@@ -89,6 +101,10 @@ export const cleanup = async (title: string, type: 'resume' | 'cover_letter', id
   });
   logger.info('Temporary LaTeX files purged');
 };
+
+/////////////////////////
+// Express Response Util //
+/////////////////////////
 
 export async function sendFileBuffer(
   res: Response,

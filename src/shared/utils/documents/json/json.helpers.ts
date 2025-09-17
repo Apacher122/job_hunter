@@ -1,6 +1,7 @@
 import { promises as fsPromises } from 'fs';
 import paths from '../../../constants/paths.js';
 
+// Read in JSON data for current resume
 export const parseJSONData = async (filePath: string) => {
     try {
         const data = await fsPromises.readFile(filePath, 'utf-8');
@@ -21,6 +22,7 @@ export const combineJSONData = async (sections: string[]) => {
             const filePath = paths.paths.sectionJson(section);
             const data = await parseJSONData(filePath);
             const jsonData = JSON.parse(data);
+            // Object.assign(combinedData, jsonData);
             combinedData[section] = jsonData;
         }
         return combinedData;
@@ -45,6 +47,7 @@ export const appendJSONData = async (filePath: string, data: any): Promise<void>
         await fsPromises.writeFile(filePath, JSON.stringify(jsonData, null, 2));
     } catch (error) {
         if ((error as any).code === 'ENOENT') {
+            // If file does not exist, create it with the new data
             await fsPromises.writeFile(filePath, JSON.stringify([data], null, 2));
         } else {
             const e = error as Error;
