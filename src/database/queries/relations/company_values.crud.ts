@@ -1,5 +1,5 @@
-import { db } from '../../../index';
-import { JobPostingCompanyValue } from '../../../schemas/ordo-meritum.schemas';
+import { db } from '../../index';
+import { JobPostingCompanyValue } from '../../schemas/ordo-meritum.schemas';
 
 export const addValueToJobPosting = (entry: JobPostingCompanyValue) =>
   db.insertInto('job_posting_company_values').values(entry).executeTakeFirst();

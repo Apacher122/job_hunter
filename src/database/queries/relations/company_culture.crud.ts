@@ -1,5 +1,5 @@
-import { db } from '../../../index';
-import { JobPostingCompanyCulture } from '../../../schemas/ordo-meritum.schemas';
+import { db } from '../../index';
+import { JobPostingCompanyCulture } from '../../schemas/ordo-meritum.schemas';
 
 export const addCultureToJobPosting = (entry: JobPostingCompanyCulture) =>
   db.insertInto('job_posting_company_cultures').values(entry).executeTakeFirst();
