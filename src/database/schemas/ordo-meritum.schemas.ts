@@ -1,3 +1,5 @@
+import { Generated } from 'kysely';
+
 export type ApplicationStatus = 'OPEN' | 'REJECTED' | 'OFFERED';
 export type ProjectStatus = 'PLANNED' | 'ACTIVE' | 'COMPLETED' | 'ON_HOLD';
 export type EducationLevel =
@@ -10,18 +12,18 @@ export type EducationLevel =
   | 'OTHER';
 
 export interface Candidate {
-  id: number;
+  id: Generated<number>;
   first_name: string;
   middle_name?: string;
   last_name: string;
   email: string;
   phone?: string;
-  created_at: Date;
-  update_at: Date;
+  created_at: Generated<Date>;
+  update_at: Generated<Date>;
 }
 
 export interface EducationInformation {
-  id: number;
+  id: Generated<number>;
   school_name: string;
   degree: string;
   location: string;
@@ -33,27 +35,27 @@ export interface EducationInformation {
 }
 
 export interface Resume {
-  id: number;
+  id: Generated<number>;
   candidate_id?: number;
   job_posting_id?: number;
-  created_at: Date;
-  updated_at: Date;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
   deleted_at?: Date;
 }
 
 export interface Experience {
-  id: number;
+  id: Generated<number>;
   resume_id?: number;
   position: string;
   company: string;
   start_date: Date;
   end_date?: Date;
-  created_at: Date;
-  updated_at: Date;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
 }
 
 export interface ExperienceDescription {
-  id: number;
+  id: Generated<number>;
   experience_id: number;
   text: string;
   justification_for_change?: string;
@@ -61,17 +63,17 @@ export interface ExperienceDescription {
 }
 
 export interface Project {
-  id: number;
+  id: Generated<number>;
   resume_id?: number;
   name: string;
   role: string;
   status: ProjectStatus;
-  created_at: Date;
-  updated_at: Date;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
 }
 
 export interface ProjectDescription {
-  id: number;
+  id: Generated<number>;
   project_id: number;
   text: string;
   justification_for_change?: string;
@@ -79,35 +81,35 @@ export interface ProjectDescription {
 }
 
 export interface Skill {
-  id: number;
+  id: Generated<number>;
   resume_id?: number;
   category: string;
   justification_for_changes?: string;
-  created_at: Date;
-  updated_at: Date;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
 }
 
 export interface SkillItem {
-  id: number;
+  id: Generated<number>;
   skill_id: number;
   item: string;
 }
 
 export interface MatchSummary {
-  id: number;
+  id: Generated<number>;
   job_posting_id: number;
   should_apply: string;
   should_apply_reasoning?: string;
   metrics?: any;
   overall_summary?: any;
   projects_section_missing_entries?: boolean;
-  created_at: Date;
-  updated_at: Date;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
   resume_id?: number;
 }
 
 export interface JobPosting {
-  id: number;
+  id: Generated<number>;
   body?: string;
   company_name?: string;
   raw_company_name?: string;
@@ -125,8 +127,8 @@ export interface JobPosting {
   code_assessment_completed?: boolean;
   interview_count?: number;
   initial_application_update?: Date;
-  created_at: Date;
-  updated_at: Date;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
   deleted_at?: Date;
 }
 
@@ -150,15 +152,15 @@ export interface JobInfo {
 }
 
 export interface AdditionalInformation {
-  id: number;
+  id: Generated<number>;
   job_posting_id: number;
   information_title?: string;
   text?: string;
-  created_at: Date;
+  created_at: Generated<Date>;
 }
 
 export interface PossibleInterviewQuestion {
-  id: number;
+  id: Generated<number>;
   job_posting_id: number;
   is_behavioral_or_technical?: string;
   question: string;
@@ -169,13 +171,13 @@ export interface PossibleInterviewQuestion {
 }
 
 export interface SuggestedChange {
-  id: number;
+  id: Generated<number>;
   entity: string;
   entity_id: number;
   text: string;
   justification?: string;
   is_new: boolean;
-  created_at: Date;
+  created_at: Generated<Date>;
   resolved: boolean;
 }
 
