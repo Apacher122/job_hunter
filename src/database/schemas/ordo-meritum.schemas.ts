@@ -182,6 +182,11 @@ export interface SuggestedChange {
 }
 
 // Many-to-Many / Join Tables
+
+export interface JobPostingNiceToHaves {
+  job_posting_id: number;
+  skill: string;
+}
 export interface JobPostingTool {
   job_posting_id: number;
   tool: string;
@@ -253,6 +258,7 @@ export interface DB {
   additional_information: AdditionalInformation;
   possible_interview_question: PossibleInterviewQuestion;
   suggeted_change: SuggestedChange;
+  job_posting_nice_to_haves: JobPostingNiceToHaves;
   job_posting_tools: JobPostingTool;
   job_posting_prog_languages: JobPostingProgLanguage;
   job_posting_frameworks: JobPostingFramework;

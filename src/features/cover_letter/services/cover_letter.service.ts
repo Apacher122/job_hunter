@@ -12,7 +12,7 @@ import { loadTemplate } from '../../../shared/utils/templates/template.loader.js
 import { logger } from '../../../shared/utils/logger.js';
 import paths from '../../../shared/constants/paths.js';
 import { replaceSectionContent } from '../../../shared/utils/documents/latex/latex.helpers.js';
-import { getJobPost } from '../../../database/queries/job.queries.js';
+import { getJobPost } from '../../../database/queries/old/job.queries.js';
 import { JobPosting } from '../../../shared/data/info.store.js';
 import { CoverLetterMock } from '../models/cover_letter.mocks.js';
 import dotenv from 'dotenv';

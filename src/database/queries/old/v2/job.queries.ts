@@ -1,7 +1,7 @@
 import { $Enums, PrismaClient } from '@prisma/client';
-import { JobPosting } from '../../../shared/data/info.store.js';
-import prisma from '../../prisma_client.js';
-import { AppliedJob } from '../../../shared/types/types.js';
+import { JobPosting } from '../../../../shared/data/info.store.js';
+import prisma from '../../../prisma_client.js';
+import { AppliedJob } from '../../../../shared/types/types.js';
 
 export async function insertJobInfo(
   jobPost: JobPosting

@@ -1,7 +1,7 @@
-import { CompanyInfoType } from "../../../features/job_guide/models/company_info.models";
-import { InterviewQuestion } from "../../../shared/types/interview-prep.types";
-import { AdditionalInfo } from "../../../shared/types/company-info.types";
-import prisma from "../../prisma_client"; 
+import { CompanyInfoType } from "../../../../features/job_guide/models/company_info.models";
+import { InterviewQuestion } from "../../../../shared/types/interview-prep.types";
+import { AdditionalInfo } from "../../../../shared/types/company-info.types";
+import prisma from "../../../prisma_client"; 
 
 export async function upsertCompanyInfo(
     jobPostId: number,

@@ -8,7 +8,7 @@ import { compileCoverLetter } from '../../cover_letter/services/cover_letter.ser
 import { compile_resume } from '../../resume/services/resume.service';
 import { getCompanyInfo } from '../../job_guide/services/company_info.service';
 import { getGuidingAnswers } from '../../job_guide/services/guiding_answers.service';
-import { getJobPost } from '../../../database/queries/job.queries';
+import { getJobPost } from '../../../database/queries/old/job.queries';
 import paths from '../../../shared/constants/paths';
 
 const filePathFor = (companyName: string, suffix: 'resume' | 'cover-letter') =>

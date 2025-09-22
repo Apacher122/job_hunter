@@ -16,6 +16,15 @@ export const db = new Kysely<DB>({
   }),
 });
 
+export async function shutdown() {
+  try {
+    await pool.end(); // closes all connections in the pool
+    console.log('Database connections closed.');
+  } catch (err) {
+    console.error('Error closing the database:', err);
+  }
+}
+
 async function testConnection() {
   try {
     await db.selectFrom('candidates').selectAll().limit(1).execute();
@@ -25,3 +34,29 @@ async function testConnection() {
   }
 }
 
+// Main table CRUD
+export * from './queries/crud/candidate/candidates.crud';
+export * from './queries/crud/candidate/education.crud';
+export * from './queries/crud/resume/resume.crud';
+export * from './queries/crud/resume/experience.crud';
+export * from './queries/crud/resume/projects.crud';
+export * from './queries/crud/resume/skills.crud';
+export * from './queries/crud/job_posts/job_posting.crud';
+export * from './queries/crud/job_posts/job_info.crud';
+export * from './queries/crud/job_posts/additional_info.crud';
+export * from './queries/crud/guides/interview_prep.crud';
+export * from './queries/crud/guides/match_summaries.crud';
+export * from './queries/crud/guides/suggestions.crud';
+
+// Many-to-many table operations
+export * from './queries/relations/company_culture.crud';
+export * from './queries/relations/company_values.crud';
+export * from './queries/relations/job_requirements/requirements.crud';
+export * from './queries/relations/job_requirements/req_certs.crud';
+export * from './queries/relations/job_requirements/req_cloud_plats.crud';
+export * from './queries/relations/job_requirements/req_databases.crud';
+export * from './queries/relations/job_requirements/req_frameworks.crud';
+export * from './queries/relations/job_requirements/req_industry_kwds.crud';
+export * from './queries/relations/job_requirements/req_prog_langs.crud';
+export * from './queries/relations/job_requirements/req_soft_skills.crud';
+export * from './queries/relations/job_requirements/req_tools.crud';

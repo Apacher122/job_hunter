@@ -1,54 +1,57 @@
 import { Request, Response } from 'express';
+import {
+  CandidateSchema,
+  CandidateSchemaDTO,
+  CandidateUpdateSchema,
+  CandidateUpdateSchemaDTO,
+} from '../models/user.model';
+import { createUser, updateUserInfo } from '../services/user.service';
+import bodyParser from 'body-parser';
 
-import { getJobPostFromCall, setJobApplied, updateJobInfo } from '../services/user.service';
-import { insertRowToSheet } from '../../../shared/libs/google/sheets';
-import { getApplicationList } from '../../../database/queries/v2/job.queries';
-import { AppliedJob } from '../../../shared/types/types';
-
-export const sendJobInfo = async (req: Request, res: Response): Promise<void> => {
-    try {
-        await getJobPostFromCall(req.body.text);
-        res.status(200).json({ success: true, message: 'Job info processed successfully' });
-    } catch (error) {
-        const e = error as Error;
-        console.error(`Error processing job info: ${e.message}`);
-        res.status(500).json({ success: false, message: `Error processing job info: ${e.message}` });
+export const newUser = async (
+  req: Request<{}, {}, CandidateSchemaDTO>,
+  res: Response
+): Promise<void> => {
+  try {
+    const result = CandidateSchema.safeParse(req.body);
+    if (!result.success) {
+      res.status(400).json({ error: result.error?.errors });
+      return;
     }
-}
 
-export const markApplication = async (req: Request, res: Response ): Promise<void> => {
-    try {
-        const id = Number(req.body.id);
-        const applied = Boolean(req.body.applied);
-        await setJobApplied(id, applied);
-        await insertRowToSheet(id);
-        res.status(200).json({ success: true, message: 'Job marked as applied' });
-    } catch (error) {
-        const e = error as Error;
-        console.error(`Error adding resume to sheet: ${e.message}`);
-        res.status(500).json({ success: false, message: `Error marking job as applied: ${e.message}` });
-    }
-}
+    await createUser(req.body);
+    res.status(200).json({ success: true, message: 'Job marked as applied' });
+  } catch (err) {
+    res.status(500).json({ error: err });
+    throw new Error(`${err}`);
+  }
+};
 
-export const getJobApplications = async (req: Request, res: Response): Promise<void> => {
-    try {
-        console.log('Getting Application List');
-        const jobs = await getApplicationList();
-        res.json(jobs);
-    } catch (error) {
-        const e = error as Error;
-        console.error(`Error fetching application list: ${e.message}`);
-        res.status(500).json({ success: false, message: `Error fetching application list: ${e.message}` });
-    }
-}
+export const getUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const result = Number(req.params.id);
+    if (!result)
+      res
+        .status(400)
+        .json({ error: `Could not fetch candidate for UID: ${req.params.id}` });
+    res.status(200).json({ success: true, body: result });
+  } catch (err) {
+    res.status(500).json({ error: err });
+    throw new Error(`Error Getting Candidate (UID: ${req.params.id}): ${err}`);
+  }
+};
 
-export const updateJobs = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const appliedJob: AppliedJob = req.body;
-        const id = appliedJob.id;
-        console.log(req.body);
-        await updateJobInfo(Number(id), appliedJob);
-    } catch (err) {
-        throw new Error('OH NO');
+export const updateUser = async (
+  req: Request<{ id: string }, {}, CandidateUpdateSchemaDTO>,
+  res: Response
+): Promise<void> => {
+    const result = CandidateUpdateSchema.safeParse(req.body);
+    if (!result.success) {
+        res.status(400).json({ error: result.error?.errors});
+        return;
     }
-}
+
+    const id = Number(req.params.id);
+
+    await updateUserInfo(id, result.data);
+};

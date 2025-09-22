@@ -3,15 +3,15 @@ import { getOpenAIResponse } from '../../../../shared/libs/open_ai/openai.js';
 import { infoStore } from '../../../../shared/data/info.store.js';
 import { loadTemplate } from '../../../../shared/utils/templates/template.loader.js';
 import paths from '../../../../shared/constants/paths.js';
-import { getJobPost } from '../../../../database/queries/v2/job.queries.js';
+import { getJobPost } from '../../../../database/queries/old/v2/job.queries.js';
 import { convertPDFToBase64 } from '../../../../shared/utils/documents/pdf/pdf.helpers.js';
 import { MatchSummaryMock } from '../../models/mocks/match_summary.mocks.js';
 import {
   MatchSummarySchema,
   MatchSummaryType,
 } from '../../models/match_summary.models';
-import { upsertMatchSummary } from '../../../../database/queries/v2/guide.queries.js';
-import { getMatchSummary as getMatches } from '../../../../database/queries/v2/guide.queries.js';
+import { upsertMatchSummary } from '../../../../database/queries/old/v2/guide.queries.js';
+import { getMatchSummary as getMatches } from '../../../../database/queries/old/v2/guide.queries.js';
 
 export const getMatchSummary = async (
   id: number,
