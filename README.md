@@ -1,3 +1,4 @@
+
 # Looking for a job? Me too buddy
 
 This is a personal tool I'm developing for myself to help me get through unemployment purgatory, but feel free to look around the repo.
@@ -8,60 +9,33 @@ This is a personal tool I'm developing for myself to help me get through unemplo
 
 Long story short, it's an overglorified resume/coverletter proofreader that's also an application tracker and job match analyzer. The purpose of the job match analyzer is moreso to provide some extra insight on my alignment to a particular role.
 
-### Key Features
+## Documentation
 
-#### Job Post Compilation
+For full documentation, visit the [Wiki](https://github.com/<your-username>/<your-repo>/wiki).
 
-- Automatically processes online job postings to extract and organize requirements, nice-to-haves, company values, salary ranges, and other relevant details.
-
-#### Personalized Resume Optimization
+### Previews
 
 ![alt text](https://github.com/Apacher122/job_hunter/blob/main/previews/Screenshot%202025-09-16%20at%2018.23.16.png "Resume Sample")
 
-- Uses NLP to analyze past resumes, cover letters, autobiographies, and any personal documents a user provides.
-- Optimizes resumes to better showcase role alignment. It doesn't seek to create a perfect candidate. It just makes sure that only the relevant skills and experiences the user *actually* has are displayed.
-- To the best of its ability, it will also display any skills or experiences that are not a 1:1 match but translate well into the role.
-- Preserves the user's voice: Any edits or improvements maintains tone, phrasing, and intent, ensuring consistency with user's personal style.
-  - This is done through studying any examples of writing, like previous essays, provided by the user. It prevents giving OpenAI too much "freedom" to just smash keywords together in a pretty way. The main goal is not to just         create cookie-cutter resumes and coverletters, but just different versions and recompilations of existing details. In other words, it just saves time of having to repeatedly pick and choose what you             want to display on your resume for a particular role.
-
-#### Cover Letter Assistance
 
 ![alt text](https://github.com/Apacher122/job_hunter/blob/main/previews/Screenshot%202025-09-16%20at%2018.24.08.png "Cover Letter Sample")
 
-- Drafts cover letters based on user-provided resumes, writing samples, and biographies to help guide the user in writing a strong and professional cover letter.
-  - Follows a strict guideline of preventing "keyword smashing" and dishonesty. It seeks to only guide the user while maintaining their authenticity.
-
-#### Job Match Analysis
 
 ![alt text](https://github.com/Apacher122/job_hunter/blob/main/previews/Screenshot%202025-09-16%20at%2018.22.58.png "Match Score Sample")
 
-- Takes a look at your entire profile to compare how well you fit to the role you're applying for.
-- Provides and explains match scores for the following categories, also weighed by employer preferences:
-    1. Resume Keyword & Phrases
-    2. Experience Alignment
-    3. Education & Credentials
-    4. Skills & Competencies
-    5. Achievements & Quantifiable Results
-    6. Job-Specific Filters (i.e. Clearances/citizenship required)
-    7. Cultural & Organizational Fit
-- Shows a radar chart to display your overall fit.
-- Provides an overall match score.
-- Gives advice on whether or not you should apply.
-  - Takes into account job post age, applicant count, industry, company size, and other external factors when giving feedback,
 
-#### Job Application Tracking
+## Important Note
 
-- Logs your job applications directly into Google Sheets.
-- Helps you stay organized by tracking application status, interview count, and key dates.
-- Also displays job applications and their status in the react ui.
+**I'm currently working on making this easily accessible to others**  
+My front-end is being developed as an electron app. 
+I'm currently working on refactoring my server-side code to support other users outside of just myself. This means refactoring my database architecture and focusing more on data-privacy and security.
 
-## Some notes if you want to try this out
+As of 9/23/2025, the road map is as follows:
+1. Rework backend.
+2. Create a clean electron frontend.
+3. Figure out the logistics of opening this up for public consumption.
 
-If you want to use this tool, keep in mind that I designed it for my own personal use.  
-It will require an OpenAI API key, which does cost some money. Money that only a job can give you :/  
-I'm using OpenAI's GPT-4o model because I have credits. That's literally the only reason for it. Otherwise, feel free to fork and change up the LLM used.
-
-### **Requirements**
+### **Requirements** (subject to change)
 
 - Docker
 - Google Cloud credentials with Sheets API enabled
