@@ -11,8 +11,8 @@ import { getOpenAIResponse } from "../../../shared/libs/open_ai/openai.js";
 import { loadTemplate } from '../../../shared/utils/templates/template.loader.js';
 import { parseJSONData } from '../../../shared/utils/documents/json/json.helpers.js';
 import paths from '../../../shared/constants/paths.js';
-import { upsertResume } from '../../../database/queries/resume.queries.js';
-import { getJobPost } from '../../../database/queries/job.queries.js';
+import { upsertResume } from '../../../database/queries/old/resume.queries.js';
+import { getJobPost } from '../../../database/queries/old/job.queries.js';
 import dotenv from 'dotenv';
 dotenv.config();
 

@@ -1,6 +1,6 @@
-import { AppliedJob } from '../../shared/types/types';
-import { JobPosting } from '../../shared/data/info.store.js';
-import pool from '../index.js';
+import { AppliedJob } from '../../../shared/types/types';
+import { JobPosting } from '../../../shared/data/info.store.js';
+import pool from '../../index.js';
 
 export async function insertJobInfo(jobPost: JobPosting): Promise<any> {
     if (!jobPost || !jobPost.companyName) {
