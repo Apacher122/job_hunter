@@ -1,34 +1,34 @@
-<input>
-    <resume>
-        {{resume}}
-    </resume>
-</input>
+# User Request
+I am submitting an application for the {{position}} role at your company ({{company}}). Help me tailor my resume.
 
-<task>
-    <user_request>
-        I am applying to the following job below.
-        Help me revise my resume.
-    </user_request>
+---
 
-    <job>
-        <position> {{position}} </position>
-        <company_name> {{company}} </company_name>
-        <years_of_experience_required> {{years_of_experience_required}} </years_of_experience_required>
-        <education_level> {{education_level}} </education_level>
-        <skills_required> {{skills_required}} </skills_required>
-        <skills_nice_to_haves> {{skills_nice_to_haves}} </skills_nice_to_haves>
-        <frameworks_and_libraries> {{frameworks_and_libraries}} </frameworks_and_libraries>
-        <programming_languages> {{programming_languages}} </programming_languages>
-        <databases> {{databases}} </databases>
-        <cloud_platforms> {{cloud_platforms}} </cloud_platforms>
-        <industry_keywords> {{industry_keywords}} </industry_keywords>
-        <soft_skills> {{soft_skills}} </soft_skills>
-        <certifications> {{certifications}} </certifications>
-        <company_culture> {{company_culture}} </company_culture>
-        <company_values> {{company_values}} </company_values>
-        <salary_range> {{salary_range}} </salary_range>
-    </job>
-</task>
+# Job Posting
 
+**Raw Job Post:**  
+{{jobPost}}
 
+**Position:** {{position}}  
+**Company Name:** {{company}}  
+**Years of Experience Required:** {{years_of_experience_required}}  
+**Education Level:** {{education_level}}  
 
+**Skills Required:** {{skills_required}}  
+**Skills Nice-to-Have:** {{skills_nice_to_haves}}  
+**Frameworks and Libraries:** {{frameworks_and_libraries}}  
+**Programming Languages:** {{programming_languages}}  
+**Databases:** {{databases}}  
+**Cloud Platforms:** {{cloud_platforms}}  
+**Industry Keywords:** {{industry_keywords}}  
+**Soft Skills:** {{soft_skills}}  
+**Certifications:** {{certifications}}  
+**Company Culture:** {{company_culture}}  
+**Company Values:** {{company_values}}  
+**Salary Range:** {{salary_range}}
+
+---
+
+# User Input
+
+## Resume
+{{resume}}
