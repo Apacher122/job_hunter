@@ -34,7 +34,8 @@
     "pg": "^8.16.0",
     "ts-dedent": "^2.2.0",
     "winston": "^3.17.0",
-    "zod": "^3.25.76"
+    "zod": "^3.25.76",
+    "express-rate-limit": "^8.1.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.2",
