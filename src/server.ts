@@ -2,8 +2,10 @@ import './config/firebaseAdmin'
 
 import authRoutes from './features/auth/routes/auth.routes';
 import bodyParser from 'body-parser';
+import { decryptApiKeyMiddleware } from './shared/middleware/decrypt';
 import dotenv from 'dotenv';
 import express from 'express';
+import { generateKeyPair } from './security/asymmetric';
 import { loadUserInfoToLatex } from './shared/utils/documents/latex/latex.helpers.js';
 import { shutdown } from './database/index.js';
 import { syncDBtoSheets } from './shared/libs/google/sheets.js';
@@ -13,6 +15,13 @@ dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
+
+
+const { publicKey, privateKey } = generateKeyPair();
+app.get('/public-key', (req, res) => {
+  res.send({ publicKey });
+})
+
 
 app.get('/', (req, res) => {
   res

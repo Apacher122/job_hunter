@@ -47,6 +47,7 @@ Thumbs.db
 # Authorization files
 credentials.json
 token.json
+firebase-service-key.json
 
 # Logs
 logs
@@ -88,4 +89,3 @@ possible_questions.txt
 job_data/
 user_info/
 corrections/
-cohere/
