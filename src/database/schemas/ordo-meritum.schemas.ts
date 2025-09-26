@@ -1,273 +1,225 @@
 import { Generated } from 'kysely';
 
-export type ApplicationStatus = 'OPEN' | 'REJECTED' | 'OFFERED';
-export type ProjectStatus = 'PLANNED' | 'ACTIVE' | 'COMPLETED' | 'ON_HOLD';
-export type EducationLevel =
-  | 'NONE'
-  | 'HIGH_SCHOOL'
-  | 'ASSOCIATE'
-  | 'BACHELORS'
-  | 'MASTERS'
-  | 'DOCTORATE'
-  | 'OTHER';
-
-export interface Candidate {
-  id: Generated<number>;
-  first_name: string;
-  middle_name?: string;
-  last_name: string;
-  email: string;
-  phone?: string;
-  created_at: Generated<Date>;
-  update_at: Generated<Date>;
+// --------------------
+// Core User
+// --------------------
+export interface User {
+  firebaseUid: string;
+  createdAt: Generated<Date>;
+  updatedAt: Generated<Date>;
 }
 
-export interface EducationInformation {
+// --------------------
+// Company & Role
+// --------------------
+export interface Company {
   id: Generated<number>;
-  school_name: string;
-  degree: string;
+  name: string;
+  description: string;
+  website: string;
+  industry: string;
+  size: string;
   location: string;
-  start_date: Date;
-  end_date?: Date;
-  education_summary?: string;
-  coursework?: string;
-  candidate_id: number;
+  culture: string;
+  values: string;
+  benefits: string;
 }
 
+export interface Role {
+  id: Generated<number>;
+  companyId: number;
+  title: string;
+  review: string;
+  typicalSalaryAsk: string;
+  typicalSalaryReason: string;
+  advisedSalaryAsk: string;
+  advisedSalaryReason: string;
+  applicationProcess: string;
+  expectedResponseTime: string;
+  createdAt: Generated<Date>;
+  updatedAt: Generated<Date>;
+}
+
+// --------------------
+// Job Requirements
+// --------------------
+export interface JobRequirements {
+  id: Generated<number>;
+  roleId: number;
+  description?: string;       // raw job body
+  yearsOfExperience?: string;
+  educationLevel?: string;
+  tools?: string;             // JSON string array
+  progLanguages?: string;     // JSON string array
+  frameworksAndLibs?: string; // JSON string array
+  databases?: string;         // JSON string array
+  cloudPlatforms?: string;    // JSON string array
+  industryKeywords?: string;  // JSON string array
+  softSkills?: string;        // JSON string array
+  certifications?: string;    // JSON string array
+  requirements?: string;      // JSON string array
+  niceToHaves?: string;       // JSON string array
+  applicantCount?: string;
+  codeAssessmentCompleted?: boolean;
+  interviewCount?: number;
+  initialApplicationUpdate?: Date;
+  createdAt: Generated<Date>;
+  updatedAt: Generated<Date>;
+}
+
+// --------------------
+// Resume & Match Summary
+// --------------------
 export interface Resume {
   id: Generated<number>;
-  candidate_id?: number;
-  job_posting_id?: number;
-  created_at: Generated<Date>;
-  updated_at: Generated<Date>;
-  deleted_at?: Date;
-}
-
-export interface Experience {
-  id: Generated<number>;
-  resume_id?: number;
-  position: string;
-  company: string;
-  start_date: Date;
-  end_date?: Date;
-  created_at: Generated<Date>;
-  updated_at: Generated<Date>;
-}
-
-export interface ExperienceDescription {
-  id: Generated<number>;
-  experience_id: number;
-  text: string;
-  justification_for_change?: string;
-  is_new_suggestion: boolean;
-}
-
-export interface Project {
-  id: Generated<number>;
-  resume_id?: number;
-  name: string;
-  role: string;
-  status: ProjectStatus;
-  created_at: Generated<Date>;
-  updated_at: Generated<Date>;
-}
-
-export interface ProjectDescription {
-  id: Generated<number>;
-  project_id: number;
-  text: string;
-  justification_for_change?: string;
-  is_new_suggestion: boolean;
-}
-
-export interface Skill {
-  id: Generated<number>;
-  resume_id?: number;
-  category: string;
-  justification_for_changes?: string;
-  created_at: Generated<Date>;
-  updated_at: Generated<Date>;
-}
-
-export interface SkillItem {
-  id: Generated<number>;
-  skill_id: number;
-  item: string;
+  firebaseUid: string;
+  roleId: number;
+  createdAt: Generated<Date>;
+  updatedAt: Generated<Date>;
 }
 
 export interface MatchSummary {
   id: Generated<number>;
-  job_posting_id: number;
-  should_apply: string;
-  should_apply_reasoning?: string;
-  metrics?: any;
-  overall_summary?: any;
-  projects_section_missing_entries?: boolean;
-  created_at: Generated<Date>;
-  updated_at: Generated<Date>;
-  resume_id?: number;
+  resumeId: number; // unique per resume
+  shouldApply: string;       // e.g., "Strong Yes", "Yes", etc.
+  reasoning: string;
+  metrics?: string;          // JSON string
+  overallSummary?: string;   // JSON string
+  createdAt: Generated<Date>;
+  updatedAt: Generated<Date>;
 }
 
-export interface JobPosting {
+// --------------------
+// Experience
+// --------------------
+export interface Experience {
   id: Generated<number>;
-  body?: string;
-  company_name?: string;
-  raw_company_name?: string;
-  url?: string;
-  position?: string;
-  position_summary?: string;
-  years_of_experience?: string;
-  education_level?: EducationLevel;
-  salary?: string;
-  applicant_count?: string;
-  job_details?: string;
-  user_applied?: boolean;
-  applied_on?: Date;
-  status: ApplicationStatus;
-  code_assessment_completed?: boolean;
-  interview_count?: number;
-  initial_application_update?: Date;
-  created_at: Generated<Date>;
-  updated_at: Generated<Date>;
-  deleted_at?: Date;
+  resumeId: number;
+  position: string;
+  company: string;
+  startDate: Date;
+  endDate?: Date;
+  createdAt: Generated<Date>;
+  updatedAt: Generated<Date>;
 }
 
-export interface JobInfo {
-  job_posting_id: number;
-  company_description?: string;
-  company_website?: string;
-  company_industry?: string;
-  company_size?: string;
-  company_location?: string;
-  company_culture?: string;
-  company_values?: string;
-  company_benefits?: string;
-  position_review?: string;
-  typical_salary_ask?: string;
-  typical_salary_ask_reasoning?: string;
-  advised_salary_ask?: string;
-  advised_salary_ask_reasoning?: string;
-  application_process?: string;
-  expected_response_time?: string;
-}
-
-export interface AdditionalInformation {
+export interface ExperienceDescription {
   id: Generated<number>;
-  job_posting_id: number;
-  information_title?: string;
-  text?: string;
-  created_at: Generated<Date>;
-}
-
-export interface PossibleInterviewQuestion {
-  id: Generated<number>;
-  job_posting_id: number;
-  is_behavioral_or_technical?: string;
-  question: string;
-  question_source?: string;
-  answer?: string;
-  what_they_look_for?: string;
-  what_to_study?: string;
-}
-
-export interface SuggestedChange {
-  id: Generated<number>;
-  entity: string;
-  entity_id: number;
+  experienceId: number;
   text: string;
-  justification?: string;
-  is_new: boolean;
-  created_at: Generated<Date>;
-  resolved: boolean;
+  justificationForChange?: string;
+  isNewSuggestion: boolean;
 }
 
-// Many-to-Many / Join Tables
+// --------------------
+// Project
+// --------------------
+export type ProjectStatus = 'PLANNED' | 'ACTIVE' | 'COMPLETED' | 'ON_HOLD';
 
-export interface JobPostingNiceToHaves {
-  job_posting_id: number;
-  skill: string;
-}
-export interface JobPostingTool {
-  job_posting_id: number;
-  tool: string;
-}
-
-export interface JobPostingProgLanguage {
-  job_posting_id: number;
-  language: string;
-}
-
-export interface JobPostingFramework {
-  job_posting_id: number;
-  framework: string;
+export interface Project {
+  id: Generated<number>;
+  resumeId: number;
+  name: string;
+  role: string;
+  status: ProjectStatus;
+  createdAt: Generated<Date>;
+  updatedAt: Generated<Date>;
 }
 
-export interface JobPostingDatabase {
-  job_posting_id: number;
-  database: string;
+export interface ProjectDescription {
+  id: Generated<number>;
+  projectId: number;
+  text: string;
+  justificationForChange?: string;
+  isNewSuggestion: boolean;
 }
 
-export interface JobPostingCloudPlatform {
-  job_posting_id: number;
-  cloud: string;
+// --------------------
+// Skills
+// --------------------
+export interface Skill {
+  id: Generated<number>;
+  resumeId: number;
+  category: string;
+  justificationForChanges?: string;
+  createdAt: Generated<Date>;
+  updatedAt: Generated<Date>;
 }
 
-export interface JobPostingIndustryKeyword {
-  job_posting_id: number;
-  keyword: string;
+export interface SkillItem {
+  id: Generated<number>;
+  skillId: number;
+  name: string;
 }
 
-export interface JobPostingSoftSkill {
-  job_posting_id: number;
-  soft_skill: string;
+// --------------------
+// Education
+// --------------------
+export interface Education {
+  id: Generated<number>;
+  resumeId: number;
+  school: string;
+  degree: string;
+  fieldOfStudy: string;
+  startDate: Date;
+  endDate?: Date;
+  gpa?: string;
+  honors?: string;
+  createdAt: Generated<Date>;
+  updatedAt: Generated<Date>;
 }
 
-export interface JobPostingCertification {
-  job_posting_id: number;
-  certification: string;
+// --------------------
+// Candidate Questionnaires & Writing Samples
+// --------------------
+export interface CandidateQuestionnaire {
+  id: Generated<number>;
+  firebaseUid: string;
+  title?: string;
+  briefHistory?: string;
+  questions: string; // JSON string array of categories + questions
+  createdAt: Generated<Date>;
+  updatedAt: Generated<Date>;
 }
 
-export interface JobPostingCompanyCulture {
-  job_posting_id: number;
-  culture: string;
+export interface CandidateWritingSample {
+  id: Generated<number>;
+  firebaseUid: string;
+  content: string;
+  createdAt: Generated<Date>;
+  updatedAt: Generated<Date>;
 }
 
-export interface JobPostingCompanyValue {
-  job_posting_id: number;
-  value: string;
+// --------------------
+// Questionnaire Responses (linked to CandidateQuestionnaire)
+// --------------------
+export interface QuestionnaireResponse {
+  id: Generated<number>;
+  questionnaireId: number;
+  question: string;
+  response: string;
+  createdAt: Generated<Date>;
+  updatedAt: Generated<Date>;
 }
 
-export interface JobPostingRequirement {
-  job_posting_id: number;
-  requirement: string;
-}
-
+// --------------------
+// Full DB
+// --------------------
 export interface DB {
-  candidates: Candidate;
-  education_information: EducationInformation;
+  users: User;
+  companies: Company;
+  roles: Role;
+  job_requirements: JobRequirements;
   resumes: Resume;
+  match_summaries: MatchSummary;
   experiences: Experience;
   experience_descriptions: ExperienceDescription;
   projects: Project;
   project_descriptions: ProjectDescription;
   skills: Skill;
   skill_items: SkillItem;
-  match_summaries: MatchSummary;
-  job_postings: JobPosting;
-  job_info: JobInfo;
-  additional_information: AdditionalInformation;
-  possible_interview_question: PossibleInterviewQuestion;
-  suggeted_change: SuggestedChange;
-  job_posting_nice_to_haves: JobPostingNiceToHaves;
-  job_posting_tools: JobPostingTool;
-  job_posting_prog_languages: JobPostingProgLanguage;
-  job_posting_frameworks: JobPostingFramework;
-  job_posting_databases: JobPostingDatabase;
-  job_posting_cloud_platforms: JobPostingCloudPlatform;
-  job_posting_industry_keywords: JobPostingIndustryKeyword;
-  job_posting_soft_skills: JobPostingSoftSkill;
-  job_posting_certifications: JobPostingCertification;
-  job_posting_company_cultures: JobPostingCompanyCulture;
-  job_posting_company_values: JobPostingCompanyValue;
-  job_posting_requirements: JobPostingRequirement;
+  education: Education;
+  candidate_questionnaires: CandidateQuestionnaire;
+  candidate_writing_samples: CandidateWritingSample;
+  questionnaire_responses: QuestionnaireResponse;
 }

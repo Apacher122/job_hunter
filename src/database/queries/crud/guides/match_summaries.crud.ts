@@ -1,17 +1,34 @@
-import { db } from '../../../index';
 import { MatchSummary } from '../../../schemas/ordo-meritum.schemas';
+import { db } from '../../../index';
 
-export const getMatchSummaryById = (id: number) =>
-  db.selectFrom('match_summaries').selectAll().where('id', '=', id).executeTakeFirst();
+export const createMatchSummary = async (summary: Omit<MatchSummary, 'id' | 'createdAt' | 'updatedAt'>) => {
+  return await db
+    .insertInto('match_summaries')
+    .values(summary)
+    .returningAll()
+    .executeTakeFirst();
+};
 
-export const getMatchSummaryByJobPostingId = (job_posting_id: number) =>
-  db.selectFrom('match_summaries').selectAll().where('job_posting_id', '=', job_posting_id).executeTakeFirst();
+export const updateMatchSummary = async (id: number, updates: Partial<Omit<MatchSummary, 'id' | 'createdAt' | 'updatedAt'>>) => {
+  return await db
+    .updateTable('match_summaries')
+    .set(updates)
+    .where('id', '=', id)
+    .returningAll()
+    .executeTakeFirst();
+};
 
-export const createMatchSummary = (summary: Omit<MatchSummary, 'id' | 'created_at' | 'updated_at'>) =>
-  db.insertInto('match_summaries').values(summary).returningAll().executeTakeFirst();
+export const getMatchSummaryById = async (id: number) => {
+  return await db
+    .selectFrom('match_summaries')
+    .selectAll()
+    .where('id', '=', id)
+    .executeTakeFirst();
+};
 
-export const updateMatchSummary = (id: number, summary: Partial<Omit<MatchSummary, 'id' | 'created_at' | 'updated_at'>>) =>
-  db.updateTable('match_summaries').set(summary).where('id', '=', id).returningAll().executeTakeFirst();
-
-export const deleteMatchSummary = (id: number) =>
-  db.deleteFrom('match_summaries').where('id', '=', id).execute();
+export const deleteMatchSummary = async (id: number) => {
+  return await db
+    .deleteFrom('match_summaries')
+    .where('id', '=', id)
+    .execute();
+};

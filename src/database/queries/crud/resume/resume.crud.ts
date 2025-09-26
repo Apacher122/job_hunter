@@ -1,17 +1,34 @@
-import { db } from '../../../index';
 import { Resume } from '../../../schemas/ordo-meritum.schemas';
+import { db } from '../../../index';
 
-export const getResumeById = (id: number) =>
-  db.selectFrom('resumes').selectAll().where('id', '=', id).executeTakeFirst();
+export const createResume = async (resume: Omit<Resume, 'id' | 'createdAt' | 'updatedAt'>) => {
+  return await db
+    .insertInto('resumes')
+    .values(resume)
+    .returningAll()
+    .executeTakeFirst();
+};
 
-export const getResumesByCandidateId = (candidate_id: number) =>
-  db.selectFrom('resumes').selectAll().where('candidate_id', '=', candidate_id).execute();
+export const updateResume = async (id: number, updates: Partial<Omit<Resume, 'id' | 'createdAt' | 'updatedAt'>>) => {
+  return await db
+    .updateTable('resumes')
+    .set(updates)
+    .where('id', '=', id)
+    .returningAll()
+    .executeTakeFirst();
+};
 
-export const createResume = (resume: Omit<Resume, 'id' | 'created_at' | 'updated_at' | 'deleted_at'>) =>
-  db.insertInto('resumes').values(resume).returningAll().executeTakeFirst();
+export const getResumeById = async (id: number) => {
+  return await db
+    .selectFrom('resumes')
+    .selectAll()
+    .where('id', '=', id)
+    .executeTakeFirst();
+};
 
-export const updateResume = (id: number, resume: Partial<Omit<Resume, 'id' | 'created_at' | 'updated_at' | 'deleted_at'>>) =>
-  db.updateTable('resumes').set(resume).where('id', '=', id).returningAll().executeTakeFirst();
-
-export const deleteResume = (id: number) =>
-  db.deleteFrom('resumes').where('id', '=', id).execute();
+export const deleteResume = async (id: number) => {
+  return await db
+    .deleteFrom('resumes')
+    .where('id', '=', id)
+    .execute();
+};

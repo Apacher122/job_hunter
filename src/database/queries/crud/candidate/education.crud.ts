@@ -1,32 +1,34 @@
+import { Education } from '../../../schemas/ordo-meritum.schemas';
 import { db } from '../../../index';
-import { EducationInformation } from '../../../schemas/ordo-meritum.schemas';
 
-export const getEducationById = (id: number) =>
-  db.selectFrom('education_information')
-    .selectAll()
-    .where('id', '=', id)
-    .executeTakeFirst();
-
-export const getEducationByCandidateId = (candidate_id: number) =>
-  db.selectFrom('education_information')
-    .selectAll()
-    .where('candidate_id', '=', candidate_id)
-    .execute();
-
-export const createEducation = (edu: Omit<EducationInformation, 'id'>) =>
-  db.insertInto('education_information')
-    .values(edu)
+export const createEducation = async (education: Omit<Education, 'id' | 'createdAt' | 'updatedAt'>) => {
+  return await db
+    .insertInto('education')
+    .values(education)
     .returningAll()
     .executeTakeFirst();
+};
 
-export const updateEducation = (id: number, edu: Partial<Omit<EducationInformation, 'id'>>) =>
-  db.updateTable('education_information')
-    .set(edu)
+export const updateEducation = async (id: number, updates: Partial<Omit<Education, 'id' | 'createdAt' | 'updatedAt'>>) => {
+  return await db
+    .updateTable('education')
+    .set(updates)
     .where('id', '=', id)
     .returningAll()
     .executeTakeFirst();
+};
 
-export const deleteEducation = (id: number) =>
-  db.deleteFrom('education_information')
+export const getEducationById = async (id: number) => {
+  return await db
+    .selectFrom('education')
+    .selectAll()
+    .where('id', '=', id)
+    .executeTakeFirst();
+};
+
+export const deleteEducation = async (id: number) => {
+  return await db
+    .deleteFrom('education')
     .where('id', '=', id)
     .execute();
+};
