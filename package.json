@@ -41,8 +41,7 @@
     "ts-dedent": "^2.2.0",
     "winston": "^3.17.0",
     "zod": "^3.25.76",
-    "express-rate-limit": "^8.1.0"
-    "zod": "^3.25.76",
+    "express-rate-limit": "^8.1.0",
     "zod-to-json-schema": "^3.19.0"
   },
   "devDependencies": {
