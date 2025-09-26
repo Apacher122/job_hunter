@@ -7,10 +7,6 @@ import path from 'path';
 import paths from '../../constants/paths.js';
 import pdf from 'pdf-parse';
 
-///////////////////////
-// File Reading Logic //
-///////////////////////
-
 type Reader = (filePath: string) => Promise<string>;
 
 const txtReader: Reader = (filePath) => fs.promises.readFile(filePath, 'utf-8');
@@ -102,9 +98,6 @@ export const cleanup = async (title: string, type: 'resume' | 'cover_letter', id
   logger.info('Temporary LaTeX files purged');
 };
 
-/////////////////////////
-// Express Response Util //
-/////////////////////////
 
 export async function sendFileBuffer(
   res: Response,
