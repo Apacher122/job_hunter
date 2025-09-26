@@ -15,29 +15,30 @@ export interface User {
 export interface Company {
   id: Generated<number>;
   name: string;
-  description: string;
-  website: string;
-  industry: string;
-  size: string;
-  location: string;
-  culture: string;
-  values: string;
-  benefits: string;
+  description?: string;
+  website?: string;
+  industry?: string;
+  size?: string;
+  location?: string;
+  culture?: string;
+  values?: string;
+  benefits?: string;
 }
 
 export interface Role {
   id: Generated<number>;
   companyId: number;
   title: string;
-  review: string;
-  typicalSalaryAsk: string;
-  typicalSalaryReason: string;
-  advisedSalaryAsk: string;
-  advisedSalaryReason: string;
-  applicationProcess: string;
-  expectedResponseTime: string;
-  createdAt: Generated<Date>;
-  updatedAt: Generated<Date>;
+  description?: string;
+  salaryRange?: string;
+  typicalSalaryAsk?: string;
+  typicalSalaryReason?: string;
+  advisedSalaryAsk?: string;
+  advisedSalaryReason?: string;
+  applicationProcess?: string;
+  expectedResponseTime?: string;
+  createdAt?: Generated<Date>;
+  updatedAt?: Generated<Date>;
 }
 
 // --------------------
@@ -46,7 +47,7 @@ export interface Role {
 export interface JobRequirements {
   id: Generated<number>;
   roleId: number;
-  description?: string;       // raw job body
+  otherInfo?: string;       // raw job body
   yearsOfExperience?: string;
   educationLevel?: string;
   tools?: string;             // JSON string array

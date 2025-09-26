@@ -56,3 +56,5 @@ export * from './queries/crud/job_posts/job_requirements.crud';
 
 // Guides
 export * from './queries/crud/guides/match_summaries.crud';
+
+export * from './queries/complex/jobs.queries';

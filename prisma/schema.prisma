@@ -34,14 +34,14 @@ model User {
 model Company {
   id          Int    @id @default(autoincrement())
   name        String @unique
-  description String
-  website     String
-  industry    String
-  size        String
-  location    String
-  culture     String
-  values      String
-  benefits    String
+  description String?
+  website     String?
+  industry    String?
+  size        String?
+  location    String?
+  culture     String?
+  values      String?
+  benefits    String?
   roles       Role[]
 
   @@map("companies")
@@ -50,14 +50,14 @@ model Company {
 model Role {
   id                   Int      @id @default(autoincrement())
   companyId            Int
-  title                String
-  review               String
-  typicalSalaryAsk     String
-  typicalSalaryReason  String
-  advisedSalaryAsk     String
-  advisedSalaryReason  String
-  applicationProcess   String
-  expectedResponseTime String
+  title                String?
+  description          String?
+  typicalSalaryAsk     String?
+  typicalSalaryReason  String?
+  advisedSalaryAsk     String?
+  advisedSalaryReason  String?
+  applicationProcess   String?
+  expectedResponseTime String?
   createdAt            DateTime @default(now())
   updatedAt            DateTime @default(now())
 
@@ -74,7 +74,7 @@ model Role {
 model JobRequirements {
   id                       Int       @id @default(autoincrement())
   roleId                   Int       @unique
-  description              String?
+  otherInfo                String?
   yearsOfExperience        String?
   educationLevel           String?
   tools                    String?
