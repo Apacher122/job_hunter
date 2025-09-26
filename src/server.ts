@@ -1,21 +1,19 @@
+import './config/firebaseAdmin'
+
+import authRoutes from './features/auth/routes/auth.routes';
 import bodyParser from 'body-parser';
-import coverLetterRoutes from './features/cover_letter/routes/cover_letter.routes.js';
-import applicationRoutes from './features/application_tracking/routes/app_tracker.routes.js';
-import express from 'express';
-import { insertRowToSheet } from './shared/libs/google/sheets.js';
-import jobGuideRoutes from './features/job_guide/routes/job_guide.routes.js';
-import { loadUserInfoToLatex } from './shared/utils/documents/latex/latex.helpers.js';
-import resumeRoutes from './features/resume/routes/resume.routes.js';
-import userRoutes from './features/user/routes/user.routes';
-import { syncDBtoSheets } from './shared/libs/google/sheets.js';
-import { shutdown } from './database/index.js';
 import dotenv from 'dotenv';
+import express from 'express';
+import { loadUserInfoToLatex } from './shared/utils/documents/latex/latex.helpers.js';
+import { shutdown } from './database/index.js';
+import { syncDBtoSheets } from './shared/libs/google/sheets.js';
+import userRoutes from './features/user/routes/user.routes';
+
 dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
 
-// Entrance
 app.get('/', (req, res) => {
   res
     .status(200)
@@ -23,6 +21,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/user', userRoutes);
+app.use('/auth', authRoutes);
 // app.use('/resume', resumeRoutes);
 // app.use('/cover-letter', coverLetterRoutes);
 // app.use('/job-guide', jobGuideRoutes);
@@ -34,18 +33,18 @@ app.post('/reload', async (req, res) => {
 });
 
 const initializeApp = async () => {
-  try {
-    await loadUserInfoToLatex();
-    if (process.env.NODE_ENV !== 'testing') await syncDBtoSheets();
-    console.log('Job application content and user info loaded successfully.');
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      console.error(`Error initializing app: ${error.message}`);
-    } else {
-      console.error('An unknown error occurred during app initialization.');
-    }
-    throw error;
-  }
+  // try {
+  //   await loadUserInfoToLatex();
+  //   if (process.env.NODE_ENV !== 'testing') await syncDBtoSheets();
+  //   console.log('Job application content and user info loaded successfully.');
+  // } catch (error: unknown) {
+  //   if (error instanceof Error) {
+  //     console.error(`Error initializing app: ${error.message}`);
+  //   } else {
+  //     console.error('An unknown error occurred during app initialization.');
+  //   }
+  //   throw error;
+  // }
 };
 
 const startServer = async () => {

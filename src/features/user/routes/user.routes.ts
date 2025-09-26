@@ -1,8 +1,28 @@
-import { getUser, newUser } from '../controllers/user.controller';
-import express from 'express';
+import * as userController from "../controllers";
+
+import { authenticate } from "../../../shared/middleware/authenticate";
+import express from "express";
 
 const router = express.Router();
-router.post('/create-user', newUser);
-router.get('/get-user-info', getUser);
-router.put('/update-user-info');
+
+router.post(
+  "/questionnaire",
+  authenticate,
+  userController.createOrUpdateCandidateQuestionnaire
+);
+
+router.get(
+  "/questionnaire",
+  authenticate,
+  userController.getCandidateQuestionnaire
+);
+
+router.post(
+  "/writing-samples",
+  authenticate,
+  userController.createOrUpdateWritingSamples
+);
+
+router.get("/writing-samples", authenticate, userController.getWritingSamples);
+
 export default router;

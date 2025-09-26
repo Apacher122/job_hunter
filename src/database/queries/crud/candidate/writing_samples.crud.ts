@@ -1,39 +1,41 @@
 import { CandidateWritingSample } from "../../../schemas/ordo-meritum.schemas";
 import { db } from "../../..";
 
-export const createCandidateWritingSample = async (
-  sample: Omit<CandidateWritingSample, 'id' | 'createdAt' | 'updatedAt'>
+export const createOrUpdateCandidateWritingSample = async (
+  writingSample: Omit<CandidateWritingSample, 'id' | 'createdAt' | 'updatedAt'>
 ) => {
   return await db
     .insertInto('candidate_writing_samples')
-    .values(sample)
+    .values(writingSample)
+    .onConflict((ocb) =>
+      ocb
+        .column('firebaseUid')
+        .doUpdateSet({
+          content: writingSample.content,
+          updatedAt: new Date(),
+        })
+    )
     .returningAll()
     .executeTakeFirst();
 };
 
-export const updateCandidateWritingSample = async (
-  id: number,
-  updates: Partial<Omit<CandidateWritingSample, 'id' | 'createdAt' | 'updatedAt'>>
-) => {
-  return await db
-    .updateTable('candidate_writing_samples')
-    .set(updates)
-    .where('id', '=', id)
-    .returningAll()
-    .executeTakeFirst();
-};
-
-export const getCandidateWritingSampleById = async (id: number) => {
-  return await db
-    .selectFrom('candidate_writing_samples')
+export const getCandidateWritingSampleByUid = async (
+  firebaseUid: string
+): Promise<CandidateWritingSample | undefined> => {
+  const sample = await db
+    .selectFrom("candidate_writing_samples")
     .selectAll()
-    .where('id', '=', id)
+    .where("firebaseUid", "=", firebaseUid)
     .executeTakeFirst();
+
+  return sample as CandidateWritingSample | undefined;
 };
 
-export const deleteCandidateWritingSample = async (id: number) => {
+export const deleteCandidateWritingSample = async (
+  firebaseUid: string
+): Promise<any> => {
   return await db
     .deleteFrom('candidate_writing_samples')
-    .where('id', '=', id)
-    .execute();
+    .where('firebaseUid', '=', firebaseUid)
+    .executeTakeFirst();
 };

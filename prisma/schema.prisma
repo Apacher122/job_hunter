@@ -14,18 +14,26 @@ enum ProjectStatus {
   ON_HOLD
 }
 
+// --------------------
+// Core User
+// --------------------
 model User {
-  firebaseUid   String       @id
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  resumes       Resume[]
-  questionnaires CandidateQuestionnaire[]
-  writingSamples CandidateWritingSample[]
+  firebaseUid            String                   @id
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @default(now())
+  CandidateWritingSample CandidateWritingSample[]
+  CandidateQuestionnaire CandidateQuestionnaire[]
+  Resume                 Resume[]
+
+  @@map("users")
 }
 
+// --------------------
+// Company & Role
+// --------------------
 model Company {
-  id          Int     @id @default(autoincrement())
-  name        String  @unique
+  id          Int    @id @default(autoincrement())
+  name        String @unique
   description String
   website     String
   industry    String
@@ -35,116 +43,146 @@ model Company {
   values      String
   benefits    String
   roles       Role[]
+
+  @@map("companies")
 }
 
 model Role {
-  id                    Int       @id @default(autoincrement())
-  companyId             Int
-  title                 String
-  review                String
-  typicalSalaryAsk      String
-  typicalSalaryReason   String
-  advisedSalaryAsk      String
-  advisedSalaryReason   String
-  applicationProcess    String
-  expectedResponseTime  String
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+  id                   Int      @id @default(autoincrement())
+  companyId            Int
+  title                String
+  review               String
+  typicalSalaryAsk     String
+  typicalSalaryReason  String
+  advisedSalaryAsk     String
+  advisedSalaryReason  String
+  applicationProcess   String
+  expectedResponseTime String
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @default(now())
 
-  company        Company         @relation(fields: [companyId], references: [id])
+  company         Company          @relation(fields: [companyId], references: [id])
   jobRequirements JobRequirements?
   resumes         Resume[]
+
+  @@map("roles")
 }
 
+// --------------------
+// Job Requirements
+// --------------------
 model JobRequirements {
-  id                    Int       @id @default(autoincrement())
-  roleId                Int       @unique
-  description           String?
-  yearsOfExperience     String?
-  educationLevel        String?
-  tools                 String?   // JSON string array
-  progLanguages         String?   // JSON string array
-  frameworksAndLibs     String?   // JSON string array
-  databases             String?   // JSON string array
-  cloudPlatforms        String?   // JSON string array
-  industryKeywords      String?   // JSON string array
-  softSkills            String?   // JSON string array
-  certifications        String?   // JSON string array
-  requirements          String?   // JSON string array
-  niceToHaves           String?   // JSON string array
-  applicantCount        String?
-  codeAssessmentCompleted Boolean?
-  interviewCount        Int?
+  id                       Int       @id @default(autoincrement())
+  roleId                   Int       @unique
+  description              String?
+  yearsOfExperience        String?
+  educationLevel           String?
+  tools                    String?
+  progLanguages            String?
+  frameworksAndLibs        String?
+  databases                String?
+  cloudPlatforms           String?
+  industryKeywords         String?
+  softSkills               String?
+  certifications           String?
+  requirements             String?
+  niceToHaves              String?
+  applicantCount           String?
+  codeAssessmentCompleted  Boolean?
+  interviewCount           Int?
   initialApplicationUpdate DateTime?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @default(now())
 
   role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@map("job_requirements")
 }
 
+// --------------------
+// Resume & Match Summary
+// --------------------
 model Resume {
-  id           Int       @id @default(autoincrement())
-  firebaseUid  String
-  roleId       Int
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id          Int      @id @default(autoincrement())
+  firebaseUid String
+  roleId      Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
 
-  role         Role       @relation(fields: [roleId], references: [id])
+  role         Role          @relation(fields: [roleId], references: [id])
   matchSummary MatchSummary?
   experiences  Experience[]
   projects     Project[]
   skills       Skill[]
-  user         User       @relation(fields: [firebaseUid], references: [firebaseUid])
+  education    Education[]
+
+  user User @relation(fields: [firebaseUid], references: [firebaseUid])
+
+  @@map("resumes")
 }
 
 model MatchSummary {
-  id             Int       @id @default(autoincrement())
-  resumeId       Int       @unique
+  id             Int      @id @default(autoincrement())
+  resumeId       Int      @unique
   shouldApply    String
   reasoning      String
-  metrics        String?   // JSON string
-  overallSummary String?   // JSON string
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  metrics        String?
+  overallSummary String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now())
 
   resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("match_summaries")
 }
 
+// --------------------
+// Experience
+// --------------------
 model Experience {
-  id               Int                     @id @default(autoincrement())
-  resumeId         Int
-  position         String
-  company          String
-  startDate        DateTime
-  endDate          DateTime?
-  descriptions     ExperienceDescription[]
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  id        Int       @id @default(autoincrement())
+  resumeId  Int
+  position  String
+  company   String
+  startDate DateTime
+  endDate   DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
 
-  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  descriptions ExperienceDescription[]
+  resume       Resume                  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("experiences")
 }
 
 model ExperienceDescription {
-  id                     Int        @id @default(autoincrement())
+  id                     Int     @id @default(autoincrement())
   experienceId           Int
   text                   String
   justificationForChange String?
-  isNewSuggestion        Boolean    @default(false)
+  isNewSuggestion        Boolean
 
   experience Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+
+  @@map("experience_descriptions")
 }
 
+// --------------------
+// Project
+// --------------------
 model Project {
-  id                  Int                  @id @default(autoincrement())
-  resumeId            Int
-  name                String
-  role                String
-  status              ProjectStatus        @default(ACTIVE)
-  descriptions        ProjectDescription[]
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  id        Int           @id @default(autoincrement())
+  resumeId  Int
+  name      String
+  role      String
+  status    ProjectStatus
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @default(now())
 
-  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  descriptions ProjectDescription[]
+  resume       Resume               @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("projects")
 }
 
 model ProjectDescription {
@@ -152,21 +190,27 @@ model ProjectDescription {
   projectId              Int
   text                   String
   justificationForChange String?
-  isNewSuggestion        Boolean @default(false)
+  isNewSuggestion        Boolean
 
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("project_descriptions")
 }
 
+// --------------------
+// Skills
+// --------------------
 model Skill {
   id                      Int         @id @default(autoincrement())
   resumeId                Int
   category                String
   justificationForChanges String?
-  items                   SkillItem[]
   createdAt               DateTime    @default(now())
-  updatedAt               DateTime    @updatedAt
+  updatedAt               DateTime    @default(now())
+  items                   SkillItem[]
+  resume                  Resume      @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
-  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  @@map("skills")
 }
 
 model SkillItem {
@@ -175,27 +219,47 @@ model SkillItem {
   name    String
 
   skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@map("skill_items")
 }
 
-model CandidateQuestionnaire {
+// --------------------
+// Education
+// --------------------
+model Education {
   id           Int       @id @default(autoincrement())
-  firebaseUid  String
-  briefHistory String?
+  resumeId     Int
+  school       String
+  degree       String
+  fieldOfStudy String
+  startDate    DateTime
+  endDate      DateTime?
+  gpa          String?
+  honors       String?
   createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  updatedAt    DateTime  @default(now())
 
-  questions QuestionnaireItem[]
-  user      User @relation(fields: [firebaseUid], references: [firebaseUid], onDelete: Cascade)
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("education")
 }
 
-model QuestionnaireItem {
-  id               Int    @id @default(autoincrement())
-  questionnaireId  Int
-  category         String
-  question         String
-  answer           String?
+// --------------------
+// Candidate Questionnaires & Writing Samples
+// --------------------
+model CandidateQuestionnaire {
+  id           Int      @id @default(autoincrement())
+  firebaseUid  String   @unique
+  title        String?
+  briefHistory String?
+  questions    String // JSON string array
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now())
 
-  questionnaire CandidateQuestionnaire @relation(fields: [questionnaireId], references: [id], onDelete: Cascade)
+  user      User                    @relation(fields: [firebaseUid], references: [firebaseUid], onDelete: Cascade)
+  responses QuestionnaireResponse[]
+
+  @@map("candidate_questionnaires")
 }
 
 model CandidateWritingSample {
@@ -203,6 +267,25 @@ model CandidateWritingSample {
   firebaseUid String
   content     String
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
 
   user User @relation(fields: [firebaseUid], references: [firebaseUid], onDelete: Cascade)
+
+  @@map("candidate_writing_samples")
+}
+
+// --------------------
+// Questionnaire Responses
+// --------------------
+model QuestionnaireResponse {
+  id              Int      @id @default(autoincrement())
+  questionnaireId Int
+  question        String
+  response        String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now())
+
+  questionnaire CandidateQuestionnaire @relation(fields: [questionnaireId], references: [id], onDelete: Cascade)
+
+  @@map("questionnaire_responses")
 }
