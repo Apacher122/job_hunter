@@ -5,10 +5,10 @@ import { Request, Response } from "express";
 import { AuthenticatedRequest } from "../../../shared/middleware/authenticate";
 
 export const createOrUpdateCandidateQuestionnaire = async (
-  req: Request, // use plain Request
+  req: Request, 
   res: Response
 ) => {
-  const authReq = req as AuthenticatedRequest; // assert type here
+  const authReq = req as AuthenticatedRequest; 
   try {
     const result = await CandidateService.createOrUpdateCandidateQuestionnaire(
       authReq.user.uid,

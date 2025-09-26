@@ -4,7 +4,7 @@ import { getResumeChanges } from '../controllers/resume.controllers';
 
 const router = express.Router();
 
-router.get('/get-pdf', downloadDocument);
+router.get('/get-resume', downloadDocument);
 router.get('/get-change-summary', getResumeChanges);
 
 export default router;
