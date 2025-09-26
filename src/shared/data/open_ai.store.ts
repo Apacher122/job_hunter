@@ -1,8 +1,6 @@
 import { CompanyInfoSchema, CompanyInfoType } from "../../job_guide/models/company_info.models.js";
 import { Experience, Project, ResumeItems, ResumeItemsType } from "../../resume/models/resume.models.js";
 
-import { resetInfoStore } from './info.store';
-import { z } from "zod";
 
 export const initializeResumeItems = (): ResumeItemsType => ({
     experiences: [],

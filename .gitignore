@@ -79,3 +79,13 @@ projects.tex
 skills.tex
 coverletter-template.tex
 resume-original.tex
+jest.config.js
+processed_job_info_template.txt
+processed_job_info.txt
+job_list.json
+questions_back_up.txt
+possible_questions.txt
+job_data/
+user_info/
+corrections/
+cohere/

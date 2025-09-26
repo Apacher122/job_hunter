@@ -1,5 +1,5 @@
-import { CompanyInfoType } from '../../features/job_guide/models/company_info.models';
-import pool from '../index.js';
+import { CompanyInfoType } from '../../../features/job_guide/models/company_info.models';
+import pool from '../../index.js';
 
 export async function upsertCompanyInfo(
     job_posting_id: number,

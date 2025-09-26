@@ -9,7 +9,7 @@ import { infoStore } from '../../../shared/data/info.store.js';
 import { loadTemplate } from '../../../shared/utils/templates/template.loader.js';
 import paths from '../../../shared/constants/paths.js';
 import { GuidingQuestionsMock } from '../models/mocks/guiding_questions.mocks.js';
-import { getJobPost } from '../../../database/queries/job.queries.js';
+import { getJobPost } from '../../../database/queries/old/job.queries.js';
 
 export const getGuidingAnswers = async (
   id: number,

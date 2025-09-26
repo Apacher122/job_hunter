@@ -1,5 +1,5 @@
-import { ResumeItemsType } from '../../features/resume/models/resume.models.js';
-import pool from '../index.js';
+import { ResumeItemsType } from '../../../features/resume/models/resume.models.js';
+import pool from '../../index.js';
 
 export async function upsertResume(
     jobPostingId: number,

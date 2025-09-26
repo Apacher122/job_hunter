@@ -1,6 +1,6 @@
 import { promises as fsPromises } from 'fs';
 import { infoStore } from '../../data/info.store.js';
-import { insertJobInfo } from '../../../database/queries/job.queries.js';
+import { insertJobInfo } from '../../../database/queries/old/job.queries.js';
 import { parseJSONData } from '../documents/json/json.helpers.js';
 import paths from '../../constants/paths.js';
 import { sanitizeText } from '../formatters/string.formatter.js';

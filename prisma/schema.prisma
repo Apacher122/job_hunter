@@ -7,165 +7,202 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model additional_information {
-  id                Int           @id @default(autoincrement())
-  job_posting_id    Int?
-  information_title String?       @db.VarChar(255)
-  text              String?
-  job_postings      job_postings? @relation(fields: [job_posting_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+enum ProjectStatus {
+  PLANNED
+  ACTIVE
+  COMPLETED
+  ON_HOLD
 }
 
-model experience_descriptions {
-  id                       Int          @id @default(autoincrement())
-  experience_id            Int?
-  text                     String
-  justification_for_change String
-  is_new_suggestion        Boolean
-  experiences              experiences? @relation(fields: [experience_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+model User {
+  firebaseUid   String       @id
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  resumes       Resume[]
+  questionnaires CandidateQuestionnaire[]
+  writingSamples CandidateWritingSample[]
 }
 
-model experiences {
-  id                      Int                       @id @default(autoincrement())
-  resume_id               Int?
-  position                String                    @db.VarChar(255)
-  company                 String                    @db.VarChar(255)
-  start_date              String                    @db.VarChar(50)
-  end_date                String                    @db.VarChar(50)
-  experience_descriptions experience_descriptions[]
-
-  @@unique([company, position], map: "unique_company_position")
+model Company {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String
+  website     String
+  industry    String
+  size        String
+  location    String
+  culture     String
+  values      String
+  benefits    String
+  roles       Role[]
 }
 
-model job_info {
-  job_posting_id            Int          @id
-  company_description       String?
-  company_website           String?      @db.VarChar(255)
-  company_industry          String?      @db.VarChar(255)
-  company_size              String?      @db.VarChar(255)
-  company_location          String?      @db.VarChar(255)
-  company_culture           String?
-  company_values            String?
-  company_benefits          String?
-  position_review           String?
-  typical_salary_ask        String?      @db.VarChar(255)
-  typical_salary_ask_reason String?
-  advised_salary_ask        String?      @db.VarChar(255)
-  advised_salary_ask_reason String?
-  application_process       String?
-  expected_response_time    String?      @db.VarChar(255)
-  job_postings              job_postings @relation(fields: [job_posting_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+model Role {
+  id                    Int       @id @default(autoincrement())
+  companyId             Int
+  title                 String
+  review                String
+  typicalSalaryAsk      String
+  typicalSalaryReason   String
+  advisedSalaryAsk      String
+  advisedSalaryReason   String
+  applicationProcess    String
+  expectedResponseTime  String
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  company        Company         @relation(fields: [companyId], references: [id])
+  jobRequirements JobRequirements?
+  resumes         Resume[]
 }
 
-model job_postings {
-  id                              Int                            @id @default(autoincrement())
-  body                            String?
-  companyname                     String?                        @db.VarChar(255)
-  url                             String?
-  position                        String?                        @db.VarChar(255)
-  rawcompanyname                  String?                        @db.VarChar(255)
-  positionsummary                 String?
-  yearsofexp                      String?                        @db.VarChar(255)
-  educationlvl                    String?                        @db.VarChar(255)
-  salary                          String?                        @db.VarChar(255)
-  applicantcount                  String?                        @db.VarChar(255)
-  jobdetails                      String?
-  user_applied                    Boolean?                       @default(false)
-  applied_on                      DateTime?                      @db.Date
-  status                          application_status?            @default(Open)
-  code_assessment_completed       Boolean?
-  interview_count                 Int?
-  initial_application_update_date DateTime?                      @db.Date
-  test                            String[]
-  nicetohaves                     String[]
-  toolsandtech                    String[]
-  proglanguages                   String[]
-  frmwrksandlibs                  String[]
-  databases                       String[]
-  cloudplatforms                  String[]
-  industrykeywords                String[]
-  softskills                      String[]
-  certifications                  String[]
-  companyculture                  String[]
-  companyvalues                   String[]
-  requirements                    String[]
-  additional_information          additional_information[]
-  job_info                        job_info?
-  match_summaries                 match_summaries?
-  possible_interview_questions    possible_interview_questions[]
-  resumes                         resumes?
+model JobRequirements {
+  id                    Int       @id @default(autoincrement())
+  roleId                Int       @unique
+  description           String?
+  yearsOfExperience     String?
+  educationLevel        String?
+  tools                 String?   // JSON string array
+  progLanguages         String?   // JSON string array
+  frameworksAndLibs     String?   // JSON string array
+  databases             String?   // JSON string array
+  cloudPlatforms        String?   // JSON string array
+  industryKeywords      String?   // JSON string array
+  softSkills            String?   // JSON string array
+  certifications        String?   // JSON string array
+  requirements          String?   // JSON string array
+  niceToHaves           String?   // JSON string array
+  applicantCount        String?
+  codeAssessmentCompleted Boolean?
+  interviewCount        Int?
+  initialApplicationUpdate DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 
-  @@unique([companyname, position], map: "job_postings_company_name_position_key")
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
 }
 
-model possible_interview_questions {
-  id                         Int           @id @default(autoincrement())
-  job_posting_id             Int?
-  is_behavioral_or_technical String?       @db.VarChar(50)
-  question                   String
-  question_source            String?
-  answer                     String?
-  what_they_look_for         String?
-  what_to_study              String?
-  job_postings               job_postings? @relation(fields: [job_posting_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+model Resume {
+  id           Int       @id @default(autoincrement())
+  firebaseUid  String
+  roleId       Int
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  role         Role       @relation(fields: [roleId], references: [id])
+  matchSummary MatchSummary?
+  experiences  Experience[]
+  projects     Project[]
+  skills       Skill[]
+  user         User       @relation(fields: [firebaseUid], references: [firebaseUid])
 }
 
-model project_descriptions {
-  id                       Int       @id @default(autoincrement())
-  project_id               Int?
-  text                     String
-  justification_for_change String
-  is_new_suggestion        Boolean
-  projects                 projects? @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+model MatchSummary {
+  id             Int       @id @default(autoincrement())
+  resumeId       Int       @unique
+  shouldApply    String
+  reasoning      String
+  metrics        String?   // JSON string
+  overallSummary String?   // JSON string
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 }
 
-model projects {
-  id                   Int                    @id @default(autoincrement())
-  resume_id            Int?
-  name                 String                 @db.VarChar(255)
-  role                 String                 @db.VarChar(255)
-  status               String                 @db.VarChar(255)
-  project_descriptions project_descriptions[]
+model Experience {
+  id               Int                     @id @default(autoincrement())
+  resumeId         Int
+  position         String
+  company          String
+  startDate        DateTime
+  endDate          DateTime?
+  descriptions     ExperienceDescription[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 }
 
-model resumes {
-  id             Int           @id @default(autoincrement())
-  job_posting_id Int?          @unique
-  created_at     DateTime?     @default(now()) @db.Timestamp(6)
-  job_postings   job_postings? @relation(fields: [job_posting_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+model ExperienceDescription {
+  id                     Int        @id @default(autoincrement())
+  experienceId           Int
+  text                   String
+  justificationForChange String?
+  isNewSuggestion        Boolean    @default(false)
+
+  experience Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
 }
 
-model skill_items {
-  id       Int     @id @default(autoincrement())
-  skill_id Int?
-  item     String  @db.VarChar(255)
-  skills   skills? @relation(fields: [skill_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+model Project {
+  id                  Int                  @id @default(autoincrement())
+  resumeId            Int
+  name                String
+  role                String
+  status              ProjectStatus        @default(ACTIVE)
+  descriptions        ProjectDescription[]
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 }
 
-model skills {
-  id                        Int           @id @default(autoincrement())
-  resume_id                 Int?
-  category                  String        @db.VarChar(255)
-  justification_for_changes String
-  skill_items               skill_items[]
+model ProjectDescription {
+  id                     Int     @id @default(autoincrement())
+  projectId              Int
+  text                   String
+  justificationForChange String?
+  isNewSuggestion        Boolean @default(false)
 
-  @@unique([resume_id, category])
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
-model match_summaries {
-  id                               Int          @id @default(autoincrement())
-  job_posting_id                   Int          @unique
-  should_apply                     String       @db.VarChar(50)
-  should_apply_reasoning           String?
-  metrics_json                     String?
-  overall_summary_json             String?
-  projects_section_missing_entries Boolean?
-  created_at                       DateTime     @default(now())
-  updated_at                       DateTime     @updatedAt
-  job_postings                     job_postings @relation(fields: [job_posting_id], references: [id])
+model Skill {
+  id                      Int         @id @default(autoincrement())
+  resumeId                Int
+  category                String
+  justificationForChanges String?
+  items                   SkillItem[]
+  createdAt               DateTime    @default(now())
+  updatedAt               DateTime    @updatedAt
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 }
 
-enum application_status {
-  Open
-  Rejected
-  Offered
+model SkillItem {
+  id      Int    @id @default(autoincrement())
+  skillId Int
+  name    String
+
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+}
+
+model CandidateQuestionnaire {
+  id           Int       @id @default(autoincrement())
+  firebaseUid  String
+  briefHistory String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  questions QuestionnaireItem[]
+  user      User @relation(fields: [firebaseUid], references: [firebaseUid], onDelete: Cascade)
+}
+
+model QuestionnaireItem {
+  id               Int    @id @default(autoincrement())
+  questionnaireId  Int
+  category         String
+  question         String
+  answer           String?
+
+  questionnaire CandidateQuestionnaire @relation(fields: [questionnaireId], references: [id], onDelete: Cascade)
+}
+
+model CandidateWritingSample {
+  id          Int      @id @default(autoincrement())
+  firebaseUid String
+  content     String
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [firebaseUid], references: [firebaseUid], onDelete: Cascade)
 }

@@ -1,5 +1,5 @@
-import { MatchSummaryType } from '../../../features/job_guide/models/match_summary.models';
-import prisma from '../../prisma_client';
+import { MatchSummaryType } from '../../../../features/job_guide/models/match_summary.models';
+import prisma from '../../../prisma_client';
 
 export async function upsertMatchSummary(
     jobPostId: number,

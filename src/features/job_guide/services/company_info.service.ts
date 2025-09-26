@@ -4,8 +4,8 @@ import fs from 'fs';
 import { getOpenAIResponse } from "../../../shared/libs/open_ai/openai"
 import { loadTemplate } from '../../../shared/utils/templates/template.loader.js';
 import paths from '../../../shared/constants/paths';
-import { upsertCompanyInfo } from '../../../database/queries/company.queries';
-import { getJobPost } from '../../../database/queries/job.queries.js';
+import { upsertCompanyInfo } from '../../../database/queries/old/company.queries.js';
+import { getJobPost } from '../../../database/queries/old/job.queries.js';
 import { CompanyInfoMock } from '../models/mocks/company_info.mocks.js';
 
 export const getCompanyInfo = async (id: number): Promise<any> => {

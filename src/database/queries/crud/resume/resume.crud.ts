@@ -1,0 +1,34 @@
+import { Resume } from '../../../schemas/ordo-meritum.schemas';
+import { db } from '../../../index';
+
+export const createResume = async (resume: Omit<Resume, 'id' | 'createdAt' | 'updatedAt'>) => {
+  return await db
+    .insertInto('resumes')
+    .values(resume)
+    .returningAll()
+    .executeTakeFirst();
+};
+
+export const updateResume = async (id: number, updates: Partial<Omit<Resume, 'id' | 'createdAt' | 'updatedAt'>>) => {
+  return await db
+    .updateTable('resumes')
+    .set(updates)
+    .where('id', '=', id)
+    .returningAll()
+    .executeTakeFirst();
+};
+
+export const getResumeById = async (id: number) => {
+  return await db
+    .selectFrom('resumes')
+    .selectAll()
+    .where('id', '=', id)
+    .executeTakeFirst();
+};
+
+export const deleteResume = async (id: number) => {
+  return await db
+    .deleteFrom('resumes')
+    .where('id', '=', id)
+    .execute();
+};
