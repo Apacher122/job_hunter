@@ -18,9 +18,9 @@ enum ProjectStatus {
 // Core User
 // --------------------
 model User {
-  firebaseUid            String                   @id
-  createdAt              DateTime                 @default(now())
-  updatedAt              DateTime                 @default(now())
+  firebase_uid           String                   @id
+  created_at             DateTime                 @default(now())
+  updated_at             DateTime                 @default(now())
   CandidateWritingSample CandidateWritingSample[]
   CandidateQuestionnaire CandidateQuestionnaire[]
   Resume                 Resume[]
@@ -32,36 +32,36 @@ model User {
 // Company & Role
 // --------------------
 model Company {
-  id          Int    @id @default(autoincrement())
-  name        String @unique
-  description String?
-  website     String?
-  industry    String?
-  size        String?
-  location    String?
-  culture     String?
-  values      String?
-  benefits    String?
-  roles       Role[]
+  id              Int     @id @default(autoincrement())
+  company_name    String  @unique
+  description     String?
+  website         String?
+  industry        String?
+  size            String?
+  location        String?
+  company_culture String?
+  company_values  String?
+  benefits        String?
+  roles           Role[]
 
   @@map("companies")
 }
 
 model Role {
-  id                   Int      @id @default(autoincrement())
-  companyId            Int
-  title                String?
-  description          String?
-  typicalSalaryAsk     String?
-  typicalSalaryReason  String?
-  advisedSalaryAsk     String?
-  advisedSalaryReason  String?
-  applicationProcess   String?
-  expectedResponseTime String?
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @default(now())
+  id                     Int      @id @default(autoincrement())
+  company_id             Int
+  title                  String?
+  description            String?
+  typical_salary_ask     String?
+  typical_salary_reason  String?
+  advised_salary_ask     String?
+  advised_salary_reason  String?
+  application_process    String?
+  expected_response_time String?
+  created_at             DateTime @default(now())
+  updated_at             DateTime @default(now())
 
-  company         Company          @relation(fields: [companyId], references: [id])
+  company         Company          @relation(fields: [company_id], references: [id])
   jobRequirements JobRequirements?
   resumes         Resume[]
 
@@ -72,29 +72,29 @@ model Role {
 // Job Requirements
 // --------------------
 model JobRequirements {
-  id                       Int       @id @default(autoincrement())
-  roleId                   Int       @unique
-  otherInfo                String?
-  yearsOfExperience        String?
-  educationLevel           String?
-  tools                    String?
-  progLanguages            String?
-  frameworksAndLibs        String?
-  databases                String?
-  cloudPlatforms           String?
-  industryKeywords         String?
-  softSkills               String?
-  certifications           String?
-  requirements             String?
-  niceToHaves              String?
-  applicantCount           String?
-  codeAssessmentCompleted  Boolean?
-  interviewCount           Int?
-  initialApplicationUpdate DateTime?
-  createdAt                DateTime  @default(now())
-  updatedAt                DateTime  @default(now())
+  id                        Int       @id @default(autoincrement())
+  role_id                   Int       @unique
+  other_info                String?
+  years_of_exp              String?
+  education_level           String?
+  tools                     String?
+  programming_languages     String?
+  frameworks_and_libraries  String?
+  databases                 String?
+  cloud_technologies        String?
+  industry_keywords         String?
+  soft_skills               String?
+  certifications            String?
+  requirements              String?
+  nice_to_haves             String?
+  applicant_count           String?
+  code_assessment_completed Boolean?
+  interview_count           Int?
+  initial_application_date  DateTime?
+  created_at                DateTime  @default(now())
+  updated_at                DateTime  @default(now())
 
-  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [role_id], references: [id], onDelete: Cascade)
 
   @@map("job_requirements")
 }
@@ -103,35 +103,35 @@ model JobRequirements {
 // Resume & Match Summary
 // --------------------
 model Resume {
-  id          Int      @id @default(autoincrement())
-  firebaseUid String
-  roleId      Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now())
+  id           Int      @id @default(autoincrement())
+  firebase_uid String
+  role_id      Int
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now())
 
-  role         Role          @relation(fields: [roleId], references: [id])
+  role         Role          @relation(fields: [role_id], references: [id])
   matchSummary MatchSummary?
   experiences  Experience[]
   projects     Project[]
   skills       Skill[]
   education    Education[]
 
-  user User @relation(fields: [firebaseUid], references: [firebaseUid])
+  user User @relation(fields: [firebase_uid], references: [firebase_uid])
 
   @@map("resumes")
 }
 
 model MatchSummary {
-  id             Int      @id @default(autoincrement())
-  resumeId       Int      @unique
-  shouldApply    String
-  reasoning      String
-  metrics        String?
-  overallSummary String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @default(now())
+  id              Int      @id @default(autoincrement())
+  resume_id       Int      @unique
+  should_apply    String
+  reasoning       String
+  metrics         String?
+  overall_summary String?
+  created_at      DateTime @default(now())
+  updated_at      DateTime @default(now())
 
-  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  resume Resume @relation(fields: [resume_id], references: [id], onDelete: Cascade)
 
   @@map("match_summaries")
 }
@@ -140,29 +140,29 @@ model MatchSummary {
 // Experience
 // --------------------
 model Experience {
-  id        Int       @id @default(autoincrement())
-  resumeId  Int
-  position  String
-  company   String
-  startDate DateTime
-  endDate   DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now())
+  id         Int       @id @default(autoincrement())
+  resume_id  Int
+  position   String
+  company    String
+  start_date DateTime
+  end_date   DateTime?
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now())
 
   descriptions ExperienceDescription[]
-  resume       Resume                  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  resume       Resume                  @relation(fields: [resume_id], references: [id], onDelete: Cascade)
 
   @@map("experiences")
 }
 
 model ExperienceDescription {
-  id                     Int     @id @default(autoincrement())
-  experienceId           Int
-  text                   String
-  justificationForChange String?
-  isNewSuggestion        Boolean
+  id                       Int     @id @default(autoincrement())
+  exp_id                   Int
+  text                     String
+  justification_for_change String?
+  new_suggestion           Boolean
 
-  experience Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+  experience Experience @relation(fields: [exp_id], references: [id], onDelete: Cascade)
 
   @@map("experience_descriptions")
 }
@@ -171,28 +171,28 @@ model ExperienceDescription {
 // Project
 // --------------------
 model Project {
-  id        Int           @id @default(autoincrement())
-  resumeId  Int
-  name      String
-  role      String
-  status    ProjectStatus
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @default(now())
+  id         Int           @id @default(autoincrement())
+  resume_id  Int
+  name       String
+  role       String
+  status     ProjectStatus
+  created_at DateTime      @default(now())
+  updated_at DateTime      @default(now())
 
   descriptions ProjectDescription[]
-  resume       Resume               @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  resume       Resume               @relation(fields: [resume_id], references: [id], onDelete: Cascade)
 
   @@map("projects")
 }
 
 model ProjectDescription {
-  id                     Int     @id @default(autoincrement())
-  projectId              Int
-  text                   String
-  justificationForChange String?
-  isNewSuggestion        Boolean
+  id                       Int     @id @default(autoincrement())
+  project_id               Int
+  text                     String
+  justification_for_change String?
+  new_suggestion           Boolean
 
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
 
   @@map("project_descriptions")
 }
@@ -201,24 +201,24 @@ model ProjectDescription {
 // Skills
 // --------------------
 model Skill {
-  id                      Int         @id @default(autoincrement())
-  resumeId                Int
-  category                String
-  justificationForChanges String?
-  createdAt               DateTime    @default(now())
-  updatedAt               DateTime    @default(now())
-  items                   SkillItem[]
-  resume                  Resume      @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  id                        Int         @id @default(autoincrement())
+  resume_id                 Int
+  category                  String
+  justification_for_changes String?
+  created_at                DateTime    @default(now())
+  updated_at                DateTime    @default(now())
+  items                     SkillItem[]
+  resume                    Resume      @relation(fields: [resume_id], references: [id], onDelete: Cascade)
 
   @@map("skills")
 }
 
 model SkillItem {
-  id      Int    @id @default(autoincrement())
-  skillId Int
-  name    String
+  id       Int    @id @default(autoincrement())
+  skill_id Int
+  name     String
 
-  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skill_id], references: [id], onDelete: Cascade)
 
   @@map("skill_items")
 }
@@ -227,19 +227,19 @@ model SkillItem {
 // Education
 // --------------------
 model Education {
-  id           Int       @id @default(autoincrement())
-  resumeId     Int
-  school       String
-  degree       String
-  fieldOfStudy String
-  startDate    DateTime
-  endDate      DateTime?
-  gpa          String?
-  honors       String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @default(now())
+  id             Int       @id @default(autoincrement())
+  resume_id      Int
+  school         String
+  degree         String
+  field_of_study String
+  start_date     DateTime
+  end_date       DateTime?
+  gpa            String?
+  honors         String?
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @default(now())
 
-  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  resume Resume @relation(fields: [resume_id], references: [id], onDelete: Cascade)
 
   @@map("education")
 }
@@ -248,28 +248,28 @@ model Education {
 // Candidate Questionnaires & Writing Samples
 // --------------------
 model CandidateQuestionnaire {
-  id           Int      @id @default(autoincrement())
-  firebaseUid  String   @unique
-  title        String?
-  briefHistory String?
-  questions    String // JSON string array
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @default(now())
+  id            Int      @id @default(autoincrement())
+  firebase_uid  String   @unique
+  title         String?
+  brief_history String?
+  questions     String // JSON string array
+  created_at    DateTime @default(now())
+  updated_at    DateTime @default(now())
 
-  user      User                    @relation(fields: [firebaseUid], references: [firebaseUid], onDelete: Cascade)
+  user      User                    @relation(fields: [firebase_uid], references: [firebase_uid], onDelete: Cascade)
   responses QuestionnaireResponse[]
 
   @@map("candidate_questionnaires")
 }
 
 model CandidateWritingSample {
-  id          Int      @id @default(autoincrement())
-  firebaseUid String
-  content     String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now())
+  id           Int      @id @default(autoincrement())
+  firebase_uid String
+  content      String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now())
 
-  user User @relation(fields: [firebaseUid], references: [firebaseUid], onDelete: Cascade)
+  user User @relation(fields: [firebase_uid], references: [firebase_uid], onDelete: Cascade)
 
   @@map("candidate_writing_samples")
 }
@@ -278,14 +278,14 @@ model CandidateWritingSample {
 // Questionnaire Responses
 // --------------------
 model QuestionnaireResponse {
-  id              Int      @id @default(autoincrement())
-  questionnaireId Int
-  question        String
-  response        String
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @default(now())
+  id               Int      @id @default(autoincrement())
+  questionnaire_id Int
+  question         String
+  response         String
+  created_at       DateTime @default(now())
+  updated_at       DateTime @default(now())
 
-  questionnaire CandidateQuestionnaire @relation(fields: [questionnaireId], references: [id], onDelete: Cascade)
+  questionnaire CandidateQuestionnaire @relation(fields: [questionnaire_id], references: [id], onDelete: Cascade)
 
   @@map("questionnaire_responses")
 }

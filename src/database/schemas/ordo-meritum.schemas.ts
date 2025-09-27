@@ -82,10 +82,10 @@ export interface Resume {
 export interface MatchSummary {
   id: Generated<number>;
   resume_id: number; // unique per resume
-  shouldApply: string;       // e.g., "Strong Yes", "Yes", etc.
+  should_apply: string;       // e.g., "Strong Yes", "Yes", etc.
   reasoning: string;
   metrics?: string;          // JSON string
-  overallSummary?: string;   // JSON string
+  overall_summary?: string;   // JSON string
   created_at: Generated<Date>;
   updated_at: Generated<Date>;
 }
