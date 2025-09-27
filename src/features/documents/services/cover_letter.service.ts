@@ -1,21 +1,22 @@
-import { CoverLetterMock } from '../models/requests/cover_letter.mocks.js';
-import { CoverLetterSchema } from '../models/cover_letter.models.js';
-import Handlebars from 'handlebars';
-import { JobPosting } from '../../../shared/data/info.store.js';
-import { ResumeSectionNotFoundError } from '../../../shared/errors/resume_builder.errors.js';
-import { ZodType } from 'zod';
-import dotenv from 'dotenv';
-import { exportLatex } from '../../documents/services/export.service.js';
-import { formatLatexSection } from '../../../shared/utils/formatters/resume.formatter.js';
-import fs from 'fs';
-import { getJobPost } from '../../../database/queries/old/job.queries.js';
-import { getOpenAIResponse } from '../../../shared/libs/open_ai/openai.js';
-import { getWritingExamples } from '../../../shared/utils/formatters/string.formatter.js';
-import { infoStore } from '../../../shared/data/info.store.js';
-import { loadTemplate } from '../../../shared/utils/templates/template.loader.js';
-import { logger } from '../../../shared/utils/logger.js';
-import paths from '../../../shared/constants/paths.js';
-import { replaceSectionContent } from '../../../shared/utils/documents/latex/latex.helpers.js';
+import { CoverLetterMock } from "../models/requests/cover_letter.mocks.js";
+import { CoverLetterSchema } from "../models/requests/cover_letter.models.js";
+import Handlebars from "handlebars";
+import { JobPosting } from "../../../shared/data/info.store.js";
+import { ResumeSectionNotFoundError } from "../../../shared/errors/resume_builder.errors.js";
+import { ZodType } from "zod";
+import { db } from "../../../database/index.js";
+import dotenv from "dotenv";
+import { exportLatex } from "../../documents/services/export.service.js";
+import { formatLatexSection } from "../../../shared/utils/formatters/resume.formatter.js";
+import fs from "fs";
+import { getJobPost } from "../../../database/queries/old/job.queries.js";
+import { getWritingExamples } from "../../../shared/utils/formatters/string.formatter.js";
+import { infoStore } from "../../../shared/data/info.store.js";
+import { loadTemplate } from "../../../shared/utils/templates/template.loader.js";
+import { logger } from "../../../shared/utils/logger.js";
+import paths from "../../../shared/constants/paths.js";
+import { replaceSectionContent } from "../../../shared/utils/documents/latex/latex.helpers.js";
+import { sendToLLM } from "../../../shared/libs/LLMs/providers.js";
 
 dotenv.config();
 
@@ -23,7 +24,7 @@ export const compileCoverLetter = async (id: number): Promise<void> => {
   const jobPost = await getJobPost(id);
   if (!jobPost || !jobPost.companyName) {
     console.error(
-      'Job posting content or company name is not available in infoStore.'
+      "Job posting content or company name is not available in infoStore."
     );
     return;
   }
@@ -31,15 +32,15 @@ export const compileCoverLetter = async (id: number): Promise<void> => {
 
   let companyName = jobContent.companyName;
 
-  if (process.env.NODE_ENV === 'testing') {
-    jobContent.companyName == 'test';
+  if (process.env.NODE_ENV === "testing") {
+    jobContent.companyName == "test";
     jobContent.id == 0;
   }
 
   try {
     await generateCoverLetterDraft(jobContent);
     await exportLatex({
-      jobNameSuffix: 'cover_letter',
+      jobNameSuffix: "cover_letter",
       latexFilePath: paths.latex.coverLetter.letter,
       targetDirectory: paths.paths.dir,
       compiledPdfPath: paths.paths.compiledCoverLetter(
@@ -72,28 +73,28 @@ const generateCoverLetterDraft = async (content: JobPosting) => {
     );
     const coverLetterData = await fs.promises.readFile(
       paths.paths.currentCoverLetter,
-      'utf-8'
+      "utf-8"
     );
-    const aboutMe = await fs.promises.readFile(paths.paths.aboutMe, 'utf-8');
+    const aboutMe = await fs.promises.readFile(paths.paths.aboutMe, "utf-8");
     const corrections = await fs.promises.readFile(
       paths.paths.corrections,
-      'utf-8'
+      "utf-8"
     );
     const considerations = await fs.promises.readFile(
       paths.paths.considerations,
-      'utf-8'
+      "utf-8"
     );
 
     const writingExamples = await getWritingExamples();
     if (!writingExamples) {
-      throw new Error('Writing examples not found.');
+      throw new Error("Writing examples not found.");
     }
 
-    const instructions = await loadTemplate('instructions', 'coverletter', {
+    const instructions = await loadTemplate("instructions", "coverletter", {
       corrections: corrections,
     });
 
-    const prompt = await loadTemplate('prompts', 'coverletter', {
+    const prompt = await loadTemplate("prompts", "coverletter", {
       resume: JSON.stringify(resumeData),
       jobPosting: content.body,
       company: content.rawCompanyName,
@@ -106,7 +107,7 @@ const generateCoverLetterDraft = async (content: JobPosting) => {
 
     const coverLetterTemplate = await fs.promises.readFile(
       paths.latex.coverLetter.template,
-      'utf8'
+      "utf8"
     );
 
     const extraData = {
@@ -124,7 +125,7 @@ const generateCoverLetterDraft = async (content: JobPosting) => {
     );
 
     await loadCoverLetterContent(instructions, prompt, CoverLetterSchema);
-    logger.info('Cover letter generated successfully');
+    logger.info("Cover letter generated successfully");
   } catch (error) {
     const e = error as Error;
     logger.error(`Error generating cover letter content: ${e.message}`);
@@ -138,13 +139,19 @@ const loadCoverLetterContent = async <T>(
   schema: ZodType<T>
 ): Promise<void> => {
   const res =
-    process.env.NODE_ENV === 'testing'
+    process.env.NODE_ENV === "testing"
       ? CoverLetterMock
-      : await getOpenAIResponse(instructions, prompt, schema);
+      : await sendToLLM(
+        "gemini",
+        instructions,
+        prompt,
+        CoverLetterSchema,
+        ''
+      );
 
   if (!res) {
     throw new Error(
-      'Failed to get response from OpenAI for cover letter generation'
+      "Failed to get response from OpenAI for cover letter generation"
     );
   }
 
@@ -155,16 +162,16 @@ const loadCoverLetterContent = async <T>(
         parsedResponse.error.errors
       )}`
     );
-    throw new Error('Invalid response format for cover letter');
+    throw new Error("Invalid response format for cover letter");
   }
 
-  const newContent = formatLatexSection('cover_letter')(parsedResponse.data);
+  const newContent = formatLatexSection("cover_letter")(parsedResponse.data);
 
   let latexContent;
   try {
     latexContent = await fs.promises.readFile(
       paths.latex.coverLetter.letter,
-      'utf8'
+      "utf8"
     );
   } catch (error) {
     const e = error as Error;
@@ -174,17 +181,17 @@ const loadCoverLetterContent = async <T>(
 
   try {
     const sectionMap = {
-      cover_letter: 'cvletter',
+      cover_letter: "cvletter",
     };
     const updatedContent = replaceSectionContent(
       latexContent,
       [newContent],
-      'cvletter'
+      "cvletter"
     );
     await fs.promises.writeFile(
       paths.latex.coverLetter.letter,
       updatedContent,
-      'utf-8'
+      "utf-8"
     );
   } catch (error) {
     if (error instanceof ResumeSectionNotFoundError) {

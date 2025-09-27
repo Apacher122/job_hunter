@@ -9,25 +9,25 @@ import { updateCompany } from "../crud/company/company_info.crud";
 export const getFullJobPosting = async (roleId: number, uid: string) => {
   const job = await db
     .selectFrom("roles")
-    .innerJoin("companies", "roles.companyId", "companies.id")
-    .innerJoin("job_requirements", "roles.id", "job_requirements.roleId")
+    .innerJoin("companies", "roles.company_id", "companies.id")
+    .innerJoin("job_requirements", "roles.id", "job_requirements.role_id")
     .select([
       "roles.title",
       "roles.description",
-      "companies.name as company_name",
-      "companies.culture",
-      "companies.values",
-      "job_requirements.educationLevel",
-      "job_requirements.yearsOfExperience",
+      "companies.company_name",
+      "companies.company_culture",
+      "companies.company_values",
+      "job_requirements.education_level",
+      "job_requirements.years_of_exp",
       "job_requirements.tools",
-      "job_requirements.progLanguages",
-      "job_requirements.frameworksAndLibs",
+      "job_requirements.programming_languages",
+      "job_requirements.frameworks_and_libraries",
       "job_requirements.databases",
-      "job_requirements.cloudPlatforms",
-      "job_requirements.industryKeywords",
-      "job_requirements.softSkills",
+      "job_requirements.cloud_platforms",
+      "job_requirements.industry_keywords",
+      "job_requirements.soft_skills",
       "job_requirements.certifications",
-      "roles.salaryRange",
+      "roles.salary_range",
     ])
     .where("roles.id", "=", roleId)
     .executeTakeFirst();

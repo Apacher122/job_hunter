@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const JobDescriptionSchema = z.object({
   job_title: z.string(),
   company_name: z.string(),
-  years_of_experience_required: z.string(),
+  years_of_exp: z.string(),
   education_level: z.string(),
 
   skills_required: z
@@ -36,7 +36,7 @@ export const JobDescriptionSchema = z.object({
     .default([])
     .transform((arr) => arr.join(', ')),
 
-  cloud_platforms: z
+  cloud_technologies: z
     .array(z.string())
     .default([])
     .transform((arr) => arr.join(', ')),

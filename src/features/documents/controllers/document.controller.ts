@@ -1,3 +1,4 @@
+import * as compileDoc from '../services/index'
 import * as db from '../../../database';
 import * as docs from '../services'
 import * as file from '../../../shared/utils/documents/file.helpers';
@@ -7,8 +8,6 @@ import { Request, Response } from 'express';
 
 import { AuthenticatedRequest } from '../../../shared/middleware/authenticate';
 import { auth } from 'firebase-admin';
-import { compileCoverLetter } from '../../cover_letter/services/cover_letter.service';
-import { compile_resume } from '../../resume/services/resume.service';
 import { getFullJobPosting } from '../../../database/queries/complex/jobs.queries';
 import { getJobPost } from '../../../database/queries/old/job.queries';
 import paths from '../../../shared/constants/paths';
@@ -20,7 +19,7 @@ const filePathFor = (companyName: string, suffix: 'resume' | 'cover-letter') =>
     : paths.paths.movedCoverLetter(companyName);
 
 const generatorFor = (suffix: 'resume' | 'cover-letter') =>
-  suffix === 'resume' ? compile_resume : compileCoverLetter;
+  suffix === 'resume' ? compileDoc.compileResume : compileDoc.compileCoverLetter;
 
 type DocType =
   | 'resume'
@@ -38,13 +37,13 @@ interface DocConfig {
 const docConfig: Record<DocType, DocConfig> = {
   resume: {
     pathFn: paths.paths.movedResume,
-    generate: async (_company, uid) => compile_resume(Number(uid)),
+    generate: async (_company, uid) => compileDoc.compileResume(Number(uid)),
     filename: (company, uid) => `${company}_resume_${uid}.pdf`,
     contentType: 'application/pdf' as const,
   },
   'cover-letter': {
     pathFn: paths.paths.movedCoverLetter,
-    generate: async (_company, uid) => compileCoverLetter(Number(uid)),
+    generate: async (_company, uid) => compileDoc.compileCoverLetter(Number(uid)),
     filename: (company, uid) => `${company}_cover_letter_${uid}.pdf`,
     contentType: 'application/pdf',
   },
@@ -60,6 +59,7 @@ export const downloadDocument = async (
   const docType = req.query.docType as DocType;
   const getNew = req.query.getNew === 'true';
   const jobId = Number(req.query.jobId);
+  const uid = authReq.user.uid;
 
   if (!isValidDocType(docType) || Number.isNaN(jobId)) {
     return void res.status(400).send('Invalid document request');

@@ -4,9 +4,9 @@ import { Generated } from 'kysely';
 // Core User
 // --------------------
 export interface User {
-  firebaseUid: string;
-  createdAt: Generated<Date>;
-  updatedAt: Generated<Date>;
+  firebase_uid: string;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
 }
 
 // --------------------
@@ -14,31 +14,31 @@ export interface User {
 // --------------------
 export interface Company {
   id: Generated<number>;
-  name: string;
+  company_name: string;
   description?: string;
   website?: string;
   industry?: string;
   size?: string;
   location?: string;
-  culture?: string;
-  values?: string;
+  company_culture?: string;
+  company_values?: string;
   benefits?: string;
 }
 
 export interface Role {
   id: Generated<number>;
-  companyId: number;
+  company_id: number;
   title: string;
   description?: string;
-  salaryRange?: string;
-  typicalSalaryAsk?: string;
-  typicalSalaryReason?: string;
-  advisedSalaryAsk?: string;
-  advisedSalaryReason?: string;
-  applicationProcess?: string;
-  expectedResponseTime?: string;
-  createdAt?: Generated<Date>;
-  updatedAt?: Generated<Date>;
+  salary_range?: string;
+  typical_salary_ask?: string;
+  typical_salary_reason?: string;
+  advised_salary_ask?: string;
+  advised_salary_reason?: string;
+  application_process?: string;
+  expected_response_time?: string;
+  created_at?: Generated<Date>;
+  updated_at?: Generated<Date>;
 }
 
 // --------------------
@@ -46,26 +46,26 @@ export interface Role {
 // --------------------
 export interface JobRequirements {
   id: Generated<number>;
-  roleId: number;
-  otherInfo?: string;       // raw job body
-  yearsOfExperience?: string;
-  educationLevel?: string;
+  role_id: number;
+  other_info?: string;       // raw job body
+  years_of_exp?: string;
+  education_level?: string;
   tools?: string;             // JSON string array
-  progLanguages?: string;     // JSON string array
-  frameworksAndLibs?: string; // JSON string array
+  programming_languages?: string;     // JSON string array
+  frameworks_and_libraries?: string; // JSON string array
   databases?: string;         // JSON string array
-  cloudPlatforms?: string;    // JSON string array
-  industryKeywords?: string;  // JSON string array
-  softSkills?: string;        // JSON string array
+  cloud_technologies?: string;    // JSON string array
+  industry_keywords?: string;  // JSON string array
+  soft_skills?: string;        // JSON string array
   certifications?: string;    // JSON string array
   requirements?: string;      // JSON string array
-  niceToHaves?: string;       // JSON string array
-  applicantCount?: string;
-  codeAssessmentCompleted?: boolean;
-  interviewCount?: number;
-  initialApplicationUpdate?: Date;
-  createdAt: Generated<Date>;
-  updatedAt: Generated<Date>;
+  nice_to_haves?: string;       // JSON string array
+  applicant_count?: string;
+  code_assessment_completed?: boolean;
+  interview_count?: number;
+  initial_application_date?: Date;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
 }
 
 // --------------------
@@ -73,21 +73,21 @@ export interface JobRequirements {
 // --------------------
 export interface Resume {
   id: Generated<number>;
-  firebaseUid: string;
-  roleId: number;
-  createdAt: Generated<Date>;
-  updatedAt: Generated<Date>;
+  firebase_uid: string;
+  role_id: number;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
 }
 
 export interface MatchSummary {
   id: Generated<number>;
-  resumeId: number; // unique per resume
+  resume_id: number; // unique per resume
   shouldApply: string;       // e.g., "Strong Yes", "Yes", etc.
   reasoning: string;
   metrics?: string;          // JSON string
   overallSummary?: string;   // JSON string
-  createdAt: Generated<Date>;
-  updatedAt: Generated<Date>;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
 }
 
 // --------------------
@@ -95,21 +95,21 @@ export interface MatchSummary {
 // --------------------
 export interface Experience {
   id: Generated<number>;
-  resumeId: number;
+  resume_id: number;
   position: string;
   company: string;
-  startDate: Date;
-  endDate?: Date;
-  createdAt: Generated<Date>;
-  updatedAt: Generated<Date>;
+  start_date: Date;
+  end_date?: Date;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
 }
 
 export interface ExperienceDescription {
   id: Generated<number>;
-  experienceId: number;
+  exp_id: number;
   text: string;
-  justificationForChange?: string;
-  isNewSuggestion: boolean;
+  justification_for_change?: string;
+  new_suggestion: boolean;
 }
 
 // --------------------
@@ -119,20 +119,20 @@ export type ProjectStatus = 'PLANNED' | 'ACTIVE' | 'COMPLETED' | 'ON_HOLD';
 
 export interface Project {
   id: Generated<number>;
-  resumeId: number;
+  resume_id: number;
   name: string;
   role: string;
   status: ProjectStatus;
-  createdAt: Generated<Date>;
-  updatedAt: Generated<Date>;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
 }
 
 export interface ProjectDescription {
   id: Generated<number>;
-  projectId: number;
+  project_id: number;
   text: string;
-  justificationForChange?: string;
-  isNewSuggestion: boolean;
+  justification_for_change?: string;
+  new_suggestion: boolean;
 }
 
 // --------------------
@@ -140,16 +140,16 @@ export interface ProjectDescription {
 // --------------------
 export interface Skill {
   id: Generated<number>;
-  resumeId: number;
+  resume_id: number;
   category: string;
-  justificationForChanges?: string;
-  createdAt: Generated<Date>;
-  updatedAt: Generated<Date>;
+  justification_for_changes?: string;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
 }
 
 export interface SkillItem {
   id: Generated<number>;
-  skillId: number;
+  skill_id: number;
   name: string;
 }
 
@@ -158,16 +158,16 @@ export interface SkillItem {
 // --------------------
 export interface Education {
   id: Generated<number>;
-  resumeId: number;
+  resume_id: number;
   school: string;
   degree: string;
-  fieldOfStudy: string;
-  startDate: Date;
-  endDate?: Date;
+  field_of_study: string;
+  start_date: Date;
+  end_date?: Date;
   gpa?: string;
   honors?: string;
-  createdAt: Generated<Date>;
-  updatedAt: Generated<Date>;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
 }
 
 // --------------------
@@ -175,20 +175,20 @@ export interface Education {
 // --------------------
 export interface CandidateQuestionnaire {
   id: Generated<number>;
-  firebaseUid: string;
+  firebase_uid: string;
   title?: string;
-  briefHistory?: string;
+  brief_history?: string;
   questions: string; // JSON string array of categories + questions
-  createdAt: Generated<Date>;
-  updatedAt: Generated<Date>;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
 }
 
 export interface CandidateWritingSample {
   id: Generated<number>;
-  firebaseUid: string;
+  firebase_uid: string;
   content: string;
-  createdAt: Generated<Date>;
-  updatedAt: Generated<Date>;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
 }
 
 // --------------------
@@ -196,11 +196,11 @@ export interface CandidateWritingSample {
 // --------------------
 export interface QuestionnaireResponse {
   id: Generated<number>;
-  questionnaireId: number;
+  questionnaire_id: number;
   question: string;
   response: string;
-  createdAt: Generated<Date>;
-  updatedAt: Generated<Date>;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
 }
 
 // --------------------
