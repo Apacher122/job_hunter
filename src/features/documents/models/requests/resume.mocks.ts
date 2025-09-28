@@ -1,7 +1,7 @@
-import { ResumeItems } from "./resume.models";
+import { ResumeSchema } from "./resume";
 
 // Manual mock with actual values
-export const MockResume = ResumeItems.parse({
+export const MockResume = ResumeSchema.parse({
   experiences: [
     {
       position: "Software Engineer",

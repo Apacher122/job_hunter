@@ -1,9 +1,9 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import { authenticate } from '../shared/middleware/authenticate';
-import userRoutes from '../features/user/routes/user.routes';
-import authRoutes from '../features/auth/routes/auth.routes';
-import appRoutes from '../features/application_tracking/routes/app_tracker.routes';
+import userRoutes from '../features/user/routes/user';
+import authRoutes from '../features/auth/routes/auth';
+import appRoutes from '../features/application_tracking/routes/app_tracker';
 import { publicKeyStreamRouter, getPublicKey } from '../security/publicKeySSE';
 
 export const app = express();

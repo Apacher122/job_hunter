@@ -1,8 +1,7 @@
 import { existsSync } from 'fs';
 import { forceSinglePagePDF } from '../../../shared/utils/documents/pdf/pdf.helpers';
 import fs from 'fs';
-import { JobPosting } from '../../../shared/data/info.store';
-import { logger } from '../../../shared/utils/logger';
+import { logger } from '../../../shared/utils/logger.utils';
 import paths from '../../../shared/constants/paths';
 import { spawn } from 'child_process';
 import { validatePath } from '../../../shared/utils/documents/file.helpers'

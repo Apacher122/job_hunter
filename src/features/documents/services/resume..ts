@@ -1,7 +1,7 @@
 import * as db from "../../../database";
 
 import { LLMHeaders, LLMProvider } from "../../../shared/types/llm.types";
-import { ResumeItemsType, ResumeSchema } from "../models/requests/resume.models";
+import { ResumeItemsType, ResumeSchema } from "../models/requests/resume";
 import {
   formatLatexSection,
   sectionFormatters,
@@ -11,11 +11,11 @@ import {
   sectionToLatexEnvMap,
 } from "../../../shared/utils/documents/latex/latex.helpers.js";
 
-import { JobDescription } from "../../application_tracking/models/job_description.models";
+import { JobDescription } from "../../application_tracking/models/job_description";
 import { MockResume } from "../models/requests/resume.mocks.js";
 import { cleanup } from "../../../shared/utils/documents/file.helpers.js";
 import dotenv from "dotenv";
-import { exportLatex } from "../../documents/services/export.service.js";
+import { exportLatex } from "./export.js";
 import fs from "fs";
 import { loadTemplate } from "../../../shared/utils/templates/template.loader.js";
 import paths from "../../../shared/constants/paths.js";

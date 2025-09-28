@@ -1,11 +1,11 @@
-import { CoverLetterSchema } from "./cover_letter.models";
-import { ResumeSchema } from "./resume.models";
+import { CoverLetterSchema } from "./cover_letter.mocks";
+import { ResumeSchema } from "./resume";
 import z from "zod";
 
-export * from "./resume.models";
+export * from "./resume";
 export * from "./resume.mocks";
-export * from "./cover_letter.models";
 export * from "./cover_letter.mocks";
+export * from "./cover_letter";
 
 export const DocumentSchema = z.discriminatedUnion("type", [
   ResumeSchema,

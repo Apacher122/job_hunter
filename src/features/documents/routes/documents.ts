@@ -1,6 +1,6 @@
 import {authenticate} from '../../../shared/middleware/authenticate';
 import { decryptApiKeyMiddleware } from '../../../shared/middleware/decrypt';
-import { downloadDocument } from '../../documents/controllers/document.controller';
+import { downloadDocument } from '../controllers/document';
 import express from 'express';
 
 const router = express.Router();
