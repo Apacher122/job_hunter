@@ -2,7 +2,7 @@ import * as query from "../../index";
 
 import {
   JobDescription,
-} from "../../../features/application_tracking/models/job_description.models";
+} from "../../../features/application_tracking/models/job_description";
 import { db } from "../../index";
 import { updateCompany } from "../crud/company/company_info.crud";
 
