@@ -1,4 +1,4 @@
-import * as CandidateService from "../services/candidate_questionnaire.service";
+import * as service from "../services";
 
 import { Request, Response } from "express";
 
@@ -10,7 +10,7 @@ export const createOrUpdateCandidateQuestionnaire = async (
 ) => {
   const authReq = req as AuthenticatedRequest; 
   try {
-    const result = await CandidateService.createOrUpdateCandidateQuestionnaire(
+    const result = await service.createOrUpdateCandidateQuestionnaire(
       authReq.user.uid,
       req.body
     );
@@ -27,7 +27,7 @@ export const getCandidateQuestionnaire = async (
 ) => {
   const authReq = req as AuthenticatedRequest;
   try {
-    const questionnaire = await CandidateService.getCandidateQuestionnaireByUid(
+    const questionnaire = await service.getCandidateQuestionnaireByUid(
       authReq.user.uid
     );
     if (!questionnaire){

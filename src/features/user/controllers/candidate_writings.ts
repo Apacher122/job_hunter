@@ -1,8 +1,7 @@
-import * as service from "../services/candidate_writings.service";
-
+import * as service from "../services/candidate_writings";
 import { Request, Response } from "express";
-
 import { AuthenticatedRequest } from "../../../shared/middleware/authenticate";
+import * as models from '../models'
 
 export const createOrUpdateWritingSamples = async (
   req: Request,
@@ -15,9 +14,15 @@ export const createOrUpdateWritingSamples = async (
       return;
     }
 
+    const data = models.CandidateWritingSchema.safeParse(req.body);
+    if (!data.success) {
+      res.status(400).json({ message: "Writing samples could not be parsed"});
+      return;
+    }
+
     const result = await service.createOrUpdateCandidateWritingSample(
       authReq.user.uid,
-      req.body
+      data.data
     );
     res.json(result);
   } catch (error) {

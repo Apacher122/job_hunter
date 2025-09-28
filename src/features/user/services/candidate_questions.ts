@@ -4,9 +4,8 @@ import { CandidateQuestionnaire } from "../../../database/schemas/ordo-meritum.s
 
 export const createOrUpdateCandidateQuestionnaire = async (
   firebaseUid: string,
-  questionnaireData: Omit<CandidateQuestionnaire, 'id' | 'createdAt' | 'updatedAt'>
+  questionnaireData: Omit<CandidateQuestionnaire, 'id' | 'created_at' | 'updated_at'>
 ) => {
-  // Include firebaseUid in the insert/update
   const data = { ...questionnaireData, firebaseUid };
   return await db.createOrUpdateCandidateQuestionnaire(data);
 };
