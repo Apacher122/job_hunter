@@ -2,7 +2,7 @@ import { Project, ProjectDescription } from '../../../schemas/ordo-meritum.schem
 
 import { db } from '../../../index';
 
-export const createProject = async (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>) => {
+export const createProject = async (project: Omit<Project, 'id' | 'created_at' | 'updated_at'>) => {
   return await db
     .insertInto('projects')
     .values(project)
@@ -10,7 +10,7 @@ export const createProject = async (project: Omit<Project, 'id' | 'createdAt' | 
     .executeTakeFirst();
 };
 
-export const updateProject = async (id: number, updates: Partial<Omit<Project, 'id' | 'createdAt' | 'updatedAt'>>) => {
+export const updateProject = async (id: number, updates: Partial<Omit<Project, 'id' | 'created_at' | 'updated_at'>>) => {
   return await db
     .updateTable('projects')
     .set(updates)

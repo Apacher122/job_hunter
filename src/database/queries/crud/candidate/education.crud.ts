@@ -1,7 +1,7 @@
 import { Education } from '../../../schemas/ordo-meritum.schemas';
 import { db } from '../../../index';
 
-export const createEducation = async (education: Omit<Education, 'id' | 'createdAt' | 'updatedAt'>) => {
+export const createEducation = async (education: Omit<Education, 'id' | 'created_at' | 'updated_at'>) => {
   return await db
     .insertInto('education')
     .values(education)
@@ -9,7 +9,7 @@ export const createEducation = async (education: Omit<Education, 'id' | 'created
     .executeTakeFirst();
 };
 
-export const updateEducation = async (id: number, updates: Partial<Omit<Education, 'id' | 'createdAt' | 'updatedAt'>>) => {
+export const updateEducation = async (id: number, updates: Partial<Omit<Education, 'id' | 'created_at' | 'updated_at'>>) => {
   return await db
     .updateTable('education')
     .set(updates)

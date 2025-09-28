@@ -1,7 +1,7 @@
 import { MatchSummary } from '../../../schemas/ordo-meritum.schemas';
 import { db } from '../../../index';
 
-export const createMatchSummary = async (summary: Omit<MatchSummary, 'id' | 'createdAt' | 'updatedAt'>) => {
+export const createMatchSummary = async (summary: Omit<MatchSummary, 'id' | 'created_at' | 'updated_at'>) => {
   return await db
     .insertInto('match_summaries')
     .values(summary)
@@ -9,7 +9,7 @@ export const createMatchSummary = async (summary: Omit<MatchSummary, 'id' | 'cre
     .executeTakeFirst();
 };
 
-export const updateMatchSummary = async (id: number, updates: Partial<Omit<MatchSummary, 'id' | 'createdAt' | 'updatedAt'>>) => {
+export const updateMatchSummary = async (id: number, updates: Partial<Omit<MatchSummary, 'id' | 'created_at' | 'updated_at'>>) => {
   return await db
     .updateTable('match_summaries')
     .set(updates)

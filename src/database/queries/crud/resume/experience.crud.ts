@@ -2,7 +2,7 @@ import { Experience, ExperienceDescription } from '../../../schemas/ordo-meritum
 
 import { db } from '../../../index';
 
-export const createExperience = async (experience: Omit<Experience, 'id' | 'createdAt' | 'updatedAt'>) => {
+export const createExperience = async (experience: Omit<Experience, 'id' | 'created_at' | 'updated_at'>) => {
   return await db
     .insertInto('experiences')
     .values(experience)
@@ -10,7 +10,7 @@ export const createExperience = async (experience: Omit<Experience, 'id' | 'crea
     .executeTakeFirst();
 };
 
-export const updateExperience = async (id: number, updates: Partial<Omit<Experience, 'id' | 'createdAt' | 'updatedAt'>>) => {
+export const updateExperience = async (id: number, updates: Partial<Omit<Experience, 'id' | 'created_at' | 'updated_at'>>) => {
   return await db
     .updateTable('experiences')
     .set(updates)

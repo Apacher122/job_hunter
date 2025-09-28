@@ -2,7 +2,7 @@ import { Skill, SkillItem } from '../../../schemas/ordo-meritum.schemas';
 
 import { db } from '../../../index';
 
-export const createSkill = async (skill: Omit<Skill, 'id' | 'createdAt' | 'updatedAt'>) => {
+export const createSkill = async (skill: Omit<Skill, 'id' | 'created_at' | 'updated_at'>) => {
   return await db
     .insertInto('skills')
     .values(skill)
@@ -10,7 +10,7 @@ export const createSkill = async (skill: Omit<Skill, 'id' | 'createdAt' | 'updat
     .executeTakeFirst();
 };
 
-export const updateSkill = async (id: number, updates: Partial<Omit<Skill, 'id' | 'createdAt' | 'updatedAt'>>) => {
+export const updateSkill = async (id: number, updates: Partial<Omit<Skill, 'id' | 'created_at' | 'updated_at'>>) => {
   return await db
     .updateTable('skills')
     .set(updates)
