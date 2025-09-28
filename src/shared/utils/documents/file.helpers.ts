@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
 import fs from 'fs';
-import { logger } from '../logger.js';
+import { logger } from '../logger.utils.js';
 import mammoth from 'mammoth';
 import path from 'path';
 import paths from '../../constants/paths.js';
