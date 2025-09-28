@@ -1,4 +1,4 @@
-import * as applications from "../services/app_tracker.services";
+import * as applications from "../services/app_tracker";
 
 import { Request, Response } from "express";
 

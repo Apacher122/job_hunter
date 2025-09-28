@@ -2,7 +2,7 @@ import { authenticate } from "../../../shared/middleware/authenticate";
 import { decryptApiKeyMiddleware } from "../../../shared/middleware/decrypt";
 import express from "express";
 import fs from "fs";
-import { newJobHandler } from "../controllers/app_tracker.controller";
+import { newJobHandler } from "../controllers/app_tracker";
 import paths from "../../../shared/constants/paths";
 import rateLimit from "express-rate-limit";
 
