@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { AuthSchema } from '../models/auth.models';
+import { AuthSchema } from '../models/auth';
 import { loginOrRegister } from '../services/auth';
 import {z} from 'zod';
 
