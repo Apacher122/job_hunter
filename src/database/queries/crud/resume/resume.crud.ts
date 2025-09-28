@@ -1,7 +1,7 @@
 import { Resume } from '../../../schemas/ordo-meritum.schemas';
 import { db } from '../../../index';
 
-export const createResume = async (resume: Omit<Resume, 'id' | 'createdAt' | 'updatedAt'>) => {
+export const createResume = async (resume: Omit<Resume, 'id' | 'created_at' | 'updated_at'>) => {
   return await db
     .insertInto('resumes')
     .values(resume)
@@ -9,7 +9,7 @@ export const createResume = async (resume: Omit<Resume, 'id' | 'createdAt' | 'up
     .executeTakeFirst();
 };
 
-export const updateResume = async (id: number, updates: Partial<Omit<Resume, 'id' | 'createdAt' | 'updatedAt'>>) => {
+export const updateResume = async (id: number, updates: Partial<Omit<Resume, 'id' | 'created_at' | 'updated_at'>>) => {
   return await db
     .updateTable('resumes')
     .set(updates)

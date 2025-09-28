@@ -37,6 +37,7 @@ export interface Role {
   advised_salary_reason?: string;
   application_process?: string;
   expected_response_time?: string;
+  user_applied?: boolean;
   created_at?: Generated<Date>;
   updated_at?: Generated<Date>;
 }
@@ -50,17 +51,17 @@ export interface JobRequirements {
   other_info?: string;       // raw job body
   years_of_exp?: string;
   education_level?: string;
-  tools?: string;             // JSON string array
-  programming_languages?: string;     // JSON string array
-  frameworks_and_libraries?: string; // JSON string array
-  databases?: string;         // JSON string array
-  cloud_technologies?: string;    // JSON string array
-  industry_keywords?: string;  // JSON string array
-  soft_skills?: string;        // JSON string array
-  certifications?: string;    // JSON string array
-  requirements?: string;      // JSON string array
-  nice_to_haves?: string;       // JSON string array
-  applicant_count?: string;
+  tools?: string[];             // JSON string array
+  programming_languages?: string[];     // JSON string array
+  frameworks_and_libraries?: string[]; // JSON string array
+  databases?: string[];         // JSON string array
+  cloud_technologies?: string[];    // JSON string array
+  industry_keywords?: string[];  // JSON string array
+  soft_skills?: string[];        // JSON string array
+  certifications?: string[];    // JSON string array
+  requirements?: string[];      // JSON string array
+  nice_to_haves?: string[];       // JSON string array
+  applicant_count?: number;
   code_assessment_completed?: boolean;
   interview_count?: number;
   initial_application_date?: Date;

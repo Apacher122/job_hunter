@@ -1,7 +1,7 @@
 import { JobRequirements } from '../../../schemas/ordo-meritum.schemas';
 import { db } from '../../..';
 
-export const createJobRequirements = async (req: Omit<JobRequirements, 'id' | 'createdAt' | 'updatedAt'>) => {
+export const createJobRequirements = async (req: Omit<JobRequirements, 'id' | 'created_at' | 'updated_at'>) => {
   return await db
     .insertInto('job_requirements')
     .values(req)
@@ -9,7 +9,7 @@ export const createJobRequirements = async (req: Omit<JobRequirements, 'id' | 'c
     .executeTakeFirst();
 };
 
-export const updateJobRequirements = async (id: number, updates: Partial<Omit<JobRequirements, 'id' | 'createdAt' | 'updatedAt'>>) => {
+export const updateJobRequirements = async (id: number, updates: Partial<Omit<JobRequirements, 'id' | 'created_at' | 'updated_at'>>) => {
   return await db
     .updateTable('job_requirements')
     .set(updates)

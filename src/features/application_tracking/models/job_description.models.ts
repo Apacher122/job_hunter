@@ -1,73 +1,26 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const JobDescriptionSchema = z.object({
   job_title: z.string(),
   company_name: z.string(),
-  years_of_exp: z.string(),
-  education_level: z.string(),
-
-  skills_required: z
-    .array(z.string())
-    .default([])
-    .transform((arr) => arr.join(', ')),
-
-  skills_nice_to_haves: z
-    .array(z.string())
-    .default([])
-    .transform((arr) => arr.join(', ')),
-
-  tools_and_technologies: z
-    .array(z.string())
-    .default([])
-    .transform((arr) => arr.join(', ')),
-
-  programming_languages: z
-    .array(z.string())
-    .default([])
-    .transform((arr) => arr.join(', ')),
-
-  frameworks_and_libraries: z
-    .array(z.string())
-    .default([])
-    .transform((arr) => arr.join(', ')),
-
-  databases: z
-    .array(z.string())
-    .default([])
-    .transform((arr) => arr.join(', ')),
-
-  cloud_technologies: z
-    .array(z.string())
-    .default([])
-    .transform((arr) => arr.join(', ')),
-
-  industry_keywords: z
-    .array(z.string())
-    .default([])
-    .transform((arr) => arr.join(', ')),
-
-  soft_skills: z
-    .array(z.string())
-    .default([])
-    .transform((arr) => arr.join(', ')),
-
-  certifications: z
-    .array(z.string())
-    .default([])
-    .transform((arr) => arr.join(', ')),
-
-  company_culture: z
-    .array(z.string())
-    .default([])
-    .transform((arr) => arr.join(', ')),
-
-  company_values: z
-    .array(z.string())
-    .default([])
-    .transform((arr) => arr.join(', ')),
-
+  years_of_exp: z.string().default('Not Specified'),
+  education_level: z.string().default('Not Specified'),
+  website: z.string(),
+  applicant_count: z.number().default(0),
+  post_age: z.string(),
+  skills_required: z.array(z.string()).default([]),
+  skills_nice_to_haves: z.array(z.string()).default([]),
+  tools_and_technologies: z.array(z.string()).default([]),
+  programming_languages: z.array(z.string()).default([]),
+  frameworks_and_libraries: z.array(z.string()).default([]),
+  databases: z.array(z.string()).default([]),
+  cloud_technologies: z.array(z.string()).default([]),
+  industry_keywords: z.array(z.string()).default([]),
+  soft_skills: z.array(z.string()).default([]),
+  certifications: z.array(z.string()).default([]),
+  company_culture: z.string().default(''),
+  company_values: z.string().default(''),
   salary_range: z.string(),
 });
-
 
 export type JobDescription = z.infer<typeof JobDescriptionSchema>;

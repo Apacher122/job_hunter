@@ -23,7 +23,7 @@ export const getFullJobPosting = async (roleId: number, uid: string) => {
       "job_requirements.programming_languages",
       "job_requirements.frameworks_and_libraries",
       "job_requirements.databases",
-      "job_requirements.cloud_platforms",
+      "job_requirements.cloud_technologies",
       "job_requirements.industry_keywords",
       "job_requirements.soft_skills",
       "job_requirements.certifications",
@@ -42,37 +42,43 @@ export const getFullJobPosting = async (roleId: number, uid: string) => {
 export const insertFullJobPosting = async (
   jobRawText: string,
   jobPost: JobDescription,
-  firebaseUid: string
+  uid: string
 ) => {
-  const companyId = await query.createCompany({
-    name: jobPost.company_name,
-    culture: jobPost.company_culture,
-    values: jobPost.company_values,
+  try {
+  const company = await query.upsertCompany({
+    company_name: jobPost.company_name,
+    company_culture: jobPost.company_culture,
+    company_values: jobPost.company_values,
+    website: jobPost.website,
   });
   
-  const roleId = await query.createRole({
+  const role = await query.createRole({
     title: jobPost.job_title,
     description: jobRawText,
-    companyId: Number(companyId),
-    salaryRange: jobPost.salary_range,
+    company_id: Number(company?.id),
+    salary_range: jobPost.salary_range,
   });
 
   await query.createResume({
-    firebaseUid: firebaseUid,
-    roleId: Number(roleId),
+    role_id: Number(role?.id),
+    firebase_uid: uid,
   });
 
   return await query.createJobRequirements({
-    roleId: Number(roleId),
-    educationLevel: jobPost.education_level,
-    yearsOfExperience: jobPost.years_of_experience_required,
+    role_id: Number(role?.id),
+    education_level: jobPost.education_level,
+    applicant_count: jobPost.applicant_count,
+    years_of_exp: jobPost.years_of_exp,
     tools: jobPost.tools_and_technologies,
-    progLanguages: jobPost.programming_languages,
-    frameworksAndLibs: jobPost.frameworks_and_libraries,
+    programming_languages: jobPost.programming_languages,
+    frameworks_and_libraries: jobPost.frameworks_and_libraries,
     databases: jobPost.databases,
-    cloudPlatforms: jobPost.cloud_platforms,
-    industryKeywords: jobPost.industry_keywords,
-    softSkills: jobPost.soft_skills,
+    cloud_technologies: jobPost.cloud_technologies,
+    industry_keywords: jobPost.industry_keywords,
+    soft_skills: jobPost.soft_skills,
     certifications: jobPost.certifications,
   });
+  } catch (error) {
+    throw new Error('Could not create job: ' + error);
+  }
 };

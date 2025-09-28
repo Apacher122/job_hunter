@@ -32,3 +32,23 @@ export const deleteCompany = async (id: number) => {
     .where('id', '=', id)
     .execute();
 };
+
+export const upsertCompany = async (company: Omit<Company, 'id'>) => {
+  return await db
+    .insertInto('companies')
+    .values(company)
+    .onConflict((oc) =>
+      oc.column('company_name').doUpdateSet((eb) => ({
+        description: eb.ref('excluded.description'),
+        website: eb.ref('excluded.website'),
+        industry: eb.ref('excluded.industry'),
+        size: eb.ref('excluded.size'),
+        location: eb.ref('excluded.location'),
+        company_culture: eb.ref('excluded.company_culture'),
+        company_values: eb.ref('excluded.company_values'),
+        benefits: eb.ref('excluded.benefits'),
+      }))
+    )
+    .returningAll()
+    .executeTakeFirst();
+};

@@ -3,8 +3,11 @@ import { JobDescriptionSchema } from './job_description.models';
 export const JobDescriptionMock = JobDescriptionSchema.parse({
   job_title: "Senior Software Engineer",
   company_name: "TechNova Solutions",
-  years_of_experience_required: "5+ years",
+  years_of_exp: "5+ years",
   education_level: "Bachelor's in Computer Science or related field",
+  website: "https://www.technova.com",
+  applicant_count: 10,
+  post_age: "1 day",
   skills_required: ["Problem-solving", "Communication", "Team collaboration"],
   skills_nice_to_haves: ["Mentoring", "Agile methodologies", "Technical writing"],
   tools_and_technologies: ["Git", "Docker", "Jenkins", "Kubernetes"],
@@ -15,7 +18,7 @@ export const JobDescriptionMock = JobDescriptionSchema.parse({
   industry_keywords: ["FinTech", "SaaS", "Agile development"],
   soft_skills: ["Adaptability", "Critical thinking", "Leadership"],
   certifications: ["AWS Certified Solutions Architect", "Scrum Master"],
-  company_culture: ["Innovative", "Collaborative", "Inclusive"],
-  company_values: ["Integrity", "Customer first", "Continuous learning"],
+  company_culture: '"Innovative", "Collaborative", "Inclusive"',
+  company_values:'["Integrity", "Customer first", "Continuous learning"',
   salary_range: "$120,000 - $150,000"
 });

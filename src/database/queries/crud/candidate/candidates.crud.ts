@@ -1,9 +1,9 @@
 import { User } from '../../../schemas/ordo-meritum.schemas';
 import { db } from '../../../index';
 
-type UserUpdate = Partial<Omit<User, 'firebaseUid' | 'createdAt' | 'updatedAt'>>;
+type UserUpdate = Partial<Omit<User, 'firebase_uid' | 'created_at' | 'updated_at'>>;
 
-export const createUser = async (user: { firebaseUid: string }) => {
+export const createUser = async (user: { firebase_uid: string }) => {
   return await db
     .insertInto('users')
     .values(user)
@@ -11,19 +11,19 @@ export const createUser = async (user: { firebaseUid: string }) => {
     .executeTakeFirst();
 };
 
-export const getUserById = async (firebaseUid: string) => {
-  return await db.selectFrom('users').selectAll().where('firebaseUid', '=', firebaseUid).executeTakeFirst();
+export const getUserById = async (firebase_uid: string) => {
+  return await db.selectFrom('users').selectAll().where('firebase_uid', '=', firebase_uid).executeTakeFirst();
 };
 
-export const updateUser = async (firebaseUid: string, updates: UserUpdate) => {
+export const updateUser = async (firebase_uid: string, updates: UserUpdate) => {
   return await db
     .updateTable('users')
     .set(updates)
-    .where('firebaseUid', '=', firebaseUid)
+    .where('firebase_uid', '=', firebase_uid)
     .returningAll()
     .executeTakeFirst();
 };
 
-export const deleteUser = async (firebaseUid: string) => {
-  return await db.deleteFrom('users').where('firebaseUid', '=', firebaseUid).execute();
+export const deleteUser = async (firebase_uid: string) => {
+  return await db.deleteFrom('users').where('firebase_uid', '=', firebase_uid).execute();
 };

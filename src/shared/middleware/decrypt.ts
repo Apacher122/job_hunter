@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import { decryptWithPrivateKey } from '../../security/asymmetric';
 
-interface DecryptApiKeyRequest extends Request {
+export interface DecryptApiKeyRequest extends Request {
   body: {
     encryptedKey?: string;
     apiKey?: string;
@@ -12,18 +12,19 @@ interface DecryptApiKeyRequest extends Request {
 
 export const decryptApiKeyMiddleware = (privateKey: string) => {
   return (req: DecryptApiKeyRequest, res: Response, next: NextFunction) => {
-    const encryptedKey = req.body?.encryptedKey;
-    if (!encryptedKey) {
-      res.status(400).send('Missing encrypted key');
+    const header = req.headers["x-encrypted-api-key"];
+    if (!header || Array.isArray(header)) {
+      res.status(400).send("Missing or invalid encrypted key");
       return;
     }
+    console.log("Decrypting key", header);
 
     try {
-      req.body.apiKey = decryptWithPrivateKey(privateKey, encryptedKey);
+      req.body.apiKey = decryptWithPrivateKey(privateKey, header);
       next();
     } catch (err) {
-      console.error('Failed to decrypt key', err);
-      res.status(400).send('Failed to decrypt key');
+      console.error("Failed to decrypt key", err);
+      res.status(400).send("Failed to decrypt key");
     }
   };
 };

@@ -7,6 +7,7 @@ import { CoverLetterSchema, ResumeSchema } from '../models/requests';
 import { Request, Response } from 'express';
 
 import { AuthenticatedRequest } from '../../../shared/middleware/authenticate';
+import { LLMHeaders } from '../../../shared/types/llm.types';
 import { auth } from 'firebase-admin';
 import { getFullJobPosting } from '../../../database/queries/complex/jobs.queries';
 import { getJobPost } from '../../../database/queries/old/job.queries';
@@ -29,7 +30,7 @@ type ContentType = 'application/pdf' | 'text/plain';
 
 interface DocConfig {
   pathFn: (company: string, id: string) => string;
-  generate: (company: string, id: string) => Promise<void>;
+  generate: (company: string, jobId: number, uid: string, headers?: LLMHeaders) => Promise<void>;
   filename: (company: string, id: string) => string;
   contentType: ContentType;
 }
@@ -37,7 +38,7 @@ interface DocConfig {
 const docConfig: Record<DocType, DocConfig> = {
   resume: {
     pathFn: paths.paths.movedResume,
-    generate: async (_company, uid) => compileDoc.compileResume(Number(uid)),
+    generate: async (_company, jobId, uid, headers) => compileDoc.compileResume(jobId, uid, headers),
     filename: (company, uid) => `${company}_resume_${uid}.pdf`,
     contentType: 'application/pdf' as const,
   },
@@ -59,6 +60,7 @@ export const downloadDocument = async (
   const docType = req.query.docType as DocType;
   const getNew = req.query.getNew === 'true';
   const jobId = Number(req.query.jobId);
+  const headers = req.headers as unknown as LLMHeaders;
   const uid = authReq.user.uid;
 
   if (!isValidDocType(docType) || Number.isNaN(jobId)) {
@@ -66,7 +68,7 @@ export const downloadDocument = async (
   }
 
   try {
-    const jobPost = await db.getFullJobPosting(jobId, authReq.user.uid);
+    const jobPost = await db.getFullJobPosting(jobId, uid);
     const companyName = jobPost?.company_name;
 
     if (!companyName) {
@@ -77,7 +79,7 @@ export const downloadDocument = async (
     const filePath = pathFn(companyName, authReq.user.uid);
 
     if (!(await file.fileExists(filePath)) || getNew) {
-      await generate(companyName, authReq.user.uid);
+      await generate(companyName, jobId, uid, headers);
       await file.sendFileBuffer(res, filePath, filename(companyName, authReq.user.uid), contentType);
     } else {
       res.status(200).sendFile(filePath, {

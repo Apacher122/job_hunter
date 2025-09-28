@@ -27,6 +27,7 @@ const outputPaths = {
 }
 
 const dataPaths = {
+    privateKey: resolveRoot('config', 'private_key.pem'),
     currentResumeData: resolveRoot('data', 'user_info', 'resume.json'),
     currentCoverLetter: resolveRoot('data', 'user_info', 'coverLetter.txt'),
     currentResumeTxt: resolveRoot('data', 'user_info', 'resume.txt'),

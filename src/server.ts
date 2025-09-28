@@ -1,12 +1,15 @@
 import './config/firebaseAdmin'
 
+import appRoutes from './features/application_tracking/routes/app_tracker.routes';
 import authRoutes from './features/auth/routes/auth.routes';
 import bodyParser from 'body-parser';
 import { decryptApiKeyMiddleware } from './shared/middleware/decrypt';
 import dotenv from 'dotenv';
 import express from 'express';
+import fs from 'fs';
 import { generateKeyPair } from './security/asymmetric';
 import { loadUserInfoToLatex } from './shared/utils/documents/latex/latex.helpers.js';
+import paths from './shared/constants/paths';
 import { shutdown } from './database/index.js';
 import { syncDBtoSheets } from './shared/libs/google/sheets.js';
 import userRoutes from './features/user/routes/user.routes';
@@ -16,10 +19,11 @@ dotenv.config();
 const app = express();
 app.use(bodyParser.json());
 
-
 const { publicKey, privateKey } = generateKeyPair();
+fs.writeFileSync(paths.paths.privateKey, privateKey);
+console.log(publicKey);
 app.get('/public-key', (req, res) => {
-  res.send({ publicKey });
+  res.send({ key: publicKey });
 })
 
 
@@ -31,6 +35,8 @@ app.get('/', (req, res) => {
 
 app.use('/user', userRoutes);
 app.use('/auth', authRoutes);
+app.use('/applications', appRoutes);
+
 // app.use('/resume', resumeRoutes);
 // app.use('/cover-letter', coverLetterRoutes);
 // app.use('/job-guide', jobGuideRoutes);

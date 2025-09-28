@@ -12,7 +12,6 @@ import {
 } from "../../../shared/utils/documents/latex/latex.helpers.js";
 
 import { JobDescription } from "../../application_tracking/models/job_description.models";
-import { JobPosting } from "../../../shared/data/info.store.js";
 import { MockResume } from "../models/requests/resume.mocks.js";
 import { cleanup } from "../../../shared/utils/documents/file.helpers.js";
 import dotenv from "dotenv";
@@ -42,7 +41,7 @@ export const compileResume = async (
     await generateFullResume(jobPost, headers);
 
     if (process.env.NODE_ENV === "testing") {
-      jobContent.companyName = "test";
+      jobContent.company_name = "test";
       jobContent.id = 0;
     }
 
