@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
 import { AuthSchema } from '../models/auth.models';
-import { loginOrRegister } from '../services/auth.services';
+import { loginOrRegister } from '../services/auth';
 import {z} from 'zod';
 
 export const loginController = async (req: Request, res: Response): Promise<any> => {
