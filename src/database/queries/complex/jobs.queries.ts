@@ -5,6 +5,7 @@ import {
 } from "../../../features/application_tracking/models/job_description";
 import { db } from "../../index";
 import { updateCompany } from "../crud/company/company_info.crud";
+import { resolveSoa } from "dns";
 
 export const getFullJobPosting = async (roleId: number, uid: string) => {
   const job = await db
@@ -12,11 +13,13 @@ export const getFullJobPosting = async (roleId: number, uid: string) => {
     .innerJoin("companies", "roles.company_id", "companies.id")
     .innerJoin("job_requirements", "roles.id", "job_requirements.role_id")
     .select([
-      "roles.title",
+      "roles.job_title",
       "roles.description",
       "companies.company_name",
       "companies.company_culture",
       "companies.company_values",
+      "job_requirements.requirements",
+      "job_requirements.nice_to_haves",
       "job_requirements.education_level",
       "job_requirements.years_of_exp",
       "job_requirements.tools",
@@ -53,7 +56,7 @@ export const insertFullJobPosting = async (
   });
   
   const role = await query.createRole({
-    title: jobPost.job_title,
+    job_title: jobPost.job_title,
     description: jobRawText,
     company_id: Number(company?.id),
     salary_range: jobPost.salary_range,
@@ -75,6 +78,8 @@ export const insertFullJobPosting = async (
     databases: jobPost.databases,
     cloud_technologies: jobPost.cloud_technologies,
     industry_keywords: jobPost.industry_keywords,
+    requirements: jobPost.skills_required,
+    nice_to_haves: jobPost.skills_nice_to_haves,
     soft_skills: jobPost.soft_skills,
     certifications: jobPost.certifications,
   });
@@ -82,3 +87,23 @@ export const insertFullJobPosting = async (
     throw new Error('Could not create job: ' + error);
   }
 };
+
+export const getAllUserJobPostings = async (
+  uid: string
+) => {
+  const results = await db
+    .selectFrom('resumes')
+    .innerJoin('roles', 'resumes.role_id', 'roles.id')
+    .innerJoin('companies', 'roles.company_id', 'companies.id')
+    .select([
+      'roles.id as role_id',
+      'roles.job_title as job_title',
+      'companies.company_name as company_name'
+    ])
+    .where('firebase_uid', '=', uid)
+    .execute()
+  
+    return results;
+}
+
+export type FullJobPosting = Awaited<ReturnType<typeof getFullJobPosting>>;

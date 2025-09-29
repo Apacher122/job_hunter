@@ -28,7 +28,7 @@ export interface Company {
 export interface Role {
   id: Generated<number>;
   company_id: number;
-  title: string;
+  job_title: string;
   description?: string;
   salary_range?: string;
   typical_salary_ask?: string;

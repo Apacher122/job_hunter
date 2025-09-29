@@ -1,6 +1,5 @@
-import * as compileDoc from '../services/index'
+import * as compileDoc from '../services/index';
 import * as db from '../../../database';
-import * as docs from '../services'
 import * as file from '../../../shared/utils/documents/file.helpers';
 
 import { CoverLetterSchema, ResumeSchema } from '../models/requests';
@@ -8,11 +7,7 @@ import { Request, Response } from 'express';
 
 import { AuthenticatedRequest } from '../../../shared/middleware/authenticate';
 import { LLMHeaders } from '../../../shared/types/llm.types';
-import { auth } from 'firebase-admin';
-import { getFullJobPosting } from '../../../database/queries/complex/jobs.queries';
-import { getJobPost } from '../../../database/queries/old/job.queries';
 import paths from '../../../shared/constants/paths';
-import z from 'zod';
 
 const filePathFor = (companyName: string, suffix: 'resume' | 'cover-letter') =>
   suffix === 'resume'
@@ -20,17 +15,22 @@ const filePathFor = (companyName: string, suffix: 'resume' | 'cover-letter') =>
     : paths.paths.movedCoverLetter(companyName);
 
 const generatorFor = (suffix: 'resume' | 'cover-letter') =>
-  suffix === 'resume' ? compileDoc.compileResume : compileDoc.compileCoverLetter;
+  suffix === 'resume'
+    ? compileDoc.compileResume
+    : compileDoc.compileCoverLetter;
 
-type DocType =
-  | 'resume'
-  | 'cover-letter';
+type DocType = 'resume' | 'cover-letter';
 
 type ContentType = 'application/pdf' | 'text/plain';
 
 interface DocConfig {
   pathFn: (company: string, id: string) => string;
-  generate: (company: string, jobId: number, uid: string, headers?: LLMHeaders) => Promise<void>;
+  generate: (
+    company: string,
+    jobId: number,
+    uid: string,
+    apiKey: string
+  ) => Promise<void>;
   filename: (company: string, id: string) => string;
   contentType: ContentType;
 }
@@ -38,13 +38,15 @@ interface DocConfig {
 const docConfig: Record<DocType, DocConfig> = {
   resume: {
     pathFn: paths.paths.movedResume,
-    generate: async (_company, jobId, uid, headers) => compileDoc.compileResume(jobId, uid, headers),
+    generate: async (_company, jobId, uid, apiKey) =>
+      compileDoc.compileResume(jobId, uid, apiKey),
     filename: (company, uid) => `${company}_resume_${uid}.pdf`,
     contentType: 'application/pdf' as const,
   },
   'cover-letter': {
     pathFn: paths.paths.movedCoverLetter,
-    generate: async (_company, uid) => compileDoc.compileCoverLetter(Number(uid)),
+    generate: async (_company, uid) =>
+      compileDoc.compileCoverLetter(Number(uid)),
     filename: (company, uid) => `${company}_cover_letter_${uid}.pdf`,
     contentType: 'application/pdf',
   },
@@ -57,11 +59,12 @@ export const downloadDocument = async (
   res: Response
 ): Promise<void> => {
   const authReq = req as AuthenticatedRequest;
+  const apiKey = (req as any).body.apiKey;
+  const uid = authReq.user.uid;
+
   const docType = req.query.docType as DocType;
   const getNew = req.query.getNew === 'true';
   const jobId = Number(req.query.jobId);
-  const headers = req.headers as unknown as LLMHeaders;
-  const uid = authReq.user.uid;
 
   if (!isValidDocType(docType) || Number.isNaN(jobId)) {
     return void res.status(400).send('Invalid document request');
@@ -79,13 +82,21 @@ export const downloadDocument = async (
     const filePath = pathFn(companyName, authReq.user.uid);
 
     if (!(await file.fileExists(filePath)) || getNew) {
-      await generate(companyName, jobId, uid, headers);
-      await file.sendFileBuffer(res, filePath, filename(companyName, authReq.user.uid), contentType);
+      await generate(companyName, jobId, uid, apiKey);
+      await file.sendFileBuffer(
+        res,
+        filePath,
+        filename(companyName, authReq.user.uid),
+        contentType
+      );
     } else {
       res.status(200).sendFile(filePath, {
         headers: {
           'Content-Type': contentType,
-          'Content-Disposition': `attachment; filename="${filename(companyName, authReq.user.uid)}"`,
+          'Content-Disposition': `attachment; filename="${filename(
+            companyName,
+            authReq.user.uid
+          )}"`,
         },
       });
     }

@@ -1,4 +1,4 @@
-import { downloadDocument } from '../../documents/controllers/document.controller';
+import { downloadDocument } from '../../documents/controllers/document';
 import { handleLoadMatchSummary } from '../controllers/match_summary.controller';
 import express from 'express';
 

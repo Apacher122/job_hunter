@@ -4,47 +4,37 @@ import fs from 'fs';
 import { logger } from '../../../shared/utils/logger.utils';
 import paths from '../../../shared/constants/paths';
 import { spawn } from 'child_process';
-import { validatePath } from '../../../shared/utils/documents/file.helpers'
+import { validatePath } from '../../../shared/utils/documents/file.helpers';
+import { JobDescriptionSchema } from '../../application_tracking/models/job_description';
 
-export const exportLatex = async({
+export const exportLatex = async ({
   jobNameSuffix,
-  latexFilePath,
+  tempLatexFolder,
   targetDirectory,
   compiledPdfPath,
   movedPdfPath,
-  jobPost,
+  companyName,
+  jobId,
 }: {
   jobNameSuffix: string;
-  latexFilePath: string;
+  tempLatexFolder: string;
   targetDirectory: string;
   compiledPdfPath: string;
   movedPdfPath: string;
-  jobPost: JobPosting;
+  companyName: string;
+  jobId: number;
 }) => {
-  const content = jobPost
-  if (!content || !content.companyName) {
-    throw new Error('Job posting content or company name is not available in infoStore.');
-  }
-  validatePath(paths.latex.resume.resume);
-  validatePath(paths.paths.dir);
+  validatePath(tempLatexFolder);
 
-  await executeLatex(
-    content.companyName,
-    jobNameSuffix,
-    latexFilePath,
-    content.id,
-  );
+  const latexFilePath = `${tempLatexFolder}/resume.tex`
+
+  await executeLatex(companyName, jobNameSuffix, latexFilePath, jobId, tempLatexFolder);
 
   if (jobNameSuffix === 'resume') {
-    const path = paths.paths.compiledResume(content.companyName, content.id);
-    await forceSinglePagePDF(path);
+    await forceSinglePagePDF(compiledPdfPath);
   }
 
-  await moveCompiledPDF(
-    targetDirectory,
-    compiledPdfPath,
-    movedPdfPath
-  );
+  await moveCompiledPDF(targetDirectory, compiledPdfPath, movedPdfPath);
 };
 
 const executeLatex = (
@@ -52,13 +42,14 @@ const executeLatex = (
   jobNameSuffix: string,
   latexFilePath: string,
   id: number,
+  outputDir: string
 ): Promise<void> => {
-  return new Promise(( resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const latex = spawn('xelatex', [
       `--interaction=nonstopmode`,
-      `-output-directory=${paths.paths.dir}`,
+      `-output-directory=${outputDir}`,
       `--jobname=${companyName}_${jobNameSuffix}_${id}`,
-      latexFilePath
+      latexFilePath,
     ]);
 
     latex.stdout.on('data', (data) => {
@@ -69,7 +60,7 @@ const executeLatex = (
       logger.error(`LaTeX Error: ${data.toString()}`);
     });
 
-    latex.on('close', async(code) => {
+    latex.on('close', async (code) => {
       if (code === 0) {
         resolve();
       } else {
@@ -77,7 +68,7 @@ const executeLatex = (
       }
     });
   });
-}
+};
 
 const moveCompiledPDF = async (
   targetDirectory: string,
@@ -85,7 +76,7 @@ const moveCompiledPDF = async (
   movedPdfPath: string
 ) => {
   try {
-    if(!existsSync(targetDirectory)) {
+    if (!existsSync(targetDirectory)) {
       await fs.promises.mkdir(targetDirectory, { recursive: true });
     }
 
@@ -94,4 +85,4 @@ const moveCompiledPDF = async (
     console.error(`Error moving compiled PDF: ${error}`);
     throw error;
   }
-}
+};
