@@ -1,5 +1,5 @@
-import { AppliedJob } from "../types/types";
-import { JobPosting } from "../utils/data/info.store";
+import { AppliedJob } from "../types/types.js";
+import { JobPosting } from "../utils/data/info.store.js";
 
 export const jobPostingMapping: Record<
   keyof Pick<JobPosting,
