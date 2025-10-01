@@ -4,8 +4,15 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "rootDir": "src",
+    "outDir": "dist",
+    "baseUrl": "./src",
+    "paths": {
+      "@shared/*": ["shared/*"],
+      "@features/*": ["features/*"],
+      "@database/*": ["database/*"],
+    },
     "strict": true,
-    "esModuleInterop": true,
+    "esModuleInterop": false,
     "skipLibCheck": true,
     "resolveJsonModule": true
   },
