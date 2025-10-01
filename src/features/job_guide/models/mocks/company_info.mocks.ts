@@ -1,4 +1,4 @@
-import { CompanyInfoSchema } from "../company_info.models";
+import { CompanyInfoSchema } from "../company_info.models.js";
 
 export const CompanyInfoMock = CompanyInfoSchema.parse({
   company_name: "TechNova Solutions",

@@ -1,4 +1,4 @@
-import { GuidingQuestionsSchema } from "../guiding_questions.models";
+import { GuidingQuestionsSchema } from "../guiding_questions.models.js";
 
 export const GuidingQuestionsMock = GuidingQuestionsSchema.parse({
   guiding_questions: [

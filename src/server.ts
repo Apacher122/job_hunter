@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
-dotenv.config();
+import { startServer } from './server/startServer.js';
 
-import { app } from './server/app';
-import { startServer } from './server/startServer';
+dotenv.config();
 
 startServer().catch(console.error);

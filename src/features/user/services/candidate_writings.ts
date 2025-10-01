@@ -1,6 +1,7 @@
-import * as db from "../../../database";
-import * as models from '../models';
-import { CandidateWritingSample } from "../../../database/schemas/ordo-meritum.schemas";
+import * as db from "@database/index.js";
+import * as models from '../models/index.js';
+
+import { CandidateWritingSample } from "@database/schemas/ordo-meritum.schemas.js";
 
 export const createOrUpdateCandidateWritingSample = async (
   firebaseUid: string, 

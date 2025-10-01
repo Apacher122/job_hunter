@@ -1,5 +1,6 @@
-import { getGuidingAnswers } from '../services/guiding_answers.service';
 import { Request, Response } from 'express';
+
+import { getGuidingAnswers } from '../services/guiding_answers.service.js';
 
 export const handleLoadJobGuide  = async (
     req: Request,

@@ -1,4 +1,4 @@
-import { MatchSummarySchema } from '../match_summary.models';
+import { MatchSummarySchema } from '../match_summary.models.js';
 
 export const MatchSummaryMock = MatchSummarySchema.parse({
   company_name: 'Acme Corp',

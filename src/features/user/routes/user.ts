@@ -1,28 +1,34 @@
-import * as userController from "../controllers";
+import * as userController from "../controllers/index.js";
 
-import { authenticate } from "../../../shared/middleware/authenticate";
+import { authenticate } from "@shared/middleware/authenticate.js";
 import express from "express";
 
-const router = express.Router();
+export const routes = (privateKey?: string) => {
+  const router = express.Router();
 
-router.post(
-  "/questionnaire",
-  authenticate,
-  userController.createOrUpdateCandidateQuestionnaire
-);
+  router.post(
+    "/questionnaire",
+    authenticate,
+    userController.createOrUpdateCandidateQuestionnaire
+  );
 
-router.get(
-  "/questionnaire",
-  authenticate,
-  userController.getCandidateQuestionnaire
-);
+  router.get(
+    "/questionnaire",
+    authenticate,
+    userController.getCandidateQuestionnaire
+  );
 
-router.post(
-  "/writing-samples",
-  authenticate,
-  userController.createOrUpdateWritingSamples
-);
+  router.post(
+    "/writing-samples",
+    authenticate,
+    userController.createOrUpdateWritingSamples
+  );
 
-router.get("/writing-samples", authenticate, userController.getWritingSamples);
+  router.get(
+    "/writing-samples",
+    authenticate,
+    userController.getWritingSamples
+  );
 
-export default router;
+  return router;
+};

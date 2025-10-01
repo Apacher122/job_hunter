@@ -1,6 +1,6 @@
-import { downloadDocument } from '../../documents/controllers/document';
-import { handleLoadMatchSummary } from '../controllers/match_summary.controller';
+import { downloadDocument } from '../../documents/controllers/document.js';
 import express from 'express';
+import { handleLoadMatchSummary } from '../controllers/match_summary.controller.js';
 
 const router = express.Router();
 

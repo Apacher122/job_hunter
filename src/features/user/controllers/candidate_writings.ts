@@ -1,7 +1,10 @@
-import * as service from "../services/candidate_writings";
+import * as models from '../models/index.js'
+import * as service from "../services/index.js";
+
 import { Request, Response } from "express";
-import { AuthenticatedRequest } from "../../../shared/middleware/authenticate";
-import * as models from '../models'
+
+import { AuthenticatedRequest } from "@shared/middleware/authenticate.js";
+import { CandidateWritingSchema } from '../models/writing_samples.js';
 
 export const createOrUpdateWritingSamples = async (
   req: Request,

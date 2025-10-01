@@ -1,5 +1,5 @@
-import { generateKeyPair } from '../security/asymmetric';
-import { broadcastPublicKey } from '../security/publicKeySSE';
+import { broadcastPublicKey } from '../security/publicKeySSE.js';
+import { generateKeyPair } from '../security/asymmetric.js';
 
 export let publicKey: string;
 export let privateKey: string;

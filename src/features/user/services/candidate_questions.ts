@@ -1,6 +1,6 @@
-import * as db from "../../../database";
+import * as db from "@database/index.js";
 
-import { CandidateQuestionnaire } from "../../../database/schemas/ordo-meritum.schemas";
+import { CandidateQuestionnaire } from "@database/schemas/ordo-meritum.schemas.js";
 
 export const createOrUpdateCandidateQuestionnaire = async (
   firebaseUid: string,

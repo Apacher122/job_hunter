@@ -1,8 +1,8 @@
-import * as service from "../services";
+import * as service from "../services/index.js";
 
 import { Request, Response } from "express";
 
-import { AuthenticatedRequest } from "../../../shared/middleware/authenticate";
+import { AuthenticatedRequest } from "@shared/middleware/authenticate.js";
 
 export const createOrUpdateCandidateQuestionnaire = async (
   req: Request, 

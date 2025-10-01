@@ -1,8 +1,8 @@
-import express from 'express';
-import userRoutes from './routes/user';
+import express from "express";
+import { routes } from "./routes/user.js";
 
-const router = express.Router();
-
-router.use('/user', userRoutes);
-
-export default router;
+export const userRoutes = (privateKey?: string) => {
+  const router = express.Router();
+  router.use("/user", routes(privateKey));
+  return router;
+};

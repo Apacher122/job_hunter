@@ -1,5 +1,6 @@
-import { getMatchSummary, fetchMatchSumary } from '../services/v2/match_summarizer.service';
 import { Request, Response } from 'express';
+
+import { getMatchSummary } from '../services/v2/match_summarizer.service.js';
 
 export const handleLoadMatchSummary = async (
     req: Request,

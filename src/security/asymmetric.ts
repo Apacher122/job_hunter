@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 
 export const generateKeyPair = () => {
   return crypto.generateKeyPairSync('rsa', {
@@ -17,11 +17,10 @@ export const encryptWithPublicKey = (publicKey: string, data: string) => {
 
 export const decryptWithPrivateKey = (privateKey: string, encrypted: string) => {
   try {
-    // Convert base64 -> binary string -> Buffer
-    const binary = atob(encrypted); // decode base64 to binary string
+    const binary = atob(encrypted);
     const buf = Buffer.alloc(binary.length);
     for (let i = 0; i < binary.length; i++) {
-      buf[i] = binary.charCodeAt(i); // convert char codes to byte values
+      buf[i] = binary.charCodeAt(i);
     }
 
     const decrypted = crypto.privateDecrypt(

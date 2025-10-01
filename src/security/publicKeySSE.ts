@@ -1,6 +1,6 @@
+import { authenticate } from '@shared/middleware/authenticate.js';
 import express from 'express';
-import { authenticate } from '../shared/middleware/authenticate';
-import { publicKey } from '../server/initializeApp';
+import { publicKey } from '../server/initializeApp.js';
 
 const sseClients: express.Response[] = [];
 
@@ -22,6 +22,7 @@ publicKeyStreamRouter.get('/', authenticate, (req, res) => {
 });
 
 export const getPublicKey = (req: express.Request, res: express.Response) => {
+  console.log('Getting public key');
   res.json({ key: publicKey });
 };
 

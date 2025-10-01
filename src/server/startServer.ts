@@ -1,12 +1,14 @@
-import { app } from './app';
-import { initializeApp } from './initializeApp';
-import { shutdown } from '../database/index';
+import { initializeApp, privateKey } from './initializeApp.js';
+
+import { app } from './app.js';
+import { shutdown } from '@database/index.js';
 
 export const startServer = async () => {
   try {
     console.log('Starting server...');
     await initializeApp();
-    app.listen(3001, '0.0.0.0', () => {
+    const configuredApp = app(privateKey);
+    configuredApp.listen(3001, '0.0.0.0', () => {
       console.log('Server is running on port 3001');
     });
   } catch (error: unknown) {

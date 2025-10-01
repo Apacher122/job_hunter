@@ -1,23 +1,29 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import { authenticate } from '../shared/middleware/authenticate';
-import userRoutes from '../features/user/routes/user';
-import authRoutes from '../features/auth/routes/auth';
-import appRoutes from '../features/application_tracking/routes/app_tracker';
-import { publicKeyStreamRouter, getPublicKey } from '../security/publicKeySSE';
+import * as routes from '@features/routes.js';
+import * as sec from '../security/index.js';
 
-export const app = express();
-app.use(bodyParser.json());
+import { authenticate } from "@shared/middleware/authenticate.js";
+import bodyParser from "body-parser";
+import { customResponseMiddleware } from "@shared/middleware/customResponse.js";
+import express from "express";
 
-app.get('/', (req, res) => {
-  res
-    .status(200)
-    .json({ success: true, message: 'Welcome to the Resume Compiler API' });
-});
+export const app = (privateKey: string) => {
+  const app = express();
+  app.use(bodyParser.json());
+  app.use(customResponseMiddleware);
 
-app.use('/public-key-stream', publicKeyStreamRouter);
-app.get('/public-key', authenticate, getPublicKey);
+  app.get("/", (req, res) => {
+    res
+      .status(200)
+      .json({ success: true, message: "Welcome to the Resume Compiler API" });
+  });
 
-app.use('/user', userRoutes);
-app.use('/auth', authRoutes);
-app.use('/applications', appRoutes);
+  app.use("/public-key-stream", sec.publicKeyStreamRouter);
+  app.get("/public-key", authenticate, sec.getPublicKey);
+
+  app.use(routes.userRoutes(privateKey));
+  app.use(routes.authRoutes);
+  app.use(routes.applicationTrackerRoutes(privateKey));
+  app.use(routes.documentRoutes(privateKey));
+
+  return app;
+};
