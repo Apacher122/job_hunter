@@ -1,5 +1,5 @@
-import { CompanyInfoType } from "../../../features/job_guide/models/company_info.models"
-import dedent from "ts-dedent"
+import { CompanyInfoType } from "../../../features/job_guide/models/company_info.models.js"
+import { dedent } from "ts-dedent"
 import { format } from 'path';
 
 export const companyInfoFormatter = (info: CompanyInfoType): string => {

@@ -1,8 +1,6 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import { fileURLToPath } from 'url';
+import fs from 'fs';
+import path from 'path';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const loadTemplate = async (
     folder: 'prompts' | 'instructions',
     fileName: string,

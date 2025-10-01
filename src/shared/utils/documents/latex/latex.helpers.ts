@@ -1,8 +1,8 @@
-import Handlebars from "handlebars";
+import * as Handlebars from "handlebars";
+import * as fs from "fs";
+
 import { ResumeSectionNotFoundError } from "../../../errors/resume_builder.errors.js";
-import { formatTitle } from "../../formatters/string.formatter";
-import fs from "fs";
-import { infoStore } from "../../../data/info.store.js";
+import { formatTitle } from "../../formatters/string.formatter.js";
 import paths from "../../../constants/paths.js";
 import { text } from "express";
 
@@ -17,24 +17,24 @@ export const sectionToLatexEnvMap: Record<
 };
 
 // Load the basic information of the user into resume.tex
-export const loadUserInfoToLatex = async () => {
-  const resumeTemplate = await fs.promises.readFile(
-    paths.latex.resume.resumeTemplate,
-    "utf8"
-  );
-  const resumeInfo = Handlebars.compile(resumeTemplate)(infoStore.user_info);
-  await fs.promises.writeFile(paths.latex.resume.resume, resumeInfo);
+// export const loadUserInfoToLatex = async () => {
+//   const resumeTemplate = await fs.promises.readFile(
+//     paths.latex.resume.resumeTemplate,
+//     "utf8"
+//   );
+//   const resumeInfo = Handlebars.compile(resumeTemplate)(infoStore.user_info);
+//   await fs.promises.writeFile(paths.latex.resume.resume, resumeInfo);
 
-  const educationTemplate = await fs.promises.readFile(
-    paths.latex.resume.educationTemplate,
-    "utf8"
-  );
+//   const educationTemplate = await fs.promises.readFile(
+//     paths.latex.resume.educationTemplate,
+//     "utf8"
+//   );
 
-  const educationInfo = Handlebars.compile(educationTemplate)(
-    infoStore.education_info
-  );
-  await fs.promises.writeFile(paths.latex.resume.education, educationInfo);
-};
+//   const educationInfo = Handlebars.compile(educationTemplate)(
+//     infoStore.education_info
+//   );
+//   await fs.promises.writeFile(paths.latex.resume.education, educationInfo);
+// };
 
 export const replaceSectionContent = (
   texContent: string,

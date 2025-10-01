@@ -1,11 +1,12 @@
+import * as fs from 'fs';
+import * as path from 'path';
+
 import { Request, Response } from 'express';
 
-import fs from 'fs';
+import { file } from 'googleapis/build/src/apis/file/index.js';
 import { logger } from '../logger.utils.js';
 import mammoth from 'mammoth';
-import path from 'path';
 import paths from '../../constants/paths.js';
-import pdf from 'pdf-parse';
 
 type Reader = (filePath: string) => Promise<string>;
 
@@ -17,16 +18,10 @@ const docxReader: Reader = async (filePath) => {
   return result.value;
 };
 
-const pdfReader: Reader = async (filePath) => {
-  const dataBuffer = await fs.promises.readFile(filePath);
-  const data = await pdf(dataBuffer);
-  return data.text;
-};
 
 const readers: Record<string, Reader> = {
   '.txt': txtReader,
   '.docx': docxReader,
-  '.pdf': pdfReader,
 };
 
 export const extractTextFromFile = async (filePath: string): Promise<string> => {
@@ -106,11 +101,12 @@ export async function sendFileBuffer(
   mimeType: 'application/pdf' | 'text/plain'
 ): Promise<void> {
   try {
-    const fileBuffer = await fs.promises.readFile(filePath);
+    const fileBuffer = await fs.promises.readFile(path.join(filePath, fileName));
     res.setHeader('Content-Type', mimeType);
     res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
     res.send(fileBuffer);
-  } catch {
+  } catch (error)   {
+    console.log(error);
     res.status(500).send('Error reading file');
   }
 }

@@ -1,5 +1,6 @@
+import * as fs from 'fs';
+
 import { PDFDocument } from 'pdf-lib';
-import fs from 'fs';
 
 export const convertPDFToBase64 = async (filePath: string) => {
     try {

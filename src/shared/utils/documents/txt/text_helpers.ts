@@ -1,4 +1,4 @@
-import fs from 'fs';
+import * as fs from 'fs';
 
 export const appendTextToFile = async (filePath: string, text: string): Promise<void> => {
   try {

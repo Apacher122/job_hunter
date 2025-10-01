@@ -1,7 +1,8 @@
+import * as fs from 'fs';
+import * as path from 'path';
+
 import dedent from 'dedent';
 import { extractTextFromFile } from '../documents/file.helpers.js';
-import fs from 'fs';
-import path from 'path';
 import paths from '../../constants/paths.js';
 
 export const formatTitle = (str: string): string => {

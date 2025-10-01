@@ -1,5 +1,5 @@
 import dedent from "dedent";
-import { formatTitle } from "./string.formatter";
+import { formatTitle } from "./string.formatter.js";
 
 export const formatLatexSection = (sectionType: string) => (sectionData: any) => {
     let cvItems;
