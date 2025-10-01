@@ -17,7 +17,7 @@
 % CONFIGURATIONS
 %-------------------------------------------------------------------------------
 % A4 paper size by default, use 'letterpaper' for US letter
-\documentclass[10pt, a4paper]{/usr/src/app/src/shared/templates/latex/original-template/awesome-cv}
+\documentclass[10pt, a4paper]{/usr/src/app/output/temp/{{uid}}/awesome-cv}
 
 % Configure page margins with geometry
 \geometry{left=1.4cm, top=.8cm, right=1.4cm, bottom=1.8cm, footskip=.5cm}
@@ -52,14 +52,14 @@
 %-------------------------------------------------------------------------------
 % Available options: circle|rectangle,edge/noedge,left/right
 % \photo[rectangle,edge,right]{./examples/profile}
-\name{ {{~first_name~}} }{ {{~last_name~}} }
-\position{ {{{summary}}} }
-\address{ {{~location~}} }
+\name{ {{first_name}} }{ {{last_name}} }
+\position{ {{summary}} }
+\address{ {{location}} }
 
-\mobile{ {{~mobile~}} }
-\email{ {{~email~}} }
-\github{ {{~github~}} }
-\linkedin{ {{~linkedin~}} }
+\mobile{ {{mobile}} }
+\email{ {{email}} }
+\github{ {{github}} }
+\linkedin{ {{linkedin}} }
 % \gitlab{gitlab-id}
 % \stackoverflow{SO-id}{SO-name}
 % \twitter{@twit}
@@ -83,7 +83,7 @@
 % Leave any of these blank if they are not needed
 \makecvfooter
   {\today}
-  { {{~first_name}} {{last_name~}}~~~·~~~Résumé}
+  { {{first_name}} {{last_name}}~~~·~~~Résumé}
   {\thepage}
 
 
@@ -91,10 +91,11 @@
 %	CV/RESUME CONTENT
 %	Each section is imported separately, open each file in turn to modify content
 %-------------------------------------------------------------------------------
-\input{/usr/src/app/src/shared/templates/latex/original-template/compiled/education.tex}
-\input{/usr/src/app/src/shared/templates/latex/original-template/compiled/skills.tex}
-\input{/usr/src/app/src/shared/templates/latex/original-template/compiled/experience.tex}
-\input{/usr/src/app/src/shared/templates/latex/original-template/compiled/projects.tex}
+\input{/usr/src/app/output/temp/{{uid}}/compiled/summary.tex}
+\input{/usr/src/app/output/temp/{{uid}}/compiled/education.tex}
+\input{/usr/src/app/output/temp/{{uid}}/compiled/skills.tex}
+\input{/usr/src/app/output/temp/{{uid}}/compiled/experiences.tex}
+\input{/usr/src/app/output/temp/{{uid}}/compiled/projects.tex}
 
 %-------------------------------------------------------------------------------
 \end{document}

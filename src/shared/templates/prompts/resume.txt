@@ -6,7 +6,7 @@ I am submitting an application for the {{position}} role at your company ({{comp
 # Job Posting
 
 **Raw Job Post:**  
-{{jobPost}}
+{{job_post}}
 
 **Position:** {{position}}  
 **Company Name:** {{company}}  

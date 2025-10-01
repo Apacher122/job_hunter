@@ -8,8 +8,8 @@
 
 <output>
     You must extract the following categories:
-    <category1> Job title </category1>
-    <category2> Company </category2>
+    <category1> Company Name </category1>
+    <category2> Full Job Title </category2>
     <category3> Years of Experience Required </category3>
     <category4> Applicant Count </category4>
     <category5> Education Level </category5>
