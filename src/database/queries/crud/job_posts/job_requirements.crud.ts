@@ -1,5 +1,5 @@
-import { JobRequirements } from '../../../schemas/ordo-meritum.schemas';
-import { db } from '../../..';
+import { JobRequirements } from '../../../schemas/ordo-meritum.schemas.js';
+import { db } from '../../../index.js';
 
 export const createJobRequirements = async (req: Omit<JobRequirements, 'id' | 'created_at' | 'updated_at'>) => {
   return await db

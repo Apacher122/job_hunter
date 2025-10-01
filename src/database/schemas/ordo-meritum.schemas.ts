@@ -25,6 +25,8 @@ export interface Company {
   benefits?: string;
 }
 
+export type AppStatus = 'REJECT' | 'OFFERED' | 'OPEN' | 'CLOSED' | 'MOVED' | 'NOT_APPLIED' | 'GHOSTED' | 'INTERVIEWING';
+
 export interface Role {
   id: Generated<number>;
   company_id: number;
@@ -37,6 +39,7 @@ export interface Role {
   advised_salary_reason?: string;
   application_process?: string;
   expected_response_time?: string;
+  application_status?: AppStatus;
   user_applied?: boolean;
   created_at?: Generated<Date>;
   updated_at?: Generated<Date>;

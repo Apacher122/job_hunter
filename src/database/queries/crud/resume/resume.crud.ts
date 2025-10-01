@@ -1,5 +1,5 @@
-import { Resume } from '../../../schemas/ordo-meritum.schemas';
-import { db } from '../../../index';
+import { Resume } from '../../../schemas/ordo-meritum.schemas.js';
+import { db } from '../../../index.js';
 
 export const createResume = async (resume: Omit<Resume, 'id' | 'created_at' | 'updated_at'>) => {
   return await db
@@ -31,4 +31,13 @@ export const deleteResume = async (id: number) => {
     .deleteFrom('resumes')
     .where('id', '=', id)
     .execute();
+};
+
+export const getResumeByUidAndRole = async (uid: string, roleId: number) => {
+  return await db
+    .selectFrom('resumes')
+    .selectAll()
+    .where('firebase_uid', '=', uid)
+    .where('role_id', '=', roleId)
+    .executeTakeFirst();
 };

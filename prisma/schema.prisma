@@ -14,6 +14,17 @@ enum ProjectStatus {
   ON_HOLD
 }
 
+enum AppStatus {
+  REJECTED
+  OFFERED
+  OPEN
+  CLOSED
+  MOVED
+  NOT_APPLIED
+  GHOSTED
+  INTERVIEWING
+}
+
 // --------------------
 // Core User
 // --------------------
@@ -52,12 +63,15 @@ model Role {
   company_id             Int
   title                  String?
   description            String?
+  salary_range           String?
   typical_salary_ask     String?
   typical_salary_reason  String?
   advised_salary_ask     String?
   advised_salary_reason  String?
   application_process    String?
   expected_response_time String?
+  application_status     AppStatus? @default(NOT_APPLIED)
+  user_applied           Boolean? @default(false)
   created_at             DateTime @default(now())
   updated_at             DateTime @default(now())
 
@@ -77,17 +91,17 @@ model JobRequirements {
   other_info                String?
   years_of_exp              String?
   education_level           String?
-  tools                     String?
-  programming_languages     String?
-  frameworks_and_libraries  String?
-  databases                 String?
-  cloud_technologies        String?
-  industry_keywords         String?
-  soft_skills               String?
-  certifications            String?
-  requirements              String?
-  nice_to_haves             String?
-  applicant_count           String?
+  tools                     String[]
+  programming_languages     String[]
+  frameworks_and_libraries  String[]
+  databases                 String[]
+  cloud_technologies        String[]
+  industry_keywords         String[]
+  soft_skills               String[]
+  certifications            String[]
+  requirements              String[]
+  nice_to_haves             String[]
+  applicant_count           Int?
   code_assessment_completed Boolean?
   interview_count           Int?
   initial_application_date  DateTime?
@@ -152,6 +166,7 @@ model Experience {
   descriptions ExperienceDescription[]
   resume       Resume                  @relation(fields: [resume_id], references: [id], onDelete: Cascade)
 
+  @@unique([resume_id, position, company, start_date])
   @@map("experiences")
 }
 
@@ -175,7 +190,7 @@ model Project {
   resume_id  Int
   name       String
   role       String
-  status     ProjectStatus
+  status     String
   created_at DateTime      @default(now())
   updated_at DateTime      @default(now())
 
@@ -183,6 +198,7 @@ model Project {
   resume       Resume               @relation(fields: [resume_id], references: [id], onDelete: Cascade)
 
   @@map("projects")
+   @@unique([resume_id, name, role])
 }
 
 model ProjectDescription {
@@ -211,6 +227,7 @@ model Skill {
   resume                    Resume      @relation(fields: [resume_id], references: [id], onDelete: Cascade)
 
   @@map("skills")
+   @@unique([resume_id, category])
 }
 
 model SkillItem {

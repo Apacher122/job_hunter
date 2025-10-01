@@ -1,11 +1,9 @@
-import * as query from "../../index";
+import * as query from "../../index.js";
 
 import {
   JobDescription,
-} from "../../../features/application_tracking/models/job_description";
-import { db } from "../../index";
-import { updateCompany } from "../crud/company/company_info.crud";
-import { resolveSoa } from "dns";
+} from "@features/application_tracking/models/job_description.js";
+import { db } from "../../index.js";
 
 export const getFullJobPosting = async (roleId: number, uid: string) => {
   const job = await db
@@ -95,10 +93,16 @@ export const getAllUserJobPostings = async (
     .selectFrom('resumes')
     .innerJoin('roles', 'resumes.role_id', 'roles.id')
     .innerJoin('companies', 'roles.company_id', 'companies.id')
+    .innerJoin('job_requirements', 'roles.id', 'job_requirements.role_id')
     .select([
       'roles.id as role_id',
       'roles.job_title as job_title',
-      'companies.company_name as company_name'
+      'companies.company_name as company_name',
+      'companies.website as website',
+      'roles.application_status as application_status',
+      'roles.user_applied as user_applied',
+      'job_requirements.interview_count as interview_count',
+      'job_requirements.initial_application_date as initial_application_date',
     ])
     .where('firebase_uid', '=', uid)
     .execute()

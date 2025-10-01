@@ -1,42 +1,49 @@
-import { Project, ProjectDescription } from '../../../schemas/ordo-meritum.schemas';
+import {
+  Project,
+  ProjectDescription,
+} from "../../../schemas/ordo-meritum.schemas.js";
 
-import { db } from '../../../index';
+import { db } from "../../../index.js";
 
-export const createProject = async (project: Omit<Project, 'id' | 'created_at' | 'updated_at'>) => {
+export const createProject = async (
+  project: Omit<Project, "id" | "created_at" | "updated_at">
+) => {
   return await db
-    .insertInto('projects')
+    .insertInto("projects")
     .values(project)
     .returningAll()
     .executeTakeFirst();
 };
 
-export const updateProject = async (id: number, updates: Partial<Omit<Project, 'id' | 'created_at' | 'updated_at'>>) => {
+export const updateProject = async (
+  id: number,
+  updates: Partial<Omit<Project, "id" | "created_at" | "updated_at">>
+) => {
   return await db
-    .updateTable('projects')
+    .updateTable("projects")
     .set(updates)
-    .where('id', '=', id)
+    .where("id", "=", id)
     .returningAll()
     .executeTakeFirst();
 };
 
 export const getProjectById = async (id: number) => {
   return await db
-    .selectFrom('projects')
+    .selectFrom("projects")
     .selectAll()
-    .where('id', '=', id)
+    .where("id", "=", id)
     .executeTakeFirst();
 };
 
 export const deleteProject = async (id: number) => {
-  return await db
-    .deleteFrom('projects')
-    .where('id', '=', id)
-    .execute();
+  return await db.deleteFrom("projects").where("id", "=", id).execute();
 };
 
-export const createProjectDescription = async (desc: Omit<ProjectDescription, 'id'>) => {
+export const createProjectDescription = async (
+  desc: Omit<ProjectDescription, "id">
+) => {
   return await db
-    .insertInto('project_descriptions')
+    .insertInto("project_descriptions")
     .values(desc)
     .returningAll()
     .executeTakeFirst();
@@ -44,27 +51,36 @@ export const createProjectDescription = async (desc: Omit<ProjectDescription, 'i
 
 export const updateProjectDescription = async (
   id: number,
-  updates: Partial<Omit<ProjectDescription, 'id'>>
+  updates: Partial<Omit<ProjectDescription, "id">>
 ) => {
   return await db
-    .updateTable('project_descriptions')
+    .updateTable("project_descriptions")
     .set(updates)
-    .where('id', '=', id)
+    .where("id", "=", id)
     .returningAll()
     .executeTakeFirst();
 };
 
 export const getProjectDescriptionById = async (id: number) => {
   return await db
-    .selectFrom('project_descriptions')
+    .selectFrom("project_descriptions")
     .selectAll()
-    .where('id', '=', id)
+    .where("id", "=", id)
     .executeTakeFirst();
 };
 
-export const deleteProjectDescription = async (id: number) => {
+export const deleteProjectDescription = async (resume_id: number) => {
   return await db
-    .deleteFrom('project_descriptions')
-    .where('id', '=', id)
+    .deleteFrom("project_descriptions")
+    .where("project_id", "in", (eb) =>
+      eb.selectFrom("projects").select("id").where("resume_id", "=", resume_id)
+    )
+    .execute();
+};
+
+export const deleteProjectByResumeId = async (resume_id: number) => {
+  return await db
+    .deleteFrom("projects")
+    .where("resume_id", "=", resume_id)
     .execute();
 };

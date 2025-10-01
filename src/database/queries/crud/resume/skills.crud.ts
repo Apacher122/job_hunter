@@ -1,6 +1,6 @@
-import { Skill, SkillItem } from '../../../schemas/ordo-meritum.schemas';
+import { Skill, SkillItem } from '../../../schemas/ordo-meritum.schemas.js';
 
-import { db } from '../../../index';
+import { db } from '../../../index.js';
 
 export const createSkill = async (skill: Omit<Skill, 'id' | 'created_at' | 'updated_at'>) => {
   return await db
@@ -59,9 +59,20 @@ export const getSkillItemById = async (id: number) => {
     .executeTakeFirst();
 };
 
-export const deleteSkillItem = async (id: number) => {
+export const deleteSkillItem = async (resume_id: number) => {
   return await db
-    .deleteFrom('skill_items')
-    .where('id', '=', id)
+  .deleteFrom('skill_items')
+  .where('skill_id', 'in', (eb) =>
+    eb.selectFrom('skills')
+      .select('id')
+      .where('resume_id', '=', resume_id)
+  )
+  .execute();
+};
+
+export const deleteSkillByResumeId = async (resume_id: number) => {
+  return await db
+    .deleteFrom('skills')
+    .where('resume_id', '=', resume_id)
     .execute();
 };

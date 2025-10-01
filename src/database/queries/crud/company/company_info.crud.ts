@@ -1,5 +1,5 @@
-import { Company } from '../../../schemas/ordo-meritum.schemas';
-import { db } from '../../..';
+import { Company } from '../../../schemas/ordo-meritum.schemas.js';
+import { db } from '../../../index.js';
 
 export const createCompany = async (company: Omit<Company, 'id'>) => {
   return await db

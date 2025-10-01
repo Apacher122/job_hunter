@@ -1,6 +1,5 @@
-import { CandidateQuestionnaire } from "../../../schemas/ordo-meritum.schemas";
-import { db } from "../../..";
-import { firebase } from 'googleapis/build/src/apis/firebase';
+import { CandidateQuestionnaire } from "../../../schemas/ordo-meritum.schemas.js";
+import { db } from "../../../index.js";
 
 export const createOrUpdateCandidateQuestionnaire = async (
   questionnaire: Omit<CandidateQuestionnaire, 'id' | 'created_at' | 'updated_at'>

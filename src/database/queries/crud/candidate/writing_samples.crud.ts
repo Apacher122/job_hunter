@@ -1,5 +1,5 @@
-import { CandidateWritingSample } from "../../../schemas/ordo-meritum.schemas";
-import { db } from "../../..";
+import { CandidateWritingSample } from "../../../schemas/ordo-meritum.schemas.js";
+import { db } from "../../../index.js";
 
 export const createOrUpdateCandidateWritingSample = async (
   writingSample: Omit<CandidateWritingSample, 'id' | 'created_at' | 'updated_at'>

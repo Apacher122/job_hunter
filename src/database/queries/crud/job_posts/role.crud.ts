@@ -1,5 +1,5 @@
-import { Role } from '../../../schemas/ordo-meritum.schemas';
-import { db } from '../../..';
+import { Role } from '../../../schemas/ordo-meritum.schemas.js';
+import { db } from '../../../index.js';
 
 export const createRole = async (role: Omit<Role, 'id' | 'created_at' | 'updated_at'>) => {
   return await db

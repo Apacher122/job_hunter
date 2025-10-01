@@ -1,5 +1,5 @@
-import { Education } from '../../../schemas/ordo-meritum.schemas';
-import { db } from '../../../index';
+import { Education } from '../../../schemas/ordo-meritum.schemas.js';
+import { db } from '../../../index.js';
 
 export const createEducation = async (education: Omit<Education, 'id' | 'created_at' | 'updated_at'>) => {
   return await db

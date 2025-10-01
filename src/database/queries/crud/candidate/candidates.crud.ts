@@ -1,5 +1,5 @@
-import { User } from '../../../schemas/ordo-meritum.schemas';
-import { db } from '../../../index';
+import { User } from '../../../schemas/ordo-meritum.schemas.js';
+import { db } from '../../../index.js';
 
 type UserUpdate = Partial<Omit<User, 'firebase_uid' | 'created_at' | 'updated_at'>>;
 

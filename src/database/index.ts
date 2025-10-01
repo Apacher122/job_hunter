@@ -1,6 +1,6 @@
 import { Kysely, PostgresDialect } from 'kysely';
 
-import { DB } from './schemas/ordo-meritum.schemas';
+import { DB } from './schemas/ordo-meritum.schemas.js';
 import { Pool } from 'pg';
 
 const pool = new Pool({
@@ -38,23 +38,23 @@ async function testConnection() {
 testConnection();
 
 // Candidate
-export * from './queries/crud/candidate/candidates.crud';
-export * from './queries/crud/candidate/education.crud';
-export * from './queries/crud/candidate/writing_samples.crud';
-export * from './queries/crud/candidate/questions.crud';
+export * from './queries/crud/candidate/candidates.crud.js';
+export * from './queries/crud/candidate/education.crud.js';
+export * from './queries/crud/candidate/writing_samples.crud.js';
+export * from './queries/crud/candidate/questions.crud.js';
 
 // Resume
-export * from './queries/crud/resume/resume.crud';
-export * from './queries/crud/resume/experience.crud';
-export * from './queries/crud/resume/projects.crud';
-export * from './queries/crud/resume/skills.crud';
+export * from './queries/crud/resume/resume.crud.js';
+export * from './queries/crud/resume/experience.crud.js';
+export * from './queries/crud/resume/projects.crud.js';
+export * from './queries/crud/resume/skills.crud.js';
 
 // Company & Role
-export * from './queries/crud/company/company_info.crud';
-export * from './queries/crud/job_posts/role.crud';
-export * from './queries/crud/job_posts/job_requirements.crud';
+export * from './queries/crud/company/company_info.crud.js';
+export * from './queries/crud/job_posts/role.crud.js';
+export * from './queries/crud/job_posts/job_requirements.crud.js';
 
 // Guides
-export * from './queries/crud/guides/match_summaries.crud';
+export * from './queries/crud/guides/match_summaries.crud.js';
 
-export * from './queries/complex/jobs.queries';
+export * from './queries/complex/jobs.queries.js';
