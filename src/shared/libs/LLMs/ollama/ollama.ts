@@ -1,6 +1,6 @@
 import { Ollama } from "ollama";
 import { ZodType } from "zod";
-import zodToJsonSchema from "zod-to-json-schema";
+import { zodToJsonSchema } from "zod-to-json-schema";
 
 export const messageOllama = async <T>(
   instructions: string,

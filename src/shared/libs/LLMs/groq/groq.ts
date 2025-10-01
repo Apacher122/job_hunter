@@ -1,10 +1,7 @@
 import Groq from "groq-sdk";
 import { ZodType } from "zod";
-import zodToJsonSchema from "zod-to-json-schema";
+import { zodToJsonSchema } from "zod-to-json-schema";
 
-/**
- * Generic function to send a prompt to Groq API and return structured JSON validated with Zod
- */
 export const messageGroq = async <T>(
   instructions: string,
   prompt: any,
@@ -16,18 +13,15 @@ export const messageGroq = async <T>(
   return schema.parse(parsed);
 };
 
-/**
- * Internal function to call Groq chat completions
- */
 async function getGroqText<T>(
   instructions: string,
   prompt: any,
   schema: ZodType<T>,
-  apiKey?: string,
+  apiKey?: string
 ): Promise<string> {
   const groq = new Groq({ apiKey: apiKey });
   const res = await groq.chat.completions.create({
-    model: "meta-llama/llama-4-scout-17b-16e-instruct", // Use your chosen Groq model
+    model: "meta-llama/llama-4-scout-17b-16e-instruct", 
     messages: [
       {
         role: "system",
@@ -35,7 +29,7 @@ async function getGroqText<T>(
       },
       {
         role: "user",
-        content: prompt, // Pass prompt as JSON for structured output
+        content: prompt,
       },
     ],
     temperature: 0,
@@ -44,8 +38,8 @@ async function getGroqText<T>(
       json_schema: {
         name: "resume",
         schema: zodToJsonSchema(schema),
-      }
-    }
+      },
+    },
   });
 
   const text = res.choices?.[0]?.message?.content;

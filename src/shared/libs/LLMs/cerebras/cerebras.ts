@@ -1,7 +1,7 @@
 import Cerebras from "@cerebras/cerebras_cloud_sdk";
 import { ChatCompletion } from "groq-sdk/resources/chat/completions";
 import { ZodType } from "zod";
-import zodToJsonSchema from "zod-to-json-schema";
+import { zodToJsonSchema } from "zod-to-json-schema";
 
 /**
  * Generic function to send a prompt to Cerebras API and return structured JSON validated with Zod

@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { ZodType } from "zod";
-import { text } from 'express';
-import zodToJsonSchema from "zod-to-json-schema";
+import { text } from "express";
+import { zodToJsonSchema } from "zod-to-json-schema";
 
 const anthropic = new Anthropic();
 
@@ -20,13 +20,13 @@ async function getClaudeText<T>(
   prompt: any,
   schema: ZodType<T>
 ): Promise<string> {
-const toolInputSchema = {
-  type: "object",
-  properties: {
-    resume: zodToJsonSchema(schema)
-  },
-  required: ["resume"]
-};
+  const toolInputSchema = {
+    type: "object",
+    properties: {
+      resume: zodToJsonSchema(schema),
+    },
+    required: ["resume"],
+  };
   const res = await anthropic.messages.create({
     model: "claude-sonnet-4-20250514",
     max_tokens: 2048,
@@ -35,18 +35,16 @@ const toolInputSchema = {
       {
         name: "structured_output_tool",
         description: "Returns structured data based on the provided schema",
-        "input_schema": {
+        input_schema: {
           type: "object",
           properties: {
-            data: zodToJsonSchema(schema)
+            data: zodToJsonSchema(schema),
           },
-          required: ["data"]
+          required: ["data"],
         },
       },
     ],
-    messages: [
-      { role: "user", content: JSON.stringify(prompt) },
-    ],
+    messages: [{ role: "user", content: JSON.stringify(prompt) }],
   });
 
   const text = res.content[0].type === "text" ? res.content[0].text : null;

@@ -1,7 +1,7 @@
 import { CohereClientV2 } from "cohere-ai";
 import { ZodType } from "zod";
 import dotenv from "dotenv";
-import zodToJsonSchema from "zod-to-json-schema";
+import { zodToJsonSchema } from "zod-to-json-schema";
 
 dotenv.config();
 
