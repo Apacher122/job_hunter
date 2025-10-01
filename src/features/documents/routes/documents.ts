@@ -1,18 +1,19 @@
-import paths from '../../../shared/constants/paths';
-import { authenticate } from '../../../shared/middleware/authenticate';
-import { decryptApiKeyMiddleware } from '../../../shared/middleware/decrypt';
-import { downloadDocument } from '../controllers/document';
-import express from 'express';
-import fs from 'fs';
+import * as fs from "fs";
 
-const router = express.Router();
-const privateKey = fs.readFileSync(paths.paths.privateKey, 'utf-8');
+import { authenticate } from "@shared/middleware/authenticate.js";
+import { decryptApiKeyMiddleware } from "@shared/middleware/decrypt.js";
+import { downloadDocument } from "../controllers/document.js";
+import express from "express";
 
-router.get(
-  '/revise',
-  decryptApiKeyMiddleware(privateKey),
-  authenticate,
-  downloadDocument
-);
+export const routes = (privateKey: string) => {
+  const router = express.Router();
 
-export default router;
+  router.post(
+    "/revise",
+    decryptApiKeyMiddleware(privateKey),
+    authenticate,
+    downloadDocument
+  );
+
+  return router;
+};

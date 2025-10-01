@@ -1,5 +1,14 @@
 import { z } from 'zod';
 
+export const SummarySchema = z.object({
+  summary: z.array(
+    z.object({
+      sentence: z.string(),
+      justification_for_change: z.string().default(''),
+    })
+  ),
+});
+
 export const ExperienceSchema = z.object({
     experiences: z.array(
         z.object({
@@ -56,12 +65,14 @@ export type ResumeItemsType = z.infer<typeof ResumeSchema>;
 
 export const ResumeSchema = z.object({
     type: z.literal('resume'),
+    summary: SummarySchema.shape.summary,
     experiences: ExperienceSchema.shape.experiences,
     skills: SkillSchema.shape.skills,
     projects: ProjectSchema.shape.projects,
 });
 
 export const ResumeItemsResponse = z.union([
+    SummarySchema,
     ExperienceSchema,
     SkillSchema,
     ProjectSchema,

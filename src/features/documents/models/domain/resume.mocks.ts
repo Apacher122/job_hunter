@@ -1,7 +1,22 @@
-import { ResumeSchema } from "./resume";
+import { ResumeSchema } from "./resume.js";
 
 // Manual mock with actual values
 export const MockResume = ResumeSchema.parse({
+  type: "resume",
+  summary: [
+    {
+      sentence: "I am a software engineer with 6 years of experience building scalable web applications and cloud solutions.",
+      justification_for_change: ""
+    },
+    {
+      sentence: "At my previous role at TechNova, I led a team of 5 engineers, improved system performance by 30%, and implemented CI/CD pipelines.",
+      justification_for_change: ""
+    },
+    {
+      sentence: "I bring strong problem-solving skills, expertise in full-stack development, and a collaborative mindset that aligns with company culture.",
+      justification_for_change: ""
+    }
+  ],
   experiences: [
     {
       position: "Software Engineer",

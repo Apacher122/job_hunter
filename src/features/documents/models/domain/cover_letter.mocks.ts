@@ -1,6 +1,7 @@
-import { CoverLetterReviewSchema, CoverLetterSchema } from "./cover_letter.mocks";
+import { CoverLetterReviewSchema, CoverLetterSchema } from "./cover_letter.js";
 
 export const CoverLetterMock = CoverLetterSchema.parse({
+  type: "cover_letter",
   about: "I am a software engineer with 6 years of experience building scalable web applications and cloud solutions.",
   experience: "At my previous role at TechNova, I led a team of 5 engineers, improved system performance by 30%, and implemented CI/CD pipelines.",
   whatIBring: "I bring strong problem-solving skills, expertise in full-stack development, and a collaborative mindset that aligns with company culture."

@@ -1,13 +1,17 @@
-import { CoverLetterMock } from "../models/requests/cover_letter.js";
-import { CoverLetterSchema } from "../models/requests/cover_letter.mocks.js";
-import Handlebars from "handlebars";
+import * as Handlebars from "handlebars";
+import * as db from "../../../database/index.js";
+import * as fs from "fs";
+
+import { CoverLetterMock } from "../models/domain/cover_letter.mocks.js";
+import { CoverLetterSchema } from "../models/domain/cover_letter.js";
+import { DocumentRequest } from "../models/requests/request.js";
+import { JobDescription } from "../../application_tracking/models/job_description.js";
+import { JobPosting } from "../../../shared/utils/data/info.store.js";
 import { ResumeSectionNotFoundError } from "../../../shared/errors/resume_builder.errors.js";
 import { ZodType } from "zod";
-import { db } from "../../../database/index.js";
 import dotenv from "dotenv";
 import { exportLatex } from "./export.js";
 import { formatLatexSection } from "../../../shared/utils/formatters/resume.formatter.js";
-import fs from "fs";
 import { getJobPost } from "../../../database/queries/old/job.queries.js";
 import { getWritingExamples } from "../../../shared/utils/formatters/string.formatter.js";
 import { loadTemplate } from "../../../shared/utils/templates/template.loader.js";
@@ -18,38 +22,39 @@ import { sendToLLM } from "../../../shared/libs/LLMs/providers.js";
 
 dotenv.config();
 
-export const compileCoverLetter = async (id: number): Promise<void> => {
-  const jobPost = await getJobPost(id);
-  if (!jobPost || !jobPost.companyName) {
+export const compileCoverLetter = async (
+  uid: string,
+  docRequest: DocumentRequest
+): Promise<void> => {
+  const jobPost = await db.getFullJobPosting(docRequest.options.jobId, uid);
+  if (!jobPost || !jobPost.company_name) {
     console.error(
       "Job posting content or company name is not available in infoStore."
     );
     return;
   }
-  let jobContent = jobPost;
-
-  let companyName = jobContent.companyName;
 
   if (process.env.NODE_ENV === "testing") {
-    jobContent.companyName == "test";
-    jobContent.id == 0;
+    jobPost.company_name == "test";
+    docRequest.options.jobId == 0;
   }
 
   try {
-    await generateCoverLetterDraft(jobContent);
+    const tempFolder = paths.paths.tempDir(uid, docRequest.options.jobId);
+    const tempPdf = paths.paths.tempPdf(uid, docRequest.options.jobId);
+    const tempFolderCompiled = paths.latex.tempCompiled(uid, docRequest.options.jobId);
+    fs.mkdirSync(tempFolder, { recursive: true });
+    fs.mkdirSync(tempPdf, { recursive: true });
+
+    const originalTemplatePath = paths.latex.originalTemplate;
+    fs.copyFileSync(originalTemplatePath, tempFolder);
+    await generateCoverLetterDraft(jobPost);
     await exportLatex({
       jobNameSuffix: "cover_letter",
-      latexFilePath: paths.latex.coverLetter.letter,
-      targetDirectory: paths.paths.dir,
-      compiledPdfPath: paths.paths.compiledCoverLetter(
-        jobContent.companyName,
-        jobContent.id
-      ),
-      movedPdfPath: paths.paths.movedCoverLetter(
-        jobContent.companyName,
-        jobContent.id
-      ),
-      jobPost,
+      outputPath: tempPdf,
+      compiledPdfPath: tempFolderCompiled,
+      companyName: jobPost.company_name,
+      jobId: docRequest.options.jobId
     });
   } catch (error) {
     const e = error as Error;
@@ -60,75 +65,75 @@ export const compileCoverLetter = async (id: number): Promise<void> => {
   }
 };
 
-const generateCoverLetterDraft = async (content: JobPosting) => {
-  try {
-    console.log(
-      `COVER LETTER - creating cover letter for ${content.rawCompanyName} - ${content.position}`
-    );
+const generateCoverLetterDraft = async (content: db.FullJobPosting) => {
+  // try {
+  //   console.log(
+  //     `COVER LETTER - creating cover letter for ${content.company_name} - ${content.job_title}`
+  //   );
 
-    const resumeData = await fs.promises.readFile(
-      paths.paths.jsonResume(content.companyName, content.id)
-    );
-    const coverLetterData = await fs.promises.readFile(
-      paths.paths.currentCoverLetter,
-      "utf-8"
-    );
-    const aboutMe = await fs.promises.readFile(paths.paths.aboutMe, "utf-8");
-    const corrections = await fs.promises.readFile(
-      paths.paths.corrections,
-      "utf-8"
-    );
-    const considerations = await fs.promises.readFile(
-      paths.paths.considerations,
-      "utf-8"
-    );
+  //   const resumeData = await fs.promises.readFile(
+  //     paths.paths.jsonResume(content.company_name, '')
+  //   );
+  //   const coverLetterData = await fs.promises.readFile(
+  //     paths.paths.currentCoverLetter,
+  //     "utf-8"
+  //   );
+  //   const aboutMe = await fs.promises.readFile(paths.paths.aboutMe, "utf-8");
+  //   const corrections = await fs.promises.readFile(
+  //     paths.paths.corrections,
+  //     "utf-8"
+  //   );
+  //   const considerations = await fs.promises.readFile(
+  //     paths.paths.considerations,
+  //     "utf-8"
+  //   );
 
-    const writingExamples = await getWritingExamples();
-    if (!writingExamples) {
-      throw new Error("Writing examples not found.");
-    }
+  //   const writingExamples = await getWritingExamples();
+  //   if (!writingExamples) {
+  //     throw new Error("Writing examples not found.");
+  //   }
 
-    const instructions = await loadTemplate("instructions", "coverletter", {
-      corrections: corrections,
-    });
+  //   const instructions = await loadTemplate("instructions", "coverletter", {
+  //     corrections: corrections,
+  //   });
 
-    const prompt = await loadTemplate("prompts", "coverletter", {
-      resume: JSON.stringify(resumeData),
-      jobPosting: content.body,
-      company: content.rawCompanyName,
-      position: content.position,
-      aboutMe: aboutMe,
-      currentCoverLetter: coverLetterData,
-      examples: writingExamples,
-      considerations: considerations,
-    });
+  //   const prompt = await loadTemplate("prompts", "coverletter", {
+  //     resume: JSON.stringify(resumeData),
+  //     jobPosting: content.description ?? "",
+  //     company: content.company_name,
+  //     position: content.job_title,
+  //     aboutMe: aboutMe,
+  //     currentCoverLetter: coverLetterData,
+  //     examples: writingExamples,
+  //     considerations: considerations,
+  //   });
 
-    const coverLetterTemplate = await fs.promises.readFile(
-      paths.latex.coverLetter.template,
-      "utf8"
-    );
+  //   const coverLetterTemplate = await fs.promises.readFile(
+  //     paths.latex.coverLetter.template,
+  //     "utf8"
+  //   );
 
-    const extraData = {
-      company: content.rawCompanyName,
-      position: content.position,
-    };
+  //   const extraData = {
+  //     company: content.company_name,
+  //     position: content.job_title,
+  //   };
 
-    const coverLetterInfo = Handlebars.compile(coverLetterTemplate)({
-      ...infoStore.user_info,
-      ...extraData,
-    });
-    await fs.promises.writeFile(
-      paths.latex.coverLetter.letter,
-      coverLetterInfo
-    );
+  //   const coverLetterInfo = Handlebars.compile(coverLetterTemplate)({
+  //     ...infoStore.user_info,
+  //     ...extraData,
+  //   });
+  //   await fs.promises.writeFile(
+  //     paths.latex.coverLetter.letter,
+  //     coverLetterInfo
+  //   );
 
-    await loadCoverLetterContent(instructions, prompt, CoverLetterSchema);
-    logger.info("Cover letter generated successfully");
-  } catch (error) {
-    const e = error as Error;
-    logger.error(`Error generating cover letter content: ${e.message}`);
-    throw error;
-  }
+  //   await loadCoverLetterContent(instructions, prompt, CoverLetterSchema);
+  //   logger.info("Cover letter generated successfully");
+  // } catch (error) {
+  //   const e = error as Error;
+  //   logger.error(`Error generating cover letter content: ${e.message}`);
+  //   throw error;
+  // }
 };
 
 const loadCoverLetterContent = async <T>(
@@ -139,13 +144,7 @@ const loadCoverLetterContent = async <T>(
   const res =
     process.env.NODE_ENV === "testing"
       ? CoverLetterMock
-      : await sendToLLM(
-        "gemini",
-        instructions,
-        prompt,
-        CoverLetterSchema,
-        ''
-      );
+      : await sendToLLM("gemini", instructions, prompt, CoverLetterSchema, "");
 
   if (!res) {
     throw new Error(

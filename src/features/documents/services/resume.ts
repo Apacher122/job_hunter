@@ -1,222 +1,119 @@
-import * as db from '../../../database';
+import * as db from "@database/index.js";
+import * as docs from "../utils/documents/index.js";
+import * as fs from "fs";
+import * as latex from "../utils/latex/index.js";
+import * as llm from "../utils/llm/messageLlm.js";
+import * as schemas from "../models/index.js";
 
-import { LLMHeaders, LLMProvider } from '../../../shared/types/llm.types';
-import { ResumeItemsType, ResumeSchema } from '../models/requests/resume';
-import {
-  formatLatexSection,
-  sectionFormatters,
-} from '../../../shared/utils/formatters/resume.formatter.js';
-import {
-  replaceSectionContent,
-  sectionToLatexEnvMap,
-} from '../../../shared/utils/documents/latex/latex.helpers.js';
-
-import { JobDescription } from '../../application_tracking/models/job_description';
-import { MockResume } from '../models/requests/resume.mocks.js';
-import { cleanup } from '../../../shared/utils/documents/file.helpers.js';
-import dotenv from 'dotenv';
-import { exportLatex } from './export.js';
-import fs from 'fs';
-import { loadTemplate } from '../../../shared/utils/templates/template.loader.js';
-import paths from '../../../shared/constants/paths.js';
-import { sendToLLM } from '../../../shared/libs/LLMs/providers.js';
-import { upsertResume } from '../../../database/queries/old/resume.queries.js';
+import { LLMProvider } from "@shared/types/llm.types.js";
+import dotenv from "dotenv";
+import { exportLatex } from "./export.js";
+import { loadTemplate } from "@shared/utils/templates/template.loader.js";
+import paths from "@shared/constants/paths.js";
 
 dotenv.config();
 
 export const compileResume = async (
-  jobId: number,
   uid: string,
-  apiKey: string,
-  llm: LLMProvider
+  docRequest: schemas.DocumentRequest
 ): Promise<void> => {
-  const jobPost = await db.getFullJobPosting(jobId, uid);
-
-  if (!jobPost || !jobPost.company_name) {
-    console.error(
-      'Could not compile: Job posting content or company name is not available in infoStore.'
-    );
-    return;
-  }
   try {
-    await generateFullResume(jobPost, apiKey, llm);
-
-    if (process.env.NODE_ENV === 'testing') {
-      jobContent.company_name = 'test';
-      jobContent.id = 0;
+    const jobPost = await db.getFullJobPosting(docRequest.options.jobId, uid);
+    if (!jobPost || !jobPost.company_name) {
+      throw new Error("Job posting content or company name is not available.");
     }
 
-    await exportLatex({
-      jobNameSuffix: 'resume',
-      latexFilePath: paths.latex.resume.resume,
-      targetDirectory: paths.paths.dir,
-      compiledPdfPath: paths.paths.compiledResume(
-        jobContent.companyName,
-        jobContent.id
-      ),
-      movedPdfPath: paths.paths.movedResume(
-        jobContent.companyName,
-        jobContent.id
-      ),
-      jobPost: jobContent,
-    });
+    const { tempFolder, tempPdf, tempFolderCompiled } =
+      docs.initializeDocumentWorkspace(uid, docRequest.options.jobId);
 
-    cleanup(jobContent.companyName, 'resume', jobContent.id);
-  } catch (error) {
-    const e = error as Error;
-    console.error(
-      `Error exporting resume to PDF: ${e.message} See logs for more information`
+    fs.cpSync(paths.latex.originalTemplate, tempFolder, { recursive: true });
+
+    await docs.createHeader(uid, docRequest.payload, tempFolder);
+
+    const resumeData = await generateResumeData(docRequest, jobPost);
+
+    const sectionNames = [
+      "experiences",
+      "skills",
+      "projects",
+      "summary",
+    ] as const;
+    await Promise.all(
+      sectionNames.map((sectionName) =>
+        latex.generateLatexSectionFile(
+          sectionName,
+          resumeData[sectionName],
+          tempFolder
+        )
+      )
     );
-    return;
+
+    await exportLatex({
+      jobNameSuffix: "resume",
+      outputPath: tempPdf,
+      compiledPdfPath: tempFolderCompiled,
+      companyName: jobPost.company_name,
+      jobId: docRequest.options.jobId,
+    });
+  } catch (error) {
+    console.error(`Error compiling resume: ${(error as Error).message}`);
   }
 };
 
-const generateFullResume = async (
-  content: db.FullJobPosting,
-  apiKey: string,
-  llm: LLMProvider
-): Promise<void> => {
-  console.log(
-    `RESUME - creating resume for ${content.company_name} - ${content.position}`
+const generateResumeData = async (
+  docRequest: schemas.DocumentRequest,
+  jobPost: db.FullJobPosting
+): Promise<schemas.ResumeItemsType> => {
+  const { instructions, prompt } = await buildResumePrompts(
+    jobPost,
+    docRequest.payload,
+    docRequest.options.corrections.join("\n")
   );
 
-  try {
-    const { textResume, mistakesMade } = await loadResumeAndMistakes();
-    const { instructions, prompt } = await buildResumePrompts(
-      content,
-      textResume,
-      mistakesMade
-    );
-
-    const res = await getResumeAIResponse(instructions, prompt, apiKey, llm);
-    const parsedResponse = validateResumeResponse(res);
-
-    await persistResume(content, parsedResponse);
-    await generateLatexSections(parsedResponse);
-  } catch (err) {
-    console.error(
-      `Error generating full resume for ${content.company_name}:`,
-      err
-    );
-    throw err;
-  }
+  return (await llm.generateAndValidateLLMResponse(
+    docRequest.options.llm as LLMProvider,
+    instructions,
+    prompt,
+    schemas.ResumeSchema,
+    docRequest.apiKey,
+    schemas.MockResume // Pass mock data for testing
+  )) as schemas.ResumeItemsType;
 };
-
-const loadResumeAndMistakes = async () => {
-  const [textResume, mistakesMade] = await Promise.all([
-    fs.promises.readFile(paths.paths.currentResumeTxt, 'utf-8'),
-    fs.promises.readFile(paths.paths.mistakes, 'utf-8'),
-  ]);
-  return { textResume, mistakesMade };
-};
-
 const buildResumePrompts = async (
   content: db.FullJobPosting,
   textResume: string,
   mistakesMade: string
 ) => {
-  const instructions = await loadTemplate('instructions', 'resume', {
+  const instructions = await loadTemplate("instructions", "resume", {
     mistakes: mistakesMade,
   });
-  const prompt = await loadTemplate('prompts', 'resume', {
+  const prompt = await loadTemplate("prompts", "resume", {
     resume: textResume,
     company: content.company_name,
     position: content.job_title,
-    years_of_experience_required: content.years_of_exp ?? '',
-    skills_required: content.requirements?.join(', ') ?? '',
-    skills_nice_to_haves: content.nice_to_haves?.join(', ') ?? '',
-    frameworks_and_libraries: content.frameworks_and_libraries?.join(', ') ?? '',
-    databases: content.databases?.join(', ') ?? '',
-    cloud_platforms: content.cloud_technologies?.join(', ') ?? '',
-    industry_keywords: content.industry_keywords?.join(', ') ?? '',
-    soft_skills: content.soft_skills?.join(', ') ?? '',
-    certifications: content.certifications?.join(', ') ?? '',
-    company_culture: content.company_culture ?? '',
-    company_values: content.company_values ?? '',
-    salary_range: content.salary_range ?? '',
+    years_of_experience_required: content.years_of_exp ?? "",
+    job_post: content.description ?? "",
+    skills_required: content.requirements?.join(", ") ?? "",
+    skills_nice_to_haves: content.nice_to_haves?.join(", ") ?? "",
+    frameworks_and_libraries:
+      content.frameworks_and_libraries?.join(", ") ?? "",
+    databases: content.databases?.join(", ") ?? "",
+    cloud_platforms: content.cloud_technologies?.join(", ") ?? "",
+    industry_keywords: content.industry_keywords?.join(", ") ?? "",
+    soft_skills: content.soft_skills?.join(", ") ?? "",
+    certifications: content.certifications?.join(", ") ?? "",
+    company_culture: content.company_culture ?? "",
+    company_values: content.company_values ?? "",
+    salary_range: content.salary_range ?? "",
   });
   return { instructions, prompt };
 };
 
-const getResumeAIResponse = async (
-  instructions: string,
-  prompt: string,
-  apiKey: string,
-  llm?: LLMProvider,
-) => {
-  c
-  return process.env.NODE_ENV === 'testing'
-    ? MockResume
-    : await sendToLLM(
-        llm || 'cohere',
-        instructions,
-        prompt,
-        ResumeSchema,
-        apiKey
-      );
+const cleanup = async (resumeId: number) => {
+  await db.deleteExperienceByResumeId(resumeId);
+  await db.deleteExperienceDescription(resumeId);
+  await db.deleteProjectByResumeId(resumeId);
+  await db.deleteProjectDescription(resumeId);
+  await db.deleteSkillByResumeId(resumeId);
+  await db.deleteSkillItem(resumeId);
 };
-
-const validateResumeResponse = (res: unknown): ResumeItemsType => {
-  if (!res)
-    throw new Error(
-      'Failed to get response from OpenAI for full resume generation'
-    );
-
-  const parsedResponse = ResumeSchema.safeParse(res);
-
-  if (!parsedResponse.success) {
-    throw new Error('Invalid response format from OpenAI');
-  }
-  return parsedResponse.data;
-};
-
-const persistResume = async (
-  content: db.FullJobPosting,
-  parsedResponse: ResumeItemsType
-) => {
-  await upsertResume(content.id, parsedResponse);
-  await fs.promises.writeFile(
-    paths.paths.jsonResume(content.company_name, content.),
-    JSON.stringify(parsedResponse, null, 2)
-  );
-};
-
-const generateLatexSections = async (parsedResponse: ResumeItemsType) => {
-  const sectionNames = ['experiences', 'skills', 'projects'] as const;
-
-  await Promise.all(
-    sectionNames.map(async (sectionName) => {
-      const data = parsedResponse[sectionName];
-      if (!data) return;
-
-      const latexTemplatePath = paths.latex.template(sectionName);
-      const compiledLatexPath = paths.latex.resume[sectionName];
-      const latexEnv = sectionToLatexEnvMap[sectionName];
-
-      const originalLatexContent = await fs.promises.readFile(
-        latexTemplatePath,
-        'utf8'
-      );
-      const newContent = data.map(formatLatexSection(sectionName));
-      const newLatexContent = replaceSectionContent(
-        originalLatexContent,
-        newContent,
-        latexEnv
-      );
-
-      await fs.promises.writeFile(compiledLatexPath, newLatexContent);
-    })
-  );
-};
-
-// export const generateChangeReport = async () => {
-//   const changeReportPath = paths.paths.changeReport;
-//   let content = "";
-//   type ResumeSection = keyof typeof resumeItemsStore;
-//   Object.entries(sectionFormatters).forEach(([section, formatter]) => {
-//     if (resumeItemsStore[section as ResumeSection]) {
-//       content += formatter(resumeItemsStore[section as ResumeSection]);
-//     }
-//   });
-//   await fs.promises.appendFile(changeReportPath, content);
-// };

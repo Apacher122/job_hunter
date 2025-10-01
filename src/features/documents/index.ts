@@ -1,8 +1,8 @@
-import documentRoutes from './routes/documents';
-import express from 'express';
+import express from "express";
+import { routes } from "./routes/documents.js";
 
-const router = express.Router();
-
-router.use('/documents', documentRoutes);
-
-export default router;
+export const documentRoutes = (privateKey: string) => {
+  const router = express.Router();
+  router.use("/documents", routes(privateKey));
+  return router;
+};

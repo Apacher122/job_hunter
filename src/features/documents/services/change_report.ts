@@ -1,4 +1,5 @@
-import fs from 'fs';
+import * as fs from 'fs';
+
 import paths from '../../../shared/constants/paths.js';
 import { sectionFormatters } from '../../../shared/utils/formatters/resume.formatter.js'
 

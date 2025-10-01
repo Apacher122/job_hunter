@@ -1,2 +1,2 @@
-export * from  './resume.service';
-export * from  './cover_letter';
+export * from  './resume.js';
+export * from  './cover_letter.js';
