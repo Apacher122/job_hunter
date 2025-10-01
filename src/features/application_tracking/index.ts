@@ -1,8 +1,8 @@
 import express from 'express';
-import appRoutes from './routes/app_tracker';
+import {routes} from './routes/app_tracker.js';
 
-const router = express.Router();
-
-router.use('/applications', appRoutes);
-
-export default router;
+export const applicationTrackerRoutes = (privateKey: string) => {
+  const router = express.Router();
+  router.use('/applications', routes(privateKey));
+  return router;
+};

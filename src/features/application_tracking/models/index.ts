@@ -1,2 +1,2 @@
-export * from './job_description';
-export * from './job_description.mock';
+export * from './job_description.js';
+export * from './job_description.mock.js';

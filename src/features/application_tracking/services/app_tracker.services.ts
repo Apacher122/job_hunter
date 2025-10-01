@@ -24,7 +24,7 @@ export const trackNewJob = async (
     );
     const content = JSON.parse(jobContent);
     response.company_name = content.company_name;
-    response.job_title = content.position;
+    response.job_title = content.job_title;
 
     const parsed = parseJobDescription(response);
 

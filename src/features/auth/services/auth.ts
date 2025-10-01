@@ -1,6 +1,6 @@
-import * as db from "../../../database";
+import * as db from "@database/index.js";
 
-import { AuthType } from "../models/auth.models";
+import { AuthType } from "../models/auth.js";
 
 export const loginOrRegister = async (auth: AuthType) => {
   const existingUser = await db.getUserById(auth.firebase_uid);

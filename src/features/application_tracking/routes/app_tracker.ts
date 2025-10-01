@@ -1,12 +1,14 @@
-import { authenticate } from "../../../shared/middleware/authenticate";
-import { decryptApiKeyMiddleware } from "../../../shared/middleware/decrypt";
-import express from "express";
-import fs from "fs";
-import { newJobHandler } from "../controllers/app_tracker";
-import paths from "../../../shared/constants/paths";
-import rateLimit from "express-rate-limit";
+import * as fs from "fs";
 
-const router = express.Router();
+import {
+  getJobApplications,
+  newJobHandler,
+} from "../controllers/app_tracker.js";
+
+import { authenticate } from "@shared/middleware/authenticate.js";
+import { decryptApiKeyMiddleware } from "@shared/middleware/decrypt.js";
+import express from "express";
+import rateLimit from "express-rate-limit";
 
 // Rate limiter: max 100 requests per 15 minutes per IP
 const limiter = rateLimit({
@@ -14,11 +16,17 @@ const limiter = rateLimit({
   max: 100, // limit each IP to 100 requests per windowMs
 });
 
-const privateKey = fs.readFileSync(paths.paths.privateKey, "utf-8");
+export const routes = (privateKey: string) => {
+  const router = express.Router();
+  router.post(
+    "/track-job",
+    decryptApiKeyMiddleware(privateKey),
+    authenticate,
+    newJobHandler
+  );
+  // router.post('/applied', );
+  // router.get('/get-list', );
+  router.post("/list", authenticate, getJobApplications);
 
-router.post("/track-job", decryptApiKeyMiddleware(privateKey), authenticate, newJobHandler);
-// router.post('/applied', );
-// router.get('/get-list', );
-// router.post('/update-list', )
-
-export default router;
+  return router;
+};

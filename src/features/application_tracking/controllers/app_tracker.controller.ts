@@ -1,4 +1,4 @@
-import * as applications from "../services/app_tracker.js";
+import * as applications from "../services/app_tracker.services.js";
 import * as db from "@database/index.js";
 
 import { Request, Response } from "express";

@@ -1,4 +1,4 @@
-import { JobDescriptionSchema } from './job_description';
+import { JobDescriptionSchema } from './job_description.js';
 
 export const JobDescriptionMock = JobDescriptionSchema.parse({
   job_title: "Senior Software Engineer",
