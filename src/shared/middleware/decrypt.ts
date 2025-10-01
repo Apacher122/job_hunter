@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response } from "express";
 
-import { decryptWithPrivateKey } from '../../security/asymmetric';
+import { decryptWithPrivateKey } from "../../security/asymmetric.js";
 
 export interface DecryptApiKeyRequest extends Request {
   body: {
@@ -17,8 +17,6 @@ export const decryptApiKeyMiddleware = (privateKey: string) => {
       res.status(400).send("Missing or invalid encrypted key");
       return;
     }
-    console.log("Decrypting key", header);
-
     try {
       req.body.apiKey = decryptWithPrivateKey(privateKey, header);
       next();

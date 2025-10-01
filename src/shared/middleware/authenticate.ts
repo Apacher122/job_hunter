@@ -1,6 +1,6 @@
-import * as admin from "firebase-admin";
-
 import { NextFunction, Request, Response } from "express";
+
+import admin from "../../config/firebaseAdmin.js";
 
 export interface AuthenticatedRequest extends Request {
   user: { uid: string };
