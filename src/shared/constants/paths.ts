@@ -1,5 +1,6 @@
+import * as path from 'path';
+
 import { fileURLToPath } from 'url';
-import path from 'path';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '../../..');
@@ -11,13 +12,15 @@ const latexRoot = resolveRoot('src', 'shared', 'templates', 'latex', 'original-t
 
 const outputPaths = {
     dir: resolveRoot('output'),
+    tempPdf: (uid = '', jobId = 0) =>resolveRoot('output', 'temp', `${uid}`, 'pdf'),
+    tempDir: (uid = '', jobId = 0) =>resolveRoot('output', 'temp', `${uid}`),
     resumes: resolveRoot('output', 'resumes'),
     coverLetters: resolveRoot('output', 'cover_letters'),
     changeReport: resolveRoot('output', 'change-summary.md'),
     jsonResume: (title = '', id = '') => resolveRoot('output', 'json_resume', `${title}_resume_${id}.json`),
     matchSummary: (title = '', id = '') => resolveRoot('output', 'match_summaries', `${title}_match_summary_${id}.md`),
-    compiledResume: (title = '', id = '') => resolveRoot('output', `${title}_resume_${id}.pdf`),
-    movedResume: (title = '', id = '') => resolveRoot('output', 'resumes', `${title}_resume_${id}.pdf`),
+    compiledResume: (title = '', id = 0) => resolveRoot('output', `${title}_resume_${id}.pdf`),
+    movedResume: (title = '', id = 0) => resolveRoot('output', 'resumes', `${title}_resume_${id}.pdf`),
     compiledCoverLetter: (title = '', id = '') => resolveRoot('output', `${title}_cover_letter_${id}.pdf`),
     movedCoverLetter: (title = '', id = '') => resolveRoot('output', 'cover_letters', `${title}_cover_letter_${id}.pdf`),
     sectionJson: (title = '') => resolveRoot('output', 'json_resume', `${title}.json`),
@@ -40,8 +43,8 @@ const dataPaths = {
     writingExamplesDir: resolveRoot('data', 'user_info', 'my_writing'),
     jobList: resolveRoot('data', 'job_list.json'),
     considerations: resolveRoot('data', 'user_info', 'considerations.txt'),
-    procssedJobInfo: resolveRoot('data', 'processed_job_info.txt'),
-    procssedJobInfoTemplate: resolveRoot('data', 'processed_job_info_template.txt'), 
+    processedJobInfo: resolveRoot('data', 'processed_job_info.txt'),
+    processedJobInfoTemplate: resolveRoot('data', 'processed_job_info_template.txt'), 
 }
 
 const logPaths = {
@@ -55,6 +58,7 @@ const googleAuthPaths = {
 }
 
 const latexPaths = {
+    class: path.join(latexRoot, 'awesome-cv.cls'),
     resume: {
         education: path.join(latexRoot, 'compiled', 'education.tex'),
         educationTemplate: path.join(latexRoot, 'templates', 'education-template.tex'),
@@ -81,6 +85,9 @@ const latexPaths = {
         cv: path.join(latexRoot, 'cv.tex'),
         cvTemplate: path.join(latexRoot, 'templates', 'cv-template.tex'),
     },
+    originalTemplate: path.join(latexRoot),
+    tempTemplate: (uid = '', jobId = 0) =>resolveRoot('output', 'temp', `${uid}`, 'templates'),
+    tempCompiled: (uid = '', jobId = 0) =>resolveRoot('output', 'temp', `${uid}`, 'compiled'),
     template: (name: string) => path.join(latexRoot, 'templates', `${name}-template.tex`),
 }
 
