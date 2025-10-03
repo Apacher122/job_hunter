@@ -1,4 +1,5 @@
-import fs from 'fs';
+import * as fs from 'fs';
+
 import { google } from 'googleapis';
 import paths from '../../constants/paths.js';
 

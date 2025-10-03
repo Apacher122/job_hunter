@@ -1,4 +1,4 @@
-import { GuidingQuestionsSchema } from "../../../features/job_guide/models/guiding_questions.models.js";
+import { GuidingQuestionsSchema } from "../../../features/job_guide/models/domain/guiding_questions.js";
 
 export const GuidingQuestionsMock = GuidingQuestionsSchema.parse({
   guiding_questions: [

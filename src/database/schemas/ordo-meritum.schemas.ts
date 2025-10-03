@@ -26,7 +26,8 @@ export interface Company {
 }
 
 export type AppStatus = 'REJECT' | 'OFFERED' | 'OPEN' | 'CLOSED' | 'MOVED' | 'NOT_APPLIED' | 'GHOSTED' | 'INTERVIEWING';
-
+export type ShouldApply = 'Strong Yes' | 'Yes' | 'No' | 'Strong No' | 'Maybe';
+export type Temperature = 'Good' | 'Neutral' | 'Bad';
 export interface Role {
   id: Generated<number>;
   company_id: number;
@@ -79,6 +80,7 @@ export interface Resume {
   id: Generated<number>;
   firebase_uid: string;
   role_id: number;
+  applied_on?: Date;
   created_at: Generated<Date>;
   updated_at: Generated<Date>;
 }
@@ -86,12 +88,34 @@ export interface Resume {
 export interface MatchSummary {
   id: Generated<number>;
   resume_id: number; // unique per resume
-  should_apply: string;       // e.g., "Strong Yes", "Yes", etc.
+  should_apply: ShouldApply;       // e.g., "Strong Yes", "Yes", etc.
   reasoning: string;
-  metrics?: string;          // JSON string
-  overall_summary?: string;   // JSON string
+  overall_match_score?: number;
+  suggestions?: string[];
   created_at: Generated<Date>;
   updated_at: Generated<Date>;
+}
+
+export interface MatchSummaryOverview {
+  id: Generated<number>;
+  match_summary_id: number;
+  summary: string;
+  summary_temperature: Temperature;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
+}
+
+export interface Metrics {
+  id: Generated<number>;
+  match_summary_id: number;
+  score_title: string;
+  raw_score: number;
+  weighted_score: number;
+  score_weight: number;
+  score_reason?: string;
+  is_compatible?: boolean;
+  strength?: string;
+  weaknesses?: string;
 }
 
 // --------------------
@@ -217,6 +241,8 @@ export interface DB {
   job_requirements: JobRequirements;
   resumes: Resume;
   match_summaries: MatchSummary;
+  match_summary_overviews: MatchSummaryOverview;
+  metrics: Metrics;
   experiences: Experience;
   experience_descriptions: ExperienceDescription;
   projects: Project;

@@ -2,11 +2,11 @@ import * as mockSchemas from "./schemas/index.js";
 
 import { LLMClient, LLMProvider } from "../types/llm.types.js";
 
-import { CompanyInfoSchema } from "../../features/job_guide/models/company_info.models.js";
+import { CompanyInfoSchema } from "../../features/job_guide/models/domain/company_info.js";
 import { CoverLetterSchema } from "../../features/documents/models/domain/cover_letter.js";
-import { GuidingQuestionsSchema } from "../../features/job_guide/models/guiding_questions.models.js";
+import { GuidingQuestionsSchema } from "../../features/job_guide/models/domain/guiding_questions.js";
 import {JobDescriptionSchema} from "../../features/application_tracking/models/job_description.js";
-import { MatchSummarySchema } from "../../features/job_guide/models/match_summary.models.js";
+import { MatchSummarySchema } from "../../features/job_guide/models/domain/match_summary.js";
 import { ResumeSchema } from "../../features/documents/models/domain/resume.js";
 import { mock } from "node:test";
 

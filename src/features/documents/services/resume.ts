@@ -2,12 +2,14 @@ import * as db from "@database/index.js";
 import * as docs from "../utils/documents/index.js";
 import * as fs from "fs";
 import * as latex from "../utils/latex/index.js";
-import * as llm from "../utils/llm/messageLlm.js";
+import * as llm from "../utils/llm/message_llm.js";
+import * as path from "path";
 import * as schemas from "../models/index.js";
 
 import { LLMProvider } from "@shared/types/llm.types.js";
 import dotenv from "dotenv";
 import { exportLatex } from "./export.js";
+import { formatJSONResume } from "../utils/documents/formatters.js";
 import { loadTemplate } from "@shared/utils/templates/template.loader.js";
 import paths from "@shared/constants/paths.js";
 
@@ -26,11 +28,15 @@ export const compileResume = async (
     const { tempFolder, tempPdf, tempFolderCompiled } =
       docs.initializeDocumentWorkspace(uid, docRequest.options.jobId);
 
+    const tempJsonPath = path.join(tempFolder, "resume.json");
+
     fs.cpSync(paths.latex.originalTemplate, tempFolder, { recursive: true });
 
     await docs.createHeader(uid, docRequest.payload, tempFolder);
 
     const resumeData = await generateResumeData(docRequest, jobPost);
+
+    fs.writeFileSync(tempJsonPath, JSON.stringify(resumeData, null, 2));
 
     const sectionNames = [
       "experiences",
@@ -48,6 +54,15 @@ export const compileResume = async (
       )
     );
 
+    await saveJsonResume(
+      resumeData,
+      jobPost.company_name,
+      uid,
+      docRequest.options.jobId
+    );
+
+    await db.upsertResume(uid, docRequest.options.jobId, resumeData);
+    
     await exportLatex({
       jobNameSuffix: "resume",
       outputPath: tempPdf,
@@ -57,6 +72,7 @@ export const compileResume = async (
     });
   } catch (error) {
     console.error(`Error compiling resume: ${(error as Error).message}`);
+    throw error;
   }
 };
 
@@ -66,7 +82,8 @@ const generateResumeData = async (
 ): Promise<schemas.ResumeItemsType> => {
   const { instructions, prompt } = await buildResumePrompts(
     jobPost,
-    docRequest.payload,
+    docRequest.payload.resume,
+    docRequest.payload.additionalInfo,
     docRequest.options.corrections.join("\n")
   );
 
@@ -76,19 +93,22 @@ const generateResumeData = async (
     prompt,
     schemas.ResumeSchema,
     docRequest.apiKey,
-    schemas.MockResume // Pass mock data for testing
+    schemas.MockResume 
   )) as schemas.ResumeItemsType;
 };
+
 const buildResumePrompts = async (
   content: db.FullJobPosting,
-  textResume: string,
+  textResume: any,
+  additionalInfo: any,
   mistakesMade: string
 ) => {
+  const resume = formatJSONResume(textResume);
   const instructions = await loadTemplate("instructions", "resume", {
     mistakes: mistakesMade,
   });
   const prompt = await loadTemplate("prompts", "resume", {
-    resume: textResume,
+    resume: resume,
     company: content.company_name,
     position: content.job_title,
     years_of_experience_required: content.years_of_exp ?? "",
@@ -105,8 +125,24 @@ const buildResumePrompts = async (
     company_culture: content.company_culture ?? "",
     company_values: content.company_values ?? "",
     salary_range: content.salary_range ?? "",
+    additional_info: additionalInfo,
   });
+
   return { instructions, prompt };
+};
+
+const saveJsonResume = async (
+  resume: any,
+  company_name: string,
+  uid: string,
+  jobId: number
+) => {
+  const jsonPath = path.join(
+    paths.paths.tempJson(uid, "resume"),
+    `${company_name}_resume_${jobId}.json`
+  );
+
+  fs.writeFileSync(jsonPath, JSON.stringify(resume, null, 2));
 };
 
 const cleanup = async (resumeId: number) => {

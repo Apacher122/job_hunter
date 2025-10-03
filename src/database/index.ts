@@ -58,3 +58,5 @@ export * from './queries/crud/job_posts/job_requirements.crud.js';
 export * from './queries/crud/guides/match_summaries.crud.js';
 
 export * from './queries/complex/jobs.queries.js';
+export * from './queries/complex/resume.js';
+export * from './queries/complex/job_guides.js';

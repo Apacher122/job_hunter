@@ -65,16 +65,62 @@ export const getJobApplications = async (
   }
 };
 
-// export const updateJobs = async (
-//   req: Request,
-//   res: Response
-// ): Promise<void> => {
-//   try {
-//     const appliedJob: AppliedJob = req.body;
-//     const id = appliedJob.id;
-//     console.log(req.body);
-//     await updateJobInfo(Number(id), appliedJob);
-//   } catch (err) {
-//     throw new Error("OH NO");
-//   }
-// };
+export const updateApplication = async (req: Request, res: Response) => {
+  const authReq = req as AuthenticatedRequest;
+  const uid = authReq.user.uid;
+  const roleId  = req.query.roleId;
+  const status = req.body?.payload?.status ?? null;
+  const applicationDate = req.body?.payload?.date ?? null;
+
+  if (!roleId) {
+    return res.status(400).json({ message: "Role ID and status are required." });
+  }
+
+  const updates = {
+    status: status,
+    application_date: applicationDate
+  }
+
+  try {
+    const updatedApplication = await db.updateApplicationDetails(
+      Number(roleId),
+      uid,
+      updates
+    );
+    if (!updatedApplication) {
+      return res.status(404).json({
+        message: "Application not found or you do not have permission to update it.",
+      });
+    }
+    res.status(200).json(updatedApplication);
+  } catch (error) {
+    console.error("Error updating application status:", error);
+    res.status(500).json({ message: "Failed to update application status." });
+  }
+};
+
+export const deleteApp = async (
+  req: Request,
+  res: Response
+) => {
+
+  const roleId = req.query.jobId;
+  const authReq = req as AuthenticatedRequest;
+  const uid = authReq.user.uid;
+  console.log(`Deleting application with role ID: ${roleId}`);
+  try {
+    const deletedApplication = await db.deleteJobPostById(
+      Number(roleId),
+      uid
+    );
+    if (!deletedApplication) {
+      return res.status(404).json({
+        message: "Application not found or you do not have permission to delete it.",
+      });
+    }
+    res.status(200).json({ message: "Application deleted successfully." });
+  } catch (error) {
+    console.error("Error deleting application:", error);
+    res.status(500).json({ message: "Failed to delete application." });
+  }
+};

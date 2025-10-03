@@ -1,6 +1,6 @@
 import * as schemas from '../../models/index.js';
 
-import { DocType, docConfig } from './docConfig.js';
+import { DocType, docConfig } from './doc_config.js';
 import { ZodType, ZodTypeDef } from "zod";
 
 export const isValidDocType = (type: string): type is DocType =>

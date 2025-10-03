@@ -1,4 +1,4 @@
-import { MatchSummarySchema } from '../../../features/job_guide/models/match_summary.models.js';
+import { MatchSummarySchema } from '../../../features/job_guide/models/domain/match_summary.js';
 
 export const MatchSummaryMock = MatchSummarySchema.parse({
   company_name: 'Acme Corp',

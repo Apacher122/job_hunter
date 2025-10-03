@@ -2,6 +2,8 @@ import * as Handlebars from "handlebars";
 import * as fs from "fs";
 import * as path from "path";
 
+import { formatTextForLatex } from '../latex/latex_formatters.js';
+
 export const createHeader = async (
   uid: string,
   payload: any,
@@ -58,7 +60,7 @@ const replaceVariables = (
   for (const key in data) {
     if (Object.prototype.hasOwnProperty.call(data, key)) {
       const regex = new RegExp(`{{${key}}}`, "g");
-      result = result.replace(regex, data[key] as string);
+      result = result.replace(regex, formatTextForLatex(data[key] as string));
     }
   }
   return result;

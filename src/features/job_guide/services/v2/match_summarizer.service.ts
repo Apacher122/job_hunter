@@ -1,107 +1,70 @@
-import fs from 'fs';
-import { getOpenAIResponse } from '../../../../shared/libs/open_ai/openai.js';
-import { infoStore } from '../../../../shared/data/info.store.js';
+import * as commonSchemas from '@shared/models/index.js';
+import * as db from '@database/index.js';
+import * as pretty from '@shared/utils/formatters/pretty_string.js';
+import * as schemas from '../../models/domain/index.js';
+
+import { MatchSummaryType } from '../../models/domain/index.js';
 import { loadTemplate } from '../../../../shared/utils/templates/template.loader.js';
-import paths from '../../../../shared/constants/paths.js';
-import { getJobPost } from '../../../../database/queries/old/v2/job.queries.js';
-import { convertPDFToBase64 } from '../../../../shared/utils/documents/pdf/pdf.helpers.js';
-import { MatchSummaryMock } from '../../models/mocks/match_summary.mocks.js';
-import {
-  MatchSummarySchema,
-  MatchSummaryType,
-} from '../../models/match_summary.models';
-import { upsertMatchSummary } from '../../../../database/queries/old/v2/guide.queries.js';
-import { getMatchSummary as getMatches } from '../../../../database/queries/old/v2/guide.queries.js';
+import { sendToLLM } from '@shared/libs/LLMs/providers.js';
 
 export const getMatchSummary = async (
-  id: number,
-  getNew: boolean
+  uid: string,
+  jobId: number,
+  getNew = true,
+  apiKey: string,
+  payload?: any
 ): Promise<MatchSummaryType> => {
   try {
-    const jobPosting = await getJobPost(id);
-    if (jobPosting === null) {
-      console.error(`${jobPosting}`);
-      throw new Error('No job post found.');
-    }
-    console.log(
-      `MATCH SUMMARY - creating match summary for ${jobPosting.rawCompanyName} - ${jobPosting.position}`
-    );
+    const jobPost = await db.getFullJobPosting(jobId, uid);
+    if (!jobPost) throw new Error('No job post found.');
+    const jobPostString = pretty.prettyJobPost(jobPost as any);
+    
+    const educationInfo = commonSchemas.EducationInfoSchema.safeParse(payload.educationInfo);
+    if (!educationInfo.success) throw new Error('Invalid education info.');
+    const educationInfoString = pretty.prettyEducationInfo(educationInfo.data as commonSchemas.EducationInfoType);
 
-    let jobId = id;
-    let companyName = jobPosting.companyName;
-    if (process.env.NODE_ENV === 'testing') {
-      jobId = 0;
-      companyName = 'test';
-    }
+    const applicantCount = jobPost.applicant_count;
 
-    const existingEntry = await getMatches(jobId);
-    if (existingEntry && !getNew) return existingEntry;
+    const resume = db.getFullResume(uid, jobId);
+    if (!resume) throw new Error('No resume found.');
 
-    const education = {
-      school: infoStore.education_info.school,
-      degree: infoStore.education_info.degree,
-      start_end: infoStore.education_info.start_end,
-      location: infoStore.education_info.location,
-      coursework: infoStore.education_info.coursework,
-    };
+    const coverLetter = payload.coverLetter;
 
-    fs.writeFileSync(
-      paths.paths.sectionJson('education'),
-      JSON.stringify(education, null, 2)
-    );
+    const instructions = await loadTemplate('instructions', 'matchSummary', {});
 
-    let resumeJson: string;
-    try {
-      resumeJson = await fs.promises.readFile(
-        paths.paths.jsonResume(companyName, jobId)
-      );
-    } catch (err) {
-      throw new Error('No resume information found.')
-    }
-
-    const coverLetterB64 =
-      (await convertPDFToBase64(
-        paths.paths.movedCoverLetter(companyName, jobId)
-      )) ?? '';
-
-    const instructions = await loadTemplate('instructions', 'matchsummary', {});
-
-    const prompt = await loadTemplate('prompts', 'matchsummary', {
-      applicants: jobPosting.applicantCount,
-      details: jobPosting.jobDetails,
-      education: JSON.stringify(education),
-      resume: JSON.stringify(resumeJson),
-      coverLetter: coverLetterB64,
-      jobPosting: jobPosting.body,
-      company: jobPosting.rawCompanyName,
-      position: jobPosting.position,
+    const prompt = await loadTemplate('prompts', 'matchSummary', {
+      applicants: String(applicantCount),
+      jobPost: jobPostString,
+      education: educationInfoString,
+      resume: JSON.stringify(resume),
+      coverLetter: coverLetter,
     });
-    const res =
-      process.env.NODE_ENV === 'testing'
-        ? MatchSummaryMock
-        : await getOpenAIResponse(instructions, prompt, MatchSummarySchema);
 
-    if (!res) {
-      throw new Error('No match summary response received from OpenAI.');
-    }
+    const response = await sendToLLM(
+      'cohere',
+      instructions,
+      prompt,
+      schemas.MatchSummarySchema,
+      apiKey
+    );
 
-    const parsed = MatchSummarySchema.parse(res);
+    const matchSummary = schemas.MatchSummarySchema.safeParse(response);
+    if (!matchSummary.success) throw new Error('Invalid match summary.');
 
-    const saved = await upsertMatchSummary(jobId, parsed.match_summary);
-
-    return saved;
+    await db.insertMatchSummary(uid, jobId, matchSummary.data);
+    return matchSummary.data;
   } catch (error) {
     const e = error as Error;
     throw new Error(`Error retrieving match summary: ${e.message}`);
   }
 };
 
-export async function fetchMatchSumary(id: number): Promise<MatchSummaryType> {
-  const res = await getMatchSummary(id, false);
+// export async function fetchMatchSumary(id: number): Promise<MatchSummaryType> {
+//   const res = await getMatchSummary(id, false);
 
-  if (!res) {
-    throw new Error(`Unable to get Match Summary for id: ${id}`);
-  }
+//   if (!res) {
+//     throw new Error(`Unable to get Match Summary for id: ${id}`);
+//   }
 
-  return res.match_summary;
-}
+//   return res.match_summary;
+// }

@@ -64,7 +64,6 @@ export type Project = z.infer<typeof ProjectSchema>;
 export type ResumeItemsType = z.infer<typeof ResumeSchema>;
 
 export const ResumeSchema = z.object({
-    type: z.literal('resume'),
     summary: SummarySchema.shape.summary,
     experiences: ExperienceSchema.shape.experiences,
     skills: SkillSchema.shape.skills,

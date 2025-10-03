@@ -1,4 +1,4 @@
-import { ResumeSectionNotFoundError } from "../../../../shared/errors/resume_builder.errors.js";
+import { ResumeSectionNotFoundError } from "@shared/errors/resume_builder.errors.js";
 
 export const sectionToLatexEnvMap: Record<
   string,

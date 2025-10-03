@@ -1,13 +1,15 @@
-import * as routes from '@features/routes.js';
-import * as sec from '../security/index.js';
+import * as routes from "@features/routes.js";
+import * as sec from "../security/index.js";
 
 import { authenticate } from "@shared/middleware/authenticate.js";
 import bodyParser from "body-parser";
+import cors from "cors";
 import { customResponseMiddleware } from "@shared/middleware/customResponse.js";
 import express from "express";
 
 export const app = (privateKey: string) => {
   const app = express();
+  app.use(cors());
   app.use(bodyParser.json());
   app.use(customResponseMiddleware);
 

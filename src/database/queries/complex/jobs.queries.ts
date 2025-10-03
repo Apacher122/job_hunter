@@ -1,5 +1,6 @@
 import * as query from "../../index.js";
 
+import { AppStatus } from "@database/schemas/ordo-meritum.schemas.js";
 import {
   JobDescription,
 } from "@features/application_tracking/models/job_description.js";
@@ -28,6 +29,7 @@ export const getFullJobPosting = async (roleId: number, uid: string) => {
       "job_requirements.industry_keywords",
       "job_requirements.soft_skills",
       "job_requirements.certifications",
+      "job_requirements.applicant_count",
       "roles.salary_range",
     ])
     .where("roles.id", "=", roleId)
@@ -102,12 +104,95 @@ export const getAllUserJobPostings = async (
       'roles.application_status as application_status',
       'roles.user_applied as user_applied',
       'job_requirements.interview_count as interview_count',
-      'job_requirements.initial_application_date as initial_application_date',
+      'resumes.applied_on as initial_application_date',
     ])
     .where('firebase_uid', '=', uid)
     .execute()
   
     return results;
 }
+
+export const updateApplicationDetails = async (
+  roleId: number,
+  uid: string,
+  updates: {
+    status?: AppStatus;
+    application_date?: Date;
+  }
+) => {
+  return await db.transaction().execute(async (trx) => {
+    const isAuthorized = (eb: any) =>
+      eb.exists(
+        eb
+          .selectFrom("resumes")
+          .where("resumes.role_id", "=", roleId)
+          .where("resumes.firebase_uid", "=", uid)
+      );
+
+    
+    if (updates.status) {
+      await trx
+        .updateTable("roles")
+        .set({ application_status: updates.status })
+        .where("id", "=", roleId)
+        .where(isAuthorized) 
+        .execute();
+    }
+
+    
+    if (updates.application_date) {
+      await trx
+        .updateTable("resumes")
+        .set({ applied_on: updates.application_date }) 
+        .where("role_id", "=", roleId)
+        .where("firebase_uid", "=", uid) 
+        .execute();
+    }
+
+    return true;
+  });
+};
+
+
+export const deleteJobPostById = async (roleId: number, uid: string) => {
+    return await db.transaction().execute(async (trx) => {
+        console.log(`Deleting application with role ID: ${roleId}`);
+        const roleToDelete = await trx
+            .selectFrom('roles')
+            .selectAll()
+            .innerJoin('resumes', 'resumes.role_id', 'roles.id')
+            .where('roles.id', '=', roleId)
+            .where('resumes.firebase_uid', '=', uid)
+            .executeTakeFirst();
+
+        if (!roleToDelete) {
+            
+            return null;
+        }
+
+        
+        await trx
+            .deleteFrom('job_requirements')
+            .where('role_id', '=', roleId)
+            .execute();
+
+        
+        await trx
+            .deleteFrom('resumes')
+            .where('role_id', '=', roleId)
+            .where('firebase_uid', '=', uid) 
+            .execute();
+
+        
+        await trx
+            .deleteFrom('roles')
+            .where('id', '=', roleId)
+            .execute();
+            
+        
+        return roleToDelete;
+    });
+};
+
 
 export type FullJobPosting = Awaited<ReturnType<typeof getFullJobPosting>>;

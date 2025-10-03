@@ -52,7 +52,7 @@ export const updateJobInfo = async (
 };
 
 
-// Helpers
+
 const getJobDescriptionResponse = async (
   jobContent: string,
   instructions: string,

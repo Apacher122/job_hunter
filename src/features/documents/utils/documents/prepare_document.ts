@@ -1,7 +1,7 @@
 import * as file from "@shared/utils/documents/file.helpers.js";
 import * as schemas from "../../models/index.js";
 
-import { docConfig } from "./docConfig.js";
+import { docConfig } from "./doc_config.js";
 
 export const generateIfNeeded = async (
   uid: string,
@@ -9,8 +9,9 @@ export const generateIfNeeded = async (
   docRequest: schemas.DocumentRequest
 ) => {
   type DocType = keyof typeof docConfig;
-  const { pathFn, generate } = docConfig[docRequest.options.docType as DocType];
+  const { pathFn, jsonPathFn, generate } = docConfig[docRequest.options.docType as DocType];
   const filePath = pathFn(uid, docRequest.options.jobId,);
+  const jsonPath = jsonPathFn(uid, docRequest.options.docType);
 
   if (docRequest.options.getNew || !(await file.fileExists(filePath))) {
     await generate(
@@ -19,7 +20,7 @@ export const generateIfNeeded = async (
     );
   }
 
-  return filePath;
+  return {filePath, jsonPath};
 };
 
 

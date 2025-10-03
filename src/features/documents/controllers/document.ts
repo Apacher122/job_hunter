@@ -38,18 +38,29 @@ export const downloadDocument = async (req: Request, res: Response) => {
     );
     if (!companyName) return void res.status(404).send("No job post found.");
 
-    const filePath = await docs.generateIfNeeded(
+    const { filePath, jsonPath } = await docs.generateIfNeeded(
       uid,
       companyName,
       parsedData.data
     );
-    await docs.sendDocument(
+
+    // await docs.sendDocument(
+    //   res,
+    //   parsedData.data.options.docType,
+    //   companyName,
+    //   parsedData.data.options.jobId,
+    //   filePath
+    // );
+
+    await docs.sendMultipartWithJson(
       res,
       parsedData.data.options.docType,
       companyName,
       parsedData.data.options.jobId,
-      filePath
+      filePath,
+      jsonPath
     );
+
   } catch (err) {
     console.error(`Error handling ${parsedData.data.options.docType}:`, err);
     res.sendError(

@@ -1,9 +1,10 @@
-import { downloadDocument } from '../../documents/controllers/document.js';
-import express from 'express';
-import { handleLoadMatchSummary } from '../controllers/match_summary.controller.js';
+import { authenticate } from '@shared/middleware/authenticate.js';
+import { decryptApiKeyMiddleware } from '@shared/middleware/decrypt.js';
+import express from "express";
+import { handleLoadMatchSummary } from "../controllers/match_summary.js";
 
-const router = express.Router();
-
-router.get('/get-info', downloadDocument);
-router.get('/match-summary', handleLoadMatchSummary)
-export default router;
+export const routes = (privateKey: string) => {
+  const router = express.Router();
+  router.get("/match-summary", decryptApiKeyMiddleware(privateKey), authenticate, handleLoadMatchSummary);
+  return router;
+};

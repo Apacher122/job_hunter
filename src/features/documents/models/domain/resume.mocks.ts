@@ -2,7 +2,6 @@ import { ResumeSchema } from "./resume.js";
 
 // Manual mock with actual values
 export const MockResume = ResumeSchema.parse({
-  type: "resume",
   summary: [
     {
       sentence: "I am a software engineer with 6 years of experience building scalable web applications and cloud solutions.",

@@ -1,9 +1,8 @@
 import express from 'express';
-import jobGuideRoutes from './routes/job_guide.routes';
+import {routes} from './routes/job_guide.routes.js';
 
 const router = express.Router();
 
-router.use('/resume', jobGuideRoutes);
-// add other routes like: router.use('/cover-letter', coverLetterRoutes);
+router.use('/resume', routes);
 
 export default router;

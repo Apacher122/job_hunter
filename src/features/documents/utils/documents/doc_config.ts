@@ -9,6 +9,7 @@ export type ContentType = 'application/pdf' | 'text/plain';
 
 interface DocConfig {
   pathFn: (uid: string, jobId: number) => string;
+  jsonPathFn: (uid: string, docType: string) => string;
   generate: (
     uid: string,
     docRequest: DocumentRequest
@@ -20,12 +21,14 @@ interface DocConfig {
 export const docConfig: Record<DocType, DocConfig> = {
   resume: {
     pathFn: paths.paths.tempPdf,
+    jsonPathFn: paths.paths.tempJson,
     generate: async (uid, docRequest) => compileDoc.compileResume(uid, docRequest),
     filename: (company, jobId) => `${company}_resume_${jobId}.pdf`,
     contentType: 'application/pdf' as const,
   },
   'cover-letter': {
     pathFn: paths.paths.tempDir,
+    jsonPathFn: paths.paths.tempJson,
     generate: async (uid, docRequest) => compileDoc.compileCoverLetter(uid, docRequest),
     filename: (company, uid) => `${company}_cover_letter_${uid}.pdf`,
     contentType: 'application/pdf',

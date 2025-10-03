@@ -14,6 +14,7 @@ const outputPaths = {
     dir: resolveRoot('output'),
     tempPdf: (uid = '', jobId = 0) =>resolveRoot('output', 'temp', `${uid}`, 'pdf'),
     tempDir: (uid = '', jobId = 0) =>resolveRoot('output', 'temp', `${uid}`),
+    tempJson: (uid = '', docType = '') =>resolveRoot('output', 'temp', `${uid}`, 'json', `${docType}`),
     resumes: resolveRoot('output', 'resumes'),
     coverLetters: resolveRoot('output', 'cover_letters'),
     changeReport: resolveRoot('output', 'change-summary.md'),

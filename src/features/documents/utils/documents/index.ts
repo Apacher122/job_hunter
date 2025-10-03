@@ -1,8 +1,8 @@
-export  * from './docConfig.js';
-export * from './prepareDocument.js';
+export  * from './doc_config.js';
+export * from './prepare_document.js';
 export * from './send.js';
 export * from './validations.js';
-export * from './createHeader.js'
+export * from './create_header.js'
 export * from './workspace.js';
 
 export function DocType(DocType: any): import("zod").ZodNativeEnum<any> {

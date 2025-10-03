@@ -1,29 +1,22 @@
-# Context
+[CONTEXT]  
+I am applying for the position of {{position}} at {{company}}.  
+Evaluate: How well does the applicant match the job and company?  
 
-I am applying for the position of {{position}} at {{company}}.
-How well do I match the job and company?
+[INFORMATION]  
 
----
+[APPLICANT_NUMBER]  
+{{applicants}}  
+[/APPLICANT_NUMBER]  
 
-# Information
+[JOB_POSTING_DETAILS]  
+{{jobPost}}  
+[/JOB_POSTING_DETAILS]  
 
-<applicant_number>
-    {{applicants}}
-</applicant_number>
+[RESUME]  
+{{education}}  
+{{resume}}  
+[/RESUME]  
 
-<job_posting_details>
-    {{details}}
-</job_posting_details>
-
-<job_description>
-    {{jobPosting}}
-</job_description>
-
-<resume>
-    {{education}}
-    {{resume}}
-</resume>
-
-<cover_letter>
-    {{coverLetter}}
-</cover_letter>
+[COVER_LETTER]  
+{{coverLetter}}  
+[/COVER_LETTER]  
